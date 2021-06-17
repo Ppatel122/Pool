@@ -6,19 +6,22 @@ class whiteBall{
     this.xpos = 100;
     this.ypos = 200;
     this.rad = 12.5;
+    this.xvel = 0;
+    this.yvel = 0;
+    this.acceleration = 0;
     this.clickable = true;
     this.clicked = false;
     this.locked = false;
     this.projection = false;
-    this.linexpos = 450;
-    this.lineypos = 200;
+    this.linexpos = this.xpos + 350;
+    this.lineypos = 200;  
     this.arrow1x = this.linexpos - 10;
     this.arrow1y = this.lineypos - 10;
     this.arrow2x = this.linexpos - 10;
     this.arrow2y = this.lineypos + 10;
     this.arrowColor = 255;
   }
-  // Checks to see if Ball is clicked
+  // Checks to see if ball is clicked
   click(){
     let d = dist(mouseX,mouseY,this.xpos,this.ypos);
     if(d < this.rad && this.clickable){
@@ -27,10 +30,31 @@ class whiteBall{
       this.clicked = false;
     }
   }
-  // 
+  // Checks for wall collisions
+  wallCollisions(xMin, xMax, yMin, yMax, coefRest) {
+    if (this.xpos > xMax - this.rad - 17.5)  {
+        this.xpos = xMax - this.rad - 17.5;
+        this.xvel = -abs(this.xvel)*coefRest;
+    } else if (this.xpos < xMin + this.rad + 17.5) {
+        this.xpos = xMin + this.rad + 17.5;
+        this.xvel = abs(this.xvel)*coefRest;
+    }
+
+    if (this.ypos > yMax - this.rad - 17.5)  {
+        this.ypos = yMax - this.rad - 17.5;
+        this.yvel = -abs(this.yvel)*coefRest;
+    } else if (this.ypos < yMin + this.rad + 17.5) {
+        this.ypos = yMin + this.rad + 17.5;
+        this.yvel = abs(this.yvel)*coefRest;
+    }
+  }
+
+  // Shoots the ball
   shoot(){
     player.projection = false;
     player.clickable = false;
+    player.xvel = 20;
+    
   }
   // Draws the white ball
   render(){
@@ -44,19 +68,22 @@ class whiteBall{
     fill(255);
     stroke(0);
     strokeWeight(2);
-    if(this.projection){
+    if(this.projection ){
       line(this.linexpos,this.lineypos,this.xpos,this.ypos);
       line(this.linexpos,this.lineypos,this.arrow1x,this.arrow1y);
       line(this.linexpos,this.lineypos,this.arrow2x,this.arrow2y);
     }
+    player.xpos += player.xvel
   }
 }
 
 class Ball{
-  constructor(){
-    this.xpos = 350;
-    this.ypos = 200;
-    this.rad = 12.5;
+  constructor(x,y,rad,xvel,yvel){
+    this.xpos = x;
+    this.ypos = y;
+    this.rad = rad;
+    this.xvel = xvel;
+    this.yvel = yvel;
   }
 
   render(){
@@ -108,6 +135,18 @@ function draw() {
   player.render();
   // Target ball
   target.render();
+  player.wallCollisions(0,700,0,400,0.5)
+  updateSpeed();
+}
+
+function updateSpeed(){
+  if(player.xvel > 0.2){
+    player.xvel -= 0.2;
+  } else if(player.xvel < -0.2){
+    player.xvel += 0.2
+  } else{
+    player.xvel = 0;
+  }
 }
 
 function createHoles(){
@@ -134,7 +173,7 @@ function drawBorder(){
 function resetgame(){
   createHoles();
   player = new whiteBall();
-  target = new Ball();
+  target = new Ball(350,200,12.5);
 }
 function checkBoundaries(){
   if(player.xpos <= 30){
@@ -197,13 +236,15 @@ function keyReleased() {
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    player.xpos += 5;
+    player.linexpos += 5;
   } else if (keyCode === LEFT_ARROW) {
-    player.xpos -= 5;
+    player.linexpos -= 5;
   } else if (keyCode === UP_ARROW) {
 
   } else if (keyCode === DOWN_ARROW) {
 
+  } else if (keyCode == ENTER){
+    player.shoot();
   } else if (keyCode == 82) {
     resetgame();
   } else if (keyCode === 32 ) { // SpaceBar
@@ -214,5 +255,5 @@ function keyPressed() {
     }
   } else if (keyCode === 81) { // Q
     gameStarted = !gameStarted;
-  }i
+  }
 }
