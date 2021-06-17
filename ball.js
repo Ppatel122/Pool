@@ -1,5 +1,5 @@
-// Declaring Variables
 
+// White Ball Class
 class whiteBall{
   constructor(){
     this.xpos = 600;
@@ -7,6 +7,7 @@ class whiteBall{
     this.rad = 12.5;
     this.clicked = false;
     this.locked = false;
+    this.projection = false;
     this.linexpos = 250;
     this.lineypos = 200;
     this.arrow1x = this.linexpos + 10;
@@ -15,7 +16,7 @@ class whiteBall{
     this.arrow2y = this.lineypos + 10;
     this.arrowColor = 255;
   }
-
+  // Checks to see if Ball is clicked
   click(){
     let d = dist(mouseX,mouseY,this.xpos,this.ypos);
     if(d < this.rad){
@@ -24,11 +25,11 @@ class whiteBall{
       this.clicked = false;
     }
   }
-
+  // 
   shoot(){
 
   }
-
+  // Draws the white ball
   render(){
     fill(255);
     noStroke();
@@ -40,13 +41,15 @@ class whiteBall{
     fill(255);
     stroke(0);
     strokeWeight(2);
-    line(this.linexpos,this.lineypos,this.xpos,this.ypos);
-    line(this.linexpos,this.lineypos,this.arrow1x,this.arrow1y);
-    line(this.linexpos,this.lineypos,this.arrow2x,this.arrow2y);
+    if(this.projection){
+      line(this.linexpos,this.lineypos,this.xpos,this.ypos);
+      line(this.linexpos,this.lineypos,this.arrow1x,this.arrow1y);
+      line(this.linexpos,this.lineypos,this.arrow2x,this.arrow2y);
+    }
   }
 }
 
-class redBall{
+class Ball{
   constructor(){
     this.xpos = 350;
     this.ypos = 200;
@@ -60,20 +63,38 @@ class redBall{
   }
 }
 
+class Hole{
+  constructor(x,y){
+    this.xpos = x;
+    this.ypos = y;
+    this.rad = 15
+  }
+
+  render(){
+    fill(0);
+    noStroke();
+    ellipse(this.xpos,this.ypos,2*this.rad);
+  }
+}
+
 function setup() {
   createCanvas(700, 400);
-
+  createHoles();
   player = new whiteBall();
-  target = new redBall();
+  target = new Ball();
 };
 
 function draw() {
   // Background 
   background(10, 108, 3);
-  drawlines();
-  // Hole
-  fill(0);
-  ellipse(100,200,35);
+  drawBorder();
+  // Holes
+  hole1.render();
+  hole2.render();
+  hole3.render();
+  hole4.render();
+  hole5.render();
+  hole6.render();
   // Player
   player.click();
   player.render();
@@ -81,11 +102,21 @@ function draw() {
   target.render();
 }
 
-function drawlines(){
+function createHoles(){
+  hole1 = new Hole(25,25,false);
+  hole2 = new Hole(350,17,true);
+  hole3 = new Hole(675,25,false);
+  hole4 = new Hole(25,375,false);
+  hole5 = new Hole(350,383,true);
+  hole6 = new Hole(675,375,false);
+}
+
+function drawBorder(){
   stroke(0);
   strokeWeight(2);
   line(500,0,500,400);
-  strokeWeight(10);
+  stroke(170,114,67);
+  strokeWeight(35);
   line(0,1,700,1);
   line(0,399,700,399);
   line(699,0,699,400);
