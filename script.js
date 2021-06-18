@@ -6,7 +6,8 @@ let poolTableX = 1000;
 let poolTableY = 500;
 let poolTableBorder = 20;
 let bumperLength = 10;
-let bumperIndent = 20;
+let bumperIndent = 25;
+let holeIndent = 15;
 let wallT = poolTableBorder;
 let wallB = poolTableY - poolTableBorder;
 let wallL = poolTableBorder;
@@ -61,9 +62,12 @@ function resetGame(){
   holes = [];
   bumpers = [];
   
-  bumpers.push(new Bumper(wallL,wallT,poolTableX/2,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength,color(11, 130, 90)));
-  bumpers.push(new Bumper(poolTableX/2,wallT,wallR,wallT,wallR - bumperIndent,wallT+bumperLength,poolTableX/2 + bumperIndent,wallT+bumperLength,color(11, 130, 90)));
-  bumpers.push(new Bumper(wallL,wallT,poolTableX/2,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength,color(11, 130, 90)));
+  bumpers.push(new Bumper(wallL + holeIndent,wallT,poolTableX/2,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength));
+  bumpers.push(new Bumper(poolTableX/2,wallT,wallR,wallT,wallR - bumperIndent,wallT+bumperLength,poolTableX/2 + bumperIndent,wallT+bumperLength));
+  bumpers.push(new Bumper(wallL,wallT+ holeIndent,wallL,wallB,wallL+bumperLength,wallB-bumperIndent,wallL + bumperLength,wallT+bumperIndent));
+  bumpers.push(new Bumper(wallL,wallB,poolTableX/2,wallB,poolTableX/2 - bumperIndent,wallB-bumperLength,wallL + bumperIndent,wallB-bumperLength));
+  bumpers.push(new Bumper(poolTableX/2,wallB,wallR,wallB,wallR - bumperIndent,wallB-bumperLength,poolTableX/2 + bumperIndent,wallB-bumperLength));
+  bumpers.push(new Bumper(wallR,wallT,wallR,wallB,wallR-bumperLength,wallB-bumperIndent,wallR - bumperLength,wallT+bumperIndent));
 
   holes.push(new Hole(poolTableBorder, poolTableBorder));
   holes.push(new Hole(poolTableX/2, poolTableBorder));
@@ -297,7 +301,7 @@ class Hole {
 }
 
 class Bumper {
-  constructor(x1,y1,x2,y2,x3,y3,x4,y4,color){
+  constructor(x1,y1,x2,y2,x3,y3,x4,y4){
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -306,12 +310,11 @@ class Bumper {
     this.y3 = y3;
     this.x4 = x4;
     this.y4 = y4;
-    this.color = color
   }
 
   show(){
     noStroke();
-    fill(this.color);
+    fill(11, 130, 90);
     quad(this.x1,this.y1,this.x2,this.y2,this.x3,this.y3,this.x4,this.y4);
   }
 }
