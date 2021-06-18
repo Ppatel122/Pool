@@ -8,7 +8,7 @@ class whiteBall{
   constructor(){
     this.x = 100;
     this.y = 200;
-    this.rad = 12.5;
+    this.radius = 12.5;
     this.xVel = 0;
     this.yVel = 0;
     this.acceleration = 0;
@@ -23,7 +23,7 @@ class whiteBall{
   // Checks to see if ball is clicked
   click(){
     let d = dist(mouseX,mouseY,this.x,this.y);
-    if(d < this.rad && this.clickable){
+    if(d < this.radius && this.clickable){
       this.clicked = true;
     } else{
       this.clicked = false;
@@ -31,19 +31,19 @@ class whiteBall{
   }
   // Checks for wall collisions
   wallCollisions(xMin, xMax, yMin, yMax, coefRest) {
-    if (this.x > xMax - this.rad - 17.5)  {
-        this.x = xMax - this.rad - 17.5;
+    if (this.x > xMax - this.radius - 17.5)  {
+        this.x = xMax - this.radius - 17.5;
         this.xVel = -abs(this.xVel)*coefRest;
-    } else if (this.x < xMin + this.rad + 17.5) {
-        this.x = xMin + this.rad + 17.5;
+    } else if (this.x < xMin + this.radius + 17.5) {
+        this.x = xMin + this.radius + 17.5;
         this.xVel = abs(this.xVel)*coefRest;
     }
 
-    if (this.y > yMax - this.rad - 17.5)  {
-        this.y = yMax - this.rad - 17.5;
+    if (this.y > yMax - this.radius - 17.5)  {
+        this.y = yMax - this.radius - 17.5;
         this.yVel = -abs(this.yVel)*coefRest;
-    } else if (this.y < yMin + this.rad + 17.5) {
-        this.y = yMin + this.rad + 17.5;
+    } else if (this.y < yMin + this.radius + 17.5) {
+        this.y = yMin + this.radius + 17.5;
         this.yVel = abs(this.yVel)*coefRest;
     }
   }
@@ -63,7 +63,7 @@ class whiteBall{
       stroke(0);
       strokeWeight(4);
     }
-    ellipse(this.x,this.y,2*this.rad);
+    ellipse(this.x,this.y,2*this.radius);
     fill(255);
     stroke(0);
     strokeWeight(2);
@@ -75,10 +75,10 @@ class whiteBall{
 }
 
 class Ball{
-  constructor(x,y,rad,xVel,yVel){
+  constructor(x,y,radius,xVel,yVel){
     this.x = x;
     this.y = y;
-    this.rad = rad;
+    this.radius = radius;
     this.xVel = xVel;
     this.yVel = yVel;
   }
@@ -86,7 +86,7 @@ class Ball{
   show(){
     fill(255,0,0);
     noStroke();
-    ellipse(this.x,this.y,2*this.rad);
+    ellipse(this.x,this.y,2*this.radius);
   }
 }
 
@@ -241,13 +241,13 @@ class Hole{
   constructor(x,y){
     this.x = x;
     this.y = y;
-    this.rad = 15
+    this.radius = 15
   }
 
   show(){
     fill(0);
     noStroke();
-    ellipse(this.x,this.y,2*this.rad);
+    ellipse(this.x,this.y,2*this.radius);
   }
 }
 
