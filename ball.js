@@ -1,20 +1,21 @@
 let circles = [];
+let borderlength = 17.5;
 let wallCoefRest = 0.5;
 let circleCoefRest = 5;
 let circleAcceleration = 0.000; // circleAcceleration is in units/frame^2
 
 // White Ball Class
 class whiteBall{
-  constructor(){
+  constructor(x,y,radius,){
     this.x = 100;
     this.y = 200;
     this.radius = 12.5;
     this.xVel = 0;
     this.yVel = 0;
     this.acceleration = 0;
-    this.clickable = true;
-    this.clicked = false;
-    this.locked = false;
+    this.clickable = true; //
+    this.clicked = false; // These 3 are needed for mouse input, will need to add to circle class
+    this.locked = false;  //
     this.projection = false;
     this.linex = this.x + 350;
     this.liney = 200;  
@@ -29,21 +30,21 @@ class whiteBall{
       this.clicked = false;
     }
   }
-  // Checks for wall collisions
+  // Checks for wall collisions. Similar to yours but takes borderlength into account (Might have to update it again when we add bumpers cause if forgot about them)
   wallCollisions(xMin, xMax, yMin, yMax, coefRest) {
-    if (this.x > xMax - this.radius - 17.5)  {
-        this.x = xMax - this.radius - 17.5;
+    if (this.x > xMax - this.radius - borderlength)  {
+        this.x = xMax - this.radius - borderlength;
         this.xVel = -abs(this.xVel)*coefRest;
-    } else if (this.x < xMin + this.radius + 17.5) {
-        this.x = xMin + this.radius + 17.5;
+    } else if (this.x < xMin + this.radius + borderlength) {
+        this.x = xMin + this.radius + borderlength;
         this.xVel = abs(this.xVel)*coefRest;
     }
 
-    if (this.y > yMax - this.radius - 17.5)  {
-        this.y = yMax - this.radius - 17.5;
+    if (this.y > yMax - this.radius - borderlength)  {
+        this.y = yMax - this.radius - borderlength;
         this.yVel = -abs(this.yVel)*coefRest;
-    } else if (this.y < yMin + this.radius + 17.5) {
-        this.y = yMin + this.radius + 17.5;
+    } else if (this.y < yMin + this.radius + borderlength) {
+        this.y = yMin + this.radius + borderlength;
         this.yVel = abs(this.yVel)*coefRest;
     }
   }
@@ -53,6 +54,7 @@ class whiteBall{
     player.projection = false;
     player.clickable = false;
     player.xVel = 20;
+    player.yVel = -20;
     
   }
   // Draws the white ball
@@ -70,25 +72,35 @@ class whiteBall{
     if(this.projection ){
       line(this.linex,this.liney,this.x,this.y);
     }
-    player.x += player.xVel
+    player.move();
+    player.accelerate();
+  }
+
+  //accelerate
+  accelerate(){
+    if(player.xVel > 0.2){
+      player.xVel -= 0.2;
+    } else if(player.xVel < -0.2){
+      player.xVel += 0.2;
+    } else{
+      player.xVel = 0;
+    }
+    if(player.yVel > 0.2){
+      player.yVel -= 0.2;
+    } else if(player.yVel < -0.2){
+      player.yVel += 0.2;
+    } else{
+      player.yVel = 0;
+    }
+  
+  }
+  // Moves the white ball
+  move(){
+    player.x += player.xVel;
+    player.y += player.yVel;
   }
 }
 
-class Ball{
-  constructor(x,y,radius,xVel,yVel){
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.xVel = xVel;
-    this.yVel = yVel;
-  }
-
-  show(){
-    fill(255,0,0);
-    noStroke();
-    ellipse(this.x,this.y,2*this.radius);
-  }
-}
 
 class Circle {
   constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255)) {
@@ -105,7 +117,7 @@ class Circle {
   show() {
       noStroke();
       fill(this.colour);
-      circle(this.x, this.y, this.diameter);
+      ellipse(this.x, this.y, this.diameter);
   }
 
   move() {
@@ -237,6 +249,7 @@ class Circle {
   }
 }
 
+// Class for the Holes
 class Hole{
   constructor(x,y){
     this.x = x;
@@ -251,6 +264,8 @@ class Hole{
   }
 }
 
+// Class for the bumpers
+// I forgot about this, will add the bumpers tommorow
 class Bumper{
   constructor(){
 
@@ -262,6 +277,7 @@ function setup() {
   createCanvas(700, 400);
   resetgame();
 };
+
 
 function draw() {
   // Background 
@@ -277,21 +293,13 @@ function draw() {
   // Player
   player.click();
   player.show();
+
   // Target ball
-  target.show();
+  circles[0].show();
   player.wallCollisions(0,700,0,400,0.5)
-  updateSpeed();
+
 }
 
-function updateSpeed(){
-  if(player.xVel > 0.2){
-    player.xVel -= 0.2;
-  } else if(player.xVel < -0.2){
-    player.xVel += 0.2
-  } else{
-    player.xVel = 0;
-  }
-}
 
 function createHoles(){
   hole1 = new Hole(25,25,false);
@@ -314,11 +322,15 @@ function drawBorder(){
   line(1,0,1,400);
 }
 
+// Sets up the Table, you can press R during the game to reset it to normal position
 function resetgame(){
   createHoles();
   player = new whiteBall();
-  target = new Ball(350,200,12.5);
+  circles.push(new Circle(350, 200, 0, 0, 12.5, 10, color(255, 0, 0)));
 }
+
+// Checks if ball goes across boundaries when player is moving it around 
+// I think we might remove this later since we should allow them to move it anywhere
 function checkBoundaries(){
   if(player.x <= 30){
     player.x = 30;
@@ -344,6 +356,7 @@ function checkBoundaries(){
   }
 }
 
+// All the functions below this are for mouse/keyboard input. I can explain them to you tommorow 
 function mousePressed() {
   if(player.clicked){
     player.locked = true;
@@ -389,7 +402,7 @@ function keyPressed() {
 
   } else if (keyCode == ENTER){
     player.shoot();
-  } else if (keyCode == 82) {
+  } else if (keyCode == 82) { // R
     resetgame();
   } else if (keyCode === 32 ) { // SpaceBar
     if(player.projection){
@@ -398,6 +411,6 @@ function keyPressed() {
       player.projection = true;
     }
   } else if (keyCode === 81) { // Q
-    gameStarted = !gameStarted;
+
   }
 }
