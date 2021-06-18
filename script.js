@@ -62,12 +62,12 @@ function resetGame(){
   holes = [];
   bumpers = [];
   
-  bumpers.push(new Bumper(wallL + holeIndent,wallT,poolTableX/2,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength));
-  bumpers.push(new Bumper(poolTableX/2,wallT,wallR,wallT,wallR - bumperIndent,wallT+bumperLength,poolTableX/2 + bumperIndent,wallT+bumperLength));
-  bumpers.push(new Bumper(wallL,wallT+ holeIndent,wallL,wallB,wallL+bumperLength,wallB-bumperIndent,wallL + bumperLength,wallT+bumperIndent));
-  bumpers.push(new Bumper(wallL,wallB,poolTableX/2,wallB,poolTableX/2 - bumperIndent,wallB-bumperLength,wallL + bumperIndent,wallB-bumperLength));
-  bumpers.push(new Bumper(poolTableX/2,wallB,wallR,wallB,wallR - bumperIndent,wallB-bumperLength,poolTableX/2 + bumperIndent,wallB-bumperLength));
-  bumpers.push(new Bumper(wallR,wallT,wallR,wallB,wallR-bumperLength,wallB-bumperIndent,wallR - bumperLength,wallT+bumperIndent));
+  bumpers.push(new Bumper(wallL + holeIndent,wallT,poolTableX/2- holeIndent,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength));
+  bumpers.push(new Bumper(poolTableX/2 + holeIndent,wallT,wallR-holeIndent,wallT,wallR - bumperIndent,wallT+bumperLength,poolTableX/2 + bumperIndent,wallT+bumperLength));
+  bumpers.push(new Bumper(wallL,wallT+ holeIndent,wallL,wallB - holeIndent,wallL+bumperLength,wallB-bumperIndent,wallL + bumperLength,wallT+bumperIndent));
+  bumpers.push(new Bumper(wallL + holeIndent,wallB,poolTableX/2 - holeIndent,wallB,poolTableX/2 - bumperIndent,wallB-bumperLength,wallL + bumperIndent,wallB-bumperLength));
+  bumpers.push(new Bumper(poolTableX/2 + holeIndent,wallB,wallR - holeIndent,wallB,wallR - bumperIndent,wallB-bumperLength,poolTableX/2 + bumperIndent,wallB-bumperLength));
+  bumpers.push(new Bumper(wallR,wallT + holeIndent,wallR,wallB - holeIndent,wallR-bumperLength,wallB-bumperIndent,wallR - bumperLength,wallT+bumperIndent));
 
   holes.push(new Hole(poolTableBorder, poolTableBorder));
   holes.push(new Hole(poolTableX/2, poolTableBorder));
@@ -137,19 +137,19 @@ class Circle {
   }
 
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
-    if (this.x > xMax - this.radius)  {
-      this.x = xMax - this.radius;
+    if (this.x > xMax - this.radius - bumperLength)  {
+      this.x = xMax - this.radius - bumperLength;
       this.xVel = -abs(this.xVel)*coefRest;
-    } else if (this.x < xMin + this.radius) {
-      this.x = xMin + this.radius;
+    } else if (this.x < xMin + this.radius + bumperLength) {
+      this.x = xMin + this.radius + bumperLength;
       this.xVel = abs(this.xVel)*coefRest;
     }
 
-    if (this.y > yMax - this.radius)  {
-      this.y = yMax - this.radius;
+    if (this.y > yMax - this.radius - bumperLength)  {
+      this.y = yMax - this.radius - bumperLength;
       this.yVel = -abs(this.yVel)*coefRest;
-    } else if (this.y < yMin + this.radius) {
-      this.y = yMin + this.radius;
+    } else if (this.y < yMin + this.radius + bumperLength) {
+      this.y = yMin + this.radius + bumperLength;
       this.yVel = abs(this.yVel)*coefRest;
     }
   }
