@@ -1,29 +1,28 @@
-let balls = [];
+let circles = [];
+let wallCoefRest = 0.5;
+let circleCoefRest = 5;
+let circleAcceleration = 0.000; // circleAcceleration is in units/frame^2
 
 // White Ball Class
 class whiteBall{
   constructor(){
-    this.xpos = 100;
-    this.ypos = 200;
+    this.x = 100;
+    this.y = 200;
     this.rad = 12.5;
-    this.xvel = 0;
-    this.yvel = 0;
+    this.xVel = 0;
+    this.yVel = 0;
     this.acceleration = 0;
     this.clickable = true;
     this.clicked = false;
     this.locked = false;
     this.projection = false;
-    this.linexpos = this.xpos + 350;
-    this.lineypos = 200;  
-    this.arrow1x = this.linexpos - 10;
-    this.arrow1y = this.lineypos - 10;
-    this.arrow2x = this.linexpos - 10;
-    this.arrow2y = this.lineypos + 10;
+    this.linex = this.x + 350;
+    this.liney = 200;  
     this.arrowColor = 255;
   }
   // Checks to see if ball is clicked
   click(){
-    let d = dist(mouseX,mouseY,this.xpos,this.ypos);
+    let d = dist(mouseX,mouseY,this.x,this.y);
     if(d < this.rad && this.clickable){
       this.clicked = true;
     } else{
@@ -32,20 +31,20 @@ class whiteBall{
   }
   // Checks for wall collisions
   wallCollisions(xMin, xMax, yMin, yMax, coefRest) {
-    if (this.xpos > xMax - this.rad - 17.5)  {
-        this.xpos = xMax - this.rad - 17.5;
-        this.xvel = -abs(this.xvel)*coefRest;
-    } else if (this.xpos < xMin + this.rad + 17.5) {
-        this.xpos = xMin + this.rad + 17.5;
-        this.xvel = abs(this.xvel)*coefRest;
+    if (this.x > xMax - this.rad - 17.5)  {
+        this.x = xMax - this.rad - 17.5;
+        this.xVel = -abs(this.xVel)*coefRest;
+    } else if (this.x < xMin + this.rad + 17.5) {
+        this.x = xMin + this.rad + 17.5;
+        this.xVel = abs(this.xVel)*coefRest;
     }
 
-    if (this.ypos > yMax - this.rad - 17.5)  {
-        this.ypos = yMax - this.rad - 17.5;
-        this.yvel = -abs(this.yvel)*coefRest;
-    } else if (this.ypos < yMin + this.rad + 17.5) {
-        this.ypos = yMin + this.rad + 17.5;
-        this.yvel = abs(this.yvel)*coefRest;
+    if (this.y > yMax - this.rad - 17.5)  {
+        this.y = yMax - this.rad - 17.5;
+        this.yVel = -abs(this.yVel)*coefRest;
+    } else if (this.y < yMin + this.rad + 17.5) {
+        this.y = yMin + this.rad + 17.5;
+        this.yVel = abs(this.yVel)*coefRest;
     }
   }
 
@@ -53,57 +52,202 @@ class whiteBall{
   shoot(){
     player.projection = false;
     player.clickable = false;
-    player.xvel = 20;
+    player.xVel = 20;
     
   }
   // Draws the white ball
-  render(){
+  show(){
     fill(255);
     noStroke();
     if(player.locked){
       stroke(0);
       strokeWeight(4);
     }
-    ellipse(this.xpos,this.ypos,2*this.rad);
+    ellipse(this.x,this.y,2*this.rad);
     fill(255);
     stroke(0);
     strokeWeight(2);
     if(this.projection ){
-      line(this.linexpos,this.lineypos,this.xpos,this.ypos);
-      line(this.linexpos,this.lineypos,this.arrow1x,this.arrow1y);
-      line(this.linexpos,this.lineypos,this.arrow2x,this.arrow2y);
+      line(this.linex,this.liney,this.x,this.y);
     }
-    player.xpos += player.xvel
+    player.x += player.xVel
   }
 }
 
 class Ball{
-  constructor(x,y,rad,xvel,yvel){
-    this.xpos = x;
-    this.ypos = y;
+  constructor(x,y,rad,xVel,yVel){
+    this.x = x;
+    this.y = y;
     this.rad = rad;
-    this.xvel = xvel;
-    this.yvel = yvel;
+    this.xVel = xVel;
+    this.yVel = yVel;
   }
 
-  render(){
+  show(){
     fill(255,0,0);
     noStroke();
-    ellipse(this.xpos,this.ypos,2*this.rad);
+    ellipse(this.x,this.y,2*this.rad);
+  }
+}
+
+class Circle {
+  constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255)) {
+      this.x = x;
+      this.y = y;
+      this.xVel = xVel;
+      this.yVel = yVel;
+      this.radius = radius;
+      this.diameter = radius*2;
+      this.mass = mass;
+      this.colour = colour;
+  }
+
+  show() {
+      noStroke();
+      fill(this.colour);
+      circle(this.x, this.y, this.diameter);
+  }
+
+  move() {
+      this.x += this.xVel;
+      this.y += this.yVel;
+  }
+
+  wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
+      if (this.x > xMax - this.radius)  {
+          this.x = xMax - this.radius;
+          this.xVel = -abs(this.xVel)*coefRest;
+      } else if (this.x < xMin + this.radius) {
+          this.x = xMin + this.radius;
+          this.xVel = abs(this.xVel)*coefRest;
+      }
+
+      if (this.y > yMax - this.radius)  {
+          this.y = yMax - this.radius;
+          this.yVel = -abs(this.yVel)*coefRest;
+      } else if (this.y < yMin + this.radius) {
+          this.y = yMin + this.radius;
+          this.yVel = abs(this.yVel)*coefRest;
+      }
+  }
+
+  circleCollisionCheck(otherCircle) {
+      return dist(this.x, this.y, otherCircle.x, otherCircle.y) < this.radius + otherCircle.radius;
+  }
+
+  circleCollisionCalc(otherCircle, coefRest = 1) {
+      let mt = this.mass;
+      let mo = otherCircle.mass;
+      let dx = otherCircle.x - this.x;
+      let dy = otherCircle.y - this.y;
+
+      // finding angles and initial velocities
+      let vt = Math.sqrt(this.xVel * this.xVel + this.yVel * this.yVel);
+      let vo = Math.sqrt(otherCircle.xVel * otherCircle.xVel + otherCircle.yVel * otherCircle.yVel);
+      let at = this.findAngle(this.xVel, this.yVel);
+      let ao = this.findAngle(otherCircle.xVel, otherCircle.yVel);
+      let phi = this.findAngle(dx, dy);
+
+      // finding initial velocities on new coordinate system
+      let vtx = vt*Math.cos(at-phi);
+      let vty = vt*Math.sin(at-phi);
+      let vox = vo*Math.cos(ao-phi);
+      let voy = vo*Math.sin(ao-phi);
+
+      // finding final velocities on new coordinate system
+      let vtfx = (mt*vtx + mo*vox + mo*coefRest*(vox-vtx))/(mt+mo);
+      let vofx = (mt*vtx + mo*vox + mt*coefRest*(vtx-vox))/(mt+mo);
+      let vtfy = vty;
+      let vofy = voy;
+
+      // converting final velocities to regular coordinate system and replacing them
+      this.xVel = Math.cos(phi)*vtfx + Math.cos(phi+PI/2)*vtfy;
+      this.yVel = Math.sin(phi)*vtfx + Math.sin(phi+PI/2)*vtfy;
+      otherCircle.xVel = Math.cos(phi)*vofx + Math.cos(phi+PI/2)*vofy;
+      otherCircle.yVel = Math.sin(phi)*vofx + Math.sin(phi+PI/2)*vofy;
+
+      // This adjusts the positions of the circles so they remain outside one another. The circles may stick together if they overlap.
+      let halfOverlap = 0.51*abs(dist(this.x, this.y, otherCircle.x, otherCircle.y) - (this.radius + otherCircle.radius));
+      this.x += halfOverlap * -Math.cos(phi);
+      this.y += halfOverlap * -Math.sin(phi);
+      otherCircle.x += halfOverlap * Math.cos(phi);
+      otherCircle.y += halfOverlap * Math.sin(phi);
+  }
+
+  findAngle(x, y) {
+      if (x==0) {
+          if (y > 0) {
+              return PI/2;
+          } else if (y < 0) {
+              return 3*PI/2;
+          } else {
+              return 0;
+          }
+      }
+
+      if (y==0) {
+          if (x > 0) {
+              return 0;
+          } else if (x < 0) {
+              return PI;
+          } else {
+              return 0;
+          }
+      }
+
+      if (x > 0) {
+          if (y > 0) {
+              return Math.atan(y/x);
+          } else {
+              return Math.atan(y/x) + 2*PI;
+          }
+      } else {
+          if (y > 0) {
+              return Math.atan(y/x) + PI;
+          } else {
+              return Math.atan(y/x) + PI;
+          }
+      }
+  }
+
+  accelerate(acceleration) {
+      if (acceleration == 0) {
+          return;
+      }
+
+      let theta = this.findAngle(this.xVel, this.yVel);
+
+      if (this.xVel != 0) {
+          let initSignX = Math.sign(this.xVel);
+          this.xVel += acceleration*Math.cos(theta);
+          
+          if (initSignX != Math.sign(this.xVel)) {
+              this.xVel = 0;
+          }
+      }
+
+      if (this.yVel != 0) {
+          let initSignY = Math.sign(this.yVel);
+          this.yVel += acceleration*Math.sin(theta);
+          if (initSignY != Math.sign(this.yVel)) {
+              this.yVel = 0;
+          }
+      }
+
   }
 }
 
 class Hole{
   constructor(x,y){
-    this.xpos = x;
-    this.ypos = y;
+    this.x = x;
+    this.y = y;
     this.rad = 15
   }
 
-  render(){
+  show(){
     fill(0);
     noStroke();
-    ellipse(this.xpos,this.ypos,2*this.rad);
+    ellipse(this.x,this.y,2*this.rad);
   }
 }
 
@@ -124,28 +268,28 @@ function draw() {
   background(10, 108, 3);
   drawBorder();
   // Holes
-  hole1.render();
-  hole2.render();
-  hole3.render();
-  hole4.render();
-  hole5.render();
-  hole6.render();
+  hole1.show();
+  hole2.show();
+  hole3.show();
+  hole4.show();
+  hole5.show();
+  hole6.show();
   // Player
   player.click();
-  player.render();
+  player.show();
   // Target ball
-  target.render();
+  target.show();
   player.wallCollisions(0,700,0,400,0.5)
   updateSpeed();
 }
 
 function updateSpeed(){
-  if(player.xvel > 0.2){
-    player.xvel -= 0.2;
-  } else if(player.xvel < -0.2){
-    player.xvel += 0.2
+  if(player.xVel > 0.2){
+    player.xVel -= 0.2;
+  } else if(player.xVel < -0.2){
+    player.xVel += 0.2
   } else{
-    player.xvel = 0;
+    player.xVel = 0;
   }
 }
 
@@ -176,27 +320,27 @@ function resetgame(){
   target = new Ball(350,200,12.5);
 }
 function checkBoundaries(){
-  if(player.xpos <= 30){
-    player.xpos = 30;
-    player.linexpos = player.xpos + 300;
-    player.arrow1x = player.linexpos - 10;
-    player.arrow2x = player.linexpos - 10;  
-  } else if(player.xpos >= 187){
-    player.xpos = 187;
-    player.linexpos = player.xpos + 300;
-    player.arrow1x = player.linexpos - 10;
-    player.arrow2x = player.linexpos - 10; 
+  if(player.x <= 30){
+    player.x = 30;
+    player.linex = player.x + 300;
+    player.arrow1x = player.linex - 10;
+    player.arrow2x = player.linex - 10;  
+  } else if(player.x >= 187){
+    player.x = 187;
+    player.linex = player.x + 300;
+    player.arrow1x = player.linex - 10;
+    player.arrow2x = player.linex - 10; 
   }
-  if(player.ypos <= 30){
-    player.ypos = 30;
-    player.lineypos = player.ypos; 
-    player.arrow1y = player.lineypos - 10;
-    player.arrow2y = player.lineypos + 10;
-  } else if(player.ypos >= 370){
-    player.ypos = 370;
-    player.lineypos = player.ypos; 
-    player.arrow1y = player.lineypos - 10;
-    player.arrow2y = player.lineypos + 10;
+  if(player.y <= 30){
+    player.y = 30;
+    player.liney = player.y; 
+    player.arrow1y = player.liney - 10;
+    player.arrow2y = player.liney + 10;
+  } else if(player.y >= 370){
+    player.y = 370;
+    player.liney = player.y; 
+    player.arrow1y = player.liney - 10;
+    player.arrow2y = player.liney + 10;
   }
 }
 
@@ -211,14 +355,14 @@ function mousePressed() {
 
 function mouseDragged() {
   if(player.locked){
-    player.xpos = mouseX;
-    player.ypos = mouseY;
-    player.linexpos = player.xpos + 300;
-    player.lineypos = player.ypos; 
-    player.arrow1x = player.linexpos - 10;
-    player.arrow1y = player.lineypos - 10;
-    player.arrow2x = player.linexpos - 10;
-    player.arrow2y = player.lineypos + 10;
+    player.x = mouseX;
+    player.y = mouseY;
+    player.linex = player.x + 300;
+    player.liney = player.y; 
+    player.arrow1x = player.linex - 10;
+    player.arrow1y = player.liney - 10;
+    player.arrow2x = player.linex - 10;
+    player.arrow2y = player.liney + 10;
     checkBoundaries();
   }
 }
@@ -236,9 +380,9 @@ function keyReleased() {
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    player.linexpos += 5;
+    player.linex += 5;
   } else if (keyCode === LEFT_ARROW) {
-    player.linexpos -= 5;
+    player.linex -= 5;
   } else if (keyCode === UP_ARROW) {
 
   } else if (keyCode === DOWN_ARROW) {
