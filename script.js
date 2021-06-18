@@ -6,8 +6,10 @@ let poolTableX = 1000;
 let poolTableY = 500;
 let poolTableBorder = 20;
 let bumperLength = 10;
-let bumperIndent = 25;
-let holeIndent = 15;
+let bumperIndent = 35;
+let holeIndent = 20;
+let holeSize = 20;
+let holeShift = 5;
 let wallT = poolTableBorder;
 let wallB = poolTableY - poolTableBorder;
 let wallL = poolTableBorder;
@@ -15,8 +17,8 @@ let wallR = poolTableX - poolTableBorder;
 
 let borderlength = 20;
 let wallCoefRest = 0.5;
-let circleCoefRest = 5;
-let circleAcceleration = 0.000; // circleAcceleration is in units/frame^2
+let circleCoefRest = 0.9;
+let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
 
 function setup() {
   frameRate(60);
@@ -69,15 +71,19 @@ function resetGame(){
   bumpers.push(new Bumper(poolTableX/2 + holeIndent,wallB,wallR - holeIndent,wallB,wallR - bumperIndent,wallB-bumperLength,poolTableX/2 + bumperIndent,wallB-bumperLength));
   bumpers.push(new Bumper(wallR,wallT + holeIndent,wallR,wallB - holeIndent,wallR-bumperLength,wallB-bumperIndent,wallR - bumperLength,wallT+bumperIndent));
 
-  holes.push(new Hole(poolTableBorder, poolTableBorder));
-  holes.push(new Hole(poolTableX/2, poolTableBorder));
-  holes.push(new Hole(poolTableX - poolTableBorder, poolTableBorder));
-  holes.push(new Hole(poolTableBorder, poolTableY - poolTableBorder));
-  holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder));
-  holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder));
+  holes.push(new Hole(poolTableBorder, poolTableBorder,holeSize));
+  holes.push(new Hole(poolTableX/2, poolTableBorder,holeSize));
+  holes.push(new Hole(poolTableX - poolTableBorder, poolTableBorder,holeSize));
+  holes.push(new Hole(poolTableBorder, poolTableY - poolTableBorder,holeSize));
+  holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder,holeSize));
+  holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder,holeSize));
 
   circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255), true));
-  circles.push(new Circle(500, 250, 0, 0, 12.5, 10, color(255, 0, 0)));
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(255, 0, 0)));
+  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(0, 0, 255)));
+  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 165, 0)));
+
+
 }
 
 // draws border around the outside of the table
@@ -121,7 +127,6 @@ class Circle {
       line(this.linex,this.liney,this.x,this.y);
     }
     this.move();
-    this.friction();
   }
 
   move() {
@@ -133,7 +138,7 @@ class Circle {
     this.projection = false;
     // this.clickable = false;
     circles[0].xVel = 20;
-    circles[0].yVel = -20;
+    circles[0].yVel = 0;
   }
 
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
