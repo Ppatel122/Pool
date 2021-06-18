@@ -78,10 +78,24 @@ function resetGame(){
   holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder,holeSize));
   holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder,holeSize));
 
-  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255), true));
-  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(255, 0, 0)));
-  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(0, 0, 255)));
-  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 165, 0)));
+  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),true)); // White
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0))); // Black
+  //Solids. We will need to add parameter to distinguish between stripes and solids
+  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0))); // Yellow
+  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255))); // Blue
+  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0))); // Red
+  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140))); // Purple
+  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0))); // Orange
+  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0))); // Green
+  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0))); // Maroon
+  //Stripes
+  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0))); // Yellow
+  circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255))); // Blue
+  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(255, 0, 0))); // Red
+  circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140))); // Purple
+  circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0))); // Orange
+  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0))); // Green
+  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(128, 0, 0))); // Maroon
 
 
 }
