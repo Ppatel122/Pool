@@ -1,9 +1,12 @@
 let circles = [];
 let holes = [];
+let bumpers = [];
 
 let poolTableX = 1000;
 let poolTableY = 500;
 let poolTableBorder = 20;
+let bumperLength = 10;
+let bumperIndent = 20;
 let wallT = poolTableBorder;
 let wallB = poolTableY - poolTableBorder;
 let wallL = poolTableBorder;
@@ -24,8 +27,12 @@ function draw() {
   background(10, 108, 3);
   drawBorder();
 
+  for (let i = 0; i < bumpers.length;i++){
+    bumpers[i].show();
+  }
+
   for (let i=0; i < holes.length; i++) {
-    holes[i].show()
+    holes[i].show();
   }
 
   for (let i=0; i < circles.length; i++) {
@@ -52,6 +59,11 @@ function draw() {
 function resetGame(){
   circles = [];
   holes = [];
+  bumpers = [];
+  
+  bumpers.push(new Bumper(wallL,wallT,poolTableX/2,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength,color(11, 130, 90)));
+  bumpers.push(new Bumper(poolTableX/2,wallT,wallR,wallT,wallR - bumperIndent,wallT+bumperLength,poolTableX/2 + bumperIndent,wallT+bumperLength,color(11, 130, 90)));
+  bumpers.push(new Bumper(wallL,wallT,poolTableX/2,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength,color(11, 130, 90)));
 
   holes.push(new Hole(poolTableBorder, poolTableBorder));
   holes.push(new Hole(poolTableX/2, poolTableBorder));
@@ -60,120 +72,18 @@ function resetGame(){
   holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder));
   holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder));
 
-  circles.push(new Circle(100, 200, 0, 0, 12.5, 10, color(255), true));
-  circles.push(new Circle(350, 200, 0, 0, 12.5, 10, color(255, 0, 0)));
+  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255), true));
+  circles.push(new Circle(500, 250, 0, 0, 12.5, 10, color(255, 0, 0)));
 }
 
 // draws border around the outside of the table
 function drawBorder() {
-  stroke(0);
-  strokeWeight(1);
-  line(poolTableX/5,0,poolTableX/5,poolTableY);
-
   stroke(170,114,67);
   strokeWeight(2*poolTableBorder);
   line(0,0,poolTableX,0);
   line(0,poolTableY,poolTableX,poolTableY);
   line(poolTableX,0,poolTableX,poolTableY);
   line(0,0,0,poolTableY);
-}
-
-class whiteBall {
-  constructor(x,y,radius){
-    this.x = 100;
-    this.y = 200;
-    this.radius = 12.5;
-    this.xVel = 0;
-    this.yVel = 0;
-    this.acceleration = 0;
-    this.clickable = true; //
-    this.clicked = false; // These 3 are needed for mouse input, will need to add to circle class
-    this.locked = false;  //
-    this.projection = false;
-    this.linex = this.x + 350;
-    this.liney = 200;  
-    this.arrowColor = 255;
-  }
-  // Checks to see if ball is clicked
-  click() {
-    let d = dist(mouseX,mouseY,this.x,this.y);
-    if (d < this.radius && this.clickable) {
-      this.clicked = true;
-    } else {
-      this.clicked = false;
-    }
-  }
-
-  // Checks for wall collisions. Similar to yours but takes borderlength into account (Might have to update it again when we add bumpers cause if forgot about them)
-  wallCollisions(xMin, xMax, yMin, yMax, coefRest) {
-    if (this.x > xMax - this.radius - poolTableBorder)  {
-        this.x = xMax - this.radius - poolTableBorder;
-        this.xVel = -abs(this.xVel)*coefRest;
-    } else if (this.x < xMin + this.radius + poolTableBorder) {
-        this.x = xMin + this.radius + poolTableBorder;
-        this.xVel = abs(this.xVel)*coefRest;
-    }
-
-    if (this.y > yMax - this.radius - poolTableBorder)  {
-        this.y = yMax - this.radius - poolTableBorder;
-        this.yVel = -abs(this.yVel)*coefRest;
-    } else if (this.y < yMin + this.radius + poolTableBorder) {
-        this.y = yMin + this.radius + poolTableBorder;
-        this.yVel = abs(this.yVel)*coefRest;
-    }
-  }
-
-  // Shoots the ball
-  shoot(){
-    player.projection = false;
-    player.clickable = false;
-    player.xVel = 20;
-    player.yVel = -20;
-  }
-
-  // Draws the white ball
-  show(){
-    fill(255);
-    noStroke();
-    if(player.locked){
-      stroke(0);
-      strokeWeight(4);
-    }
-    ellipse(this.x,this.y,2*this.radius);
-    fill(255);
-    stroke(0);
-    strokeWeight(2);
-    if(this.projection ){
-      line(this.linex,this.liney,this.x,this.y);
-    }
-    player.move();
-    player.accelerate();
-  }
-
-  //accelerate
-  accelerate(){
-    if(player.xVel > 0.2){
-      player.xVel -= 0.2;
-    } else if(player.xVel < -0.2){
-      player.xVel += 0.2;
-    } else{
-      player.xVel = 0;
-    }
-    if(player.yVel > 0.2){
-      player.yVel -= 0.2;
-    } else if(player.yVel < -0.2){
-      player.yVel += 0.2;
-    } else{
-      player.yVel = 0;
-    }
-  
-  }
-
-  // Moves the white ball
-  move(){
-    player.x += player.xVel;
-    player.y += player.yVel;
-  }
 }
 
 class Circle {
@@ -195,13 +105,31 @@ class Circle {
 
   show() {
     noStroke();
+    if(this.locked){
+      stroke(0);
+      strokeWeight(4);
+    }
     fill(this.colour);
     ellipse(this.x, this.y, this.diameter);
+    if(this.projection ){
+      stroke(0);
+      strokeWeight(2);
+      line(this.linex,this.liney,this.x,this.y);
+    }
+    this.move();
+    this.friction();
   }
 
   move() {
     this.x += this.xVel;
     this.y += this.yVel;
+  }
+
+  shoot(){
+    this.projection = false;
+    // this.clickable = false;
+    circles[0].xVel = 20;
+    circles[0].yVel = -20;
   }
 
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
@@ -325,6 +253,25 @@ class Circle {
     }
   }
 
+  //Broken Friction function.
+  friction(){
+    if(this.xVel > 0.2){
+      this.xVel -= 0.2;
+    } else if(this.xVel < -0.2){
+      this.xVel += 0.2;
+    } else{
+      this.xVel = 0;
+    }
+    if(this.yVel > 0.2){
+      this.yVel -= 0.2;
+    } else if(this.yVel < -0.2){
+      this.yVel += 0.2;
+    } else{
+      this.yVel = 0;
+    }
+  
+  }
+
   click() {
     if (dist(mouseX, mouseY, this.x, this.y) < this.radius && this.clickable) {
       this.clicked = true;
@@ -350,10 +297,23 @@ class Hole {
 }
 
 class Bumper {
-  constructor(){
-
+  constructor(x1,y1,x2,y2,x3,y3,x4,y4,color){
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+    this.x3 = x3;
+    this.y3 = y3;
+    this.x4 = x4;
+    this.y4 = y4;
+    this.color = color
   }
 
+  show(){
+    noStroke();
+    fill(this.color);
+    quad(this.x1,this.y1,this.x2,this.y2,this.x3,this.y3,this.x4,this.y4);
+  }
 }
 
 // All the functions below this are for mouse/keyboard input. I can explain them to you tommorow
@@ -385,10 +345,7 @@ function mouseReleased() {
 }
 
 function keyReleased() {
-  if (keyCode == UP_ARROW || keyCode == DOWN_ARROW) {
-  } else if (keyCode == RIGHT_ARROW || keyCode == LEFT_ARROW) {
-    
-  }
+
 }
 
 function keyPressed() {
