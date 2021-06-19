@@ -1,23 +1,21 @@
-let circles = [];
-let holes = [];
-let bumpers = [];
+let circles = []; // array to hold all Circle objects
+let holes = []; // array to hold all Hole objects
+let bumpers = []; // array to hold all Bumper objects
 
-let poolTableX = 1000;
-let poolTableY = 500;
-let poolTableBorder = 20;
-let bumperLength = 10;
-let bumperIndent = 35;
-let holeIndent = 20;
-let holeSize = 20;
-let holeShift = 5;
-let wallT = poolTableBorder;
-let wallB = poolTableY - poolTableBorder;
-let wallL = poolTableBorder;
-let wallR = poolTableX - poolTableBorder;
+let poolTableX = 1000; // width of the pool table (also the canvas width)
+let poolTableY = 500; // height of the pool table (also the canvas height)
+let poolTableBorder = 30; // width of the border around the pool table
+let bumperLength = 10; // width of the bumpers around the pool table
+let bumperIndent = 10; // length of the corner cut-outs on the bumpers
+let holeRadius = 20; // radius of the holes
 
-let borderlength = 20;
-let wallCoefRest = 0.5;
-let circleCoefRest = 0.9;
+let wallT = poolTableBorder + bumperLength; // position of the top wall (used for collision)
+let wallB = poolTableY - poolTableBorder - bumperLength; // position of the bottom wall (used for collision)
+let wallL = poolTableBorder + bumperLength; // position of the left wall (used for collision)
+let wallR = poolTableX - poolTableBorder - bumperLength; // position of the right wall (used for collision)
+
+let wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
+let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
 let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
 
 function setup() {
@@ -64,40 +62,62 @@ function resetGame(){
   holes = [];
   bumpers = [];
   
-  bumpers.push(new Bumper(wallL + holeIndent,wallT,poolTableX/2- holeIndent,wallT,poolTableX/2 - bumperIndent,wallT+bumperLength,wallL + bumperIndent,wallT+bumperLength));
-  bumpers.push(new Bumper(poolTableX/2 + holeIndent,wallT,wallR-holeIndent,wallT,wallR - bumperIndent,wallT+bumperLength,poolTableX/2 + bumperIndent,wallT+bumperLength));
-  bumpers.push(new Bumper(wallL,wallT+ holeIndent,wallL,wallB - holeIndent,wallL+bumperLength,wallB-bumperIndent,wallL + bumperLength,wallT+bumperIndent));
-  bumpers.push(new Bumper(wallL + holeIndent,wallB,poolTableX/2 - holeIndent,wallB,poolTableX/2 - bumperIndent,wallB-bumperLength,wallL + bumperIndent,wallB-bumperLength));
-  bumpers.push(new Bumper(poolTableX/2 + holeIndent,wallB,wallR - holeIndent,wallB,wallR - bumperIndent,wallB-bumperLength,poolTableX/2 + bumperIndent,wallB-bumperLength));
-  bumpers.push(new Bumper(wallR,wallT + holeIndent,wallR,wallB - holeIndent,wallR-bumperLength,wallB-bumperIndent,wallR - bumperLength,wallT+bumperIndent));
+  // TOP LEFT bumper
+  bumpers.push(new Bumper(poolTableBorder+holeRadius, poolTableBorder, // top left corner
+                          poolTableX/2-holeRadius, poolTableBorder, // top right corner
+                          poolTableX/2-holeRadius-bumperIndent, poolTableBorder+bumperLength, // bottom right corner
+                          poolTableBorder+holeRadius+bumperIndent, poolTableBorder+bumperLength)); // bottom left corner
+  // TOP RIGHT bumper
+  bumpers.push(new Bumper(poolTableX/2+holeRadius, poolTableBorder, // top left corner
+                          poolTableX-poolTableBorder-holeRadius, poolTableBorder, // top right corner
+                          poolTableX-poolTableBorder-holeRadius-bumperIndent, poolTableBorder+bumperLength, // bottom right corner
+                          poolTableX/2+holeRadius+bumperIndent, poolTableBorder+bumperLength)); // bottom left corner
+  // LEFT bumper
+  bumpers.push(new Bumper(poolTableBorder, poolTableBorder+holeRadius, // top left corner
+                          poolTableBorder+bumperLength, poolTableBorder+holeRadius+bumperIndent, // top right corner
+                          poolTableBorder+bumperLength, poolTableY-poolTableBorder-holeRadius-bumperIndent, // bottom right corner
+                          poolTableBorder, poolTableY-poolTableBorder-holeRadius)); // bottom left corner
+  // RIGHT bumper
+  bumpers.push(new Bumper(poolTableX-poolTableBorder-bumperLength, poolTableBorder+holeRadius+bumperIndent, // top left corner
+                          poolTableX-poolTableBorder, poolTableBorder+holeRadius, // top right corner
+                          poolTableX-poolTableBorder, poolTableY-poolTableBorder-holeRadius, // bottom right corner
+                          poolTableX-poolTableBorder-bumperLength, poolTableY-poolTableBorder-holeRadius-bumperIndent)); // bottom left corner
+  // BOTTOM LEFT bumper
+  bumpers.push(new Bumper(poolTableBorder+holeRadius+bumperIndent, poolTableY-poolTableBorder-bumperLength, // top left corner
+                          poolTableX/2-holeRadius-bumperIndent, poolTableY-poolTableBorder-bumperLength, // top right corner
+                          poolTableX/2-holeRadius, poolTableY-poolTableBorder, // bottom right corner
+                          poolTableBorder+holeRadius, poolTableY-poolTableBorder)); // bottom left corner
+  // BOTTOM RIGHT bumper
+  bumpers.push(new Bumper(poolTableX/2+holeRadius+bumperIndent, poolTableY-poolTableBorder-bumperLength, // top left corner
+                          poolTableX-poolTableBorder-holeRadius-bumperIndent, poolTableY-poolTableBorder-bumperLength, // top right corner
+                          poolTableX-poolTableBorder-holeRadius, poolTableY-poolTableBorder, // bottom right corner
+                          poolTableX/2+holeRadius, poolTableY-poolTableBorder)); // bottom left corner
 
-  holes.push(new Hole(poolTableBorder, poolTableBorder,holeSize));
-  holes.push(new Hole(poolTableX/2, poolTableBorder,holeSize));
-  holes.push(new Hole(poolTableX - poolTableBorder, poolTableBorder,holeSize));
-  holes.push(new Hole(poolTableBorder, poolTableY - poolTableBorder,holeSize));
-  holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder,holeSize));
-  holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder,holeSize));
+  holes.push(new Hole(poolTableBorder, poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableX/2, poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableX - poolTableBorder, poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableBorder, poolTableY - poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder, holeRadius));
 
-  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),true)); // White
-  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0))); // Black
-  //Solids. We will need to add parameter to distinguish between stripes and solids
-  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0))); // Yellow
-  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255))); // Blue
-  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0))); // Red
-  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140))); // Purple
-  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0))); // Orange
-  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0))); // Green
-  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0))); // Maroon
-  //Stripes
-  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0))); // Yellow
-  circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255))); // Blue
-  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(255, 0, 0))); // Red
-  circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140))); // Purple
-  circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0))); // Orange
-  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0))); // Green
-  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(128, 0, 0))); // Maroon
-
-
+  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
+  // SOLIDS
+  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   1)); // Yellow
+  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
+  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),     3)); // Red
+  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140), 4)); // Purple
+  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
+  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
+  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0),   7)); // Maroon
+  // STRIPES
+  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 9)); // Yellow
+  circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255),   10)); // Blue
+  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(255, 0, 0),     11)); // Red
+  circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140),   12)); // Purple
+  circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0),   13)); // Orange
+  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0),     14)); // Green
+  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
 }
 
 // draws border around the outside of the table
@@ -111,7 +131,7 @@ function drawBorder() {
 }
 
 class Circle {
-  constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255), isWhiteBall = false) {
+  constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255), number = 0) {
     this.x = x;
     this.y = y;
     this.xVel = xVel;
@@ -120,32 +140,36 @@ class Circle {
     this.diameter = radius*2;
     this.mass = mass;
     this.colour = colour;
+    this.number = number;
 
-    this.isWhiteBall = isWhiteBall;
     this.clickable = true;
     this.clicked = false;
     this.locked = false;
   }
 
   show() {
+    this.x += this.xVel;
+    this.y += this.yVel;
+
     noStroke();
-    if(this.locked){
+    if(this.locked) {
       stroke(0);
       strokeWeight(4);
     }
+
     fill(this.colour);
-    ellipse(this.x, this.y, this.diameter);
-    if(this.projection ){
+    circle(this.x, this.y, this.diameter);
+    if (this.number >= 9 && this.number <= 15) {
+      fill(255);
+      arc(this.x, this.y, this.diameter, this.diameter, PI/4, 3*PI/4, OPEN);
+      arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
+    }
+
+    if(this.projection) {
       stroke(0);
       strokeWeight(2);
       line(this.linex,this.liney,this.x,this.y);
     }
-    this.move();
-  }
-
-  move() {
-    this.x += this.xVel;
-    this.y += this.yVel;
   }
 
   shoot(){
@@ -156,19 +180,19 @@ class Circle {
   }
 
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
-    if (this.x > xMax - this.radius - bumperLength)  {
-      this.x = xMax - this.radius - bumperLength;
+    if (this.x > xMax - this.radius)  {
+      this.x = xMax - this.radius;
       this.xVel = -abs(this.xVel)*coefRest;
-    } else if (this.x < xMin + this.radius + bumperLength) {
-      this.x = xMin + this.radius + bumperLength;
+    } else if (this.x < xMin + this.radius) {
+      this.x = xMin + this.radius;
       this.xVel = abs(this.xVel)*coefRest;
     }
 
-    if (this.y > yMax - this.radius - bumperLength)  {
-      this.y = yMax - this.radius - bumperLength;
+    if (this.y > yMax - this.radius)  {
+      this.y = yMax - this.radius;
       this.yVel = -abs(this.yVel)*coefRest;
-    } else if (this.y < yMin + this.radius + bumperLength) {
-      this.y = yMin + this.radius + bumperLength;
+    } else if (this.y < yMin + this.radius) {
+      this.y = yMin + this.radius;
       this.yVel = abs(this.yVel)*coefRest;
     }
   }
@@ -320,7 +344,7 @@ class Hole {
 }
 
 class Bumper {
-  constructor(x1,y1,x2,y2,x3,y3,x4,y4){
+  constructor(x1, y1, x2, y2, x3, y3, x4, y4) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -334,7 +358,7 @@ class Bumper {
   show(){
     noStroke();
     fill(11, 130, 90);
-    quad(this.x1,this.y1,this.x2,this.y2,this.x3,this.y3,this.x4,this.y4);
+    quad(this.x1, this.y1, this.x2, this.y2, this.x3, this.y3, this.x4, this.y4);
   }
 }
 
