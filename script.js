@@ -44,13 +44,15 @@ function draw() {
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-        }
+        }   
+    }
+
+    for(let j = 0; j < holes.length;j++){
+      circles[i].holeCollision(holes[j]);
     }
 
     circles[i].accelerate(circleAcceleration);
-  }
 
-  for (let i=0; i < circles.length; i++) {
     circles[i].show();
   }
 }
@@ -106,18 +108,18 @@ function resetGame(){
   circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   1)); // Yellow
   circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
   circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),     3)); // Red
-  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140), 4)); // Purple
-  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
+  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(90, 25, 140),   4)); // Purple
+  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
   circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
-  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0),   7)); // Maroon
+  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(128, 0, 0),     7)); // Maroon
   // STRIPES
   circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 9)); // Yellow
   circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255),   10)); // Blue
-  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(255, 0, 0),     11)); // Red
+  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(255, 0, 0),   11)); // Red
   circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140),   12)); // Purple
   circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0),   13)); // Orange
-  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0),     14)); // Green
-  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
+  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(0, 255, 0),   14)); // Green
+  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
 }
 
 // draws border around the outside of the table
@@ -174,7 +176,7 @@ class Circle {
 
   shoot(){
     this.projection = false;
-    // this.clickable = false;
+    this.clickable = false;
     circles[0].xVel = 20;
     circles[0].yVel = 0;
   }
@@ -195,6 +197,10 @@ class Circle {
       this.y = yMin + this.radius;
       this.yVel = abs(this.yVel)*coefRest;
     }
+  }
+
+  holeCollision(hole){
+    
   }
 
   circleCollisionCheck(otherCircle) {
