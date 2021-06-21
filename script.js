@@ -39,10 +39,8 @@ function draw() {
   for (let i=0; i < circles.length; i++) {
     circles[i].click();
 
-    // circles[i].wallCollision(wallL, wallR, wallT, wallB, wallCoefRest);
-
     for(let j = 0; j < bumpers.length;j++){
-      circles[i].bumperCollision(bumpers[j]);
+      circles[i].bumperCollision(bumpers[j],wallCoefRest);
     }
 
     for (let j=i+1; j < circles.length; j++) {
@@ -194,28 +192,28 @@ class Circle {
     circles[0].yVel = 0;
   }
 
-  bumperCollision(bumper){
+  bumperCollision(bumper,coefRest){
     switch(bumper.id) {
       case 1: // Top Bumpers
-        if(this.y < bumper.y3 + this.radius &&  bumper.x3 >= this.x >= bumper.x4){
+        if(this.y < bumper.y3 + this.radius &&  bumper.x3 >= this.x  && this.x >= bumper.x4){
           this.y = bumper.y3 + this.radius;
           this.yVel = abs(this.yVel)*coefRest;
         }
         break;
       case 2: // Left Bumper
-        if(this.x < bumper.x3 + this.radius &&  bumper.y3 >= this.y >= bumper.y2){
+        if(this.x < bumper.x3 + this.radius &&  bumper.y3 >= this.y && this.y >= bumper.y2){
           this.x = bumper.x3 + this.radius;
           this.xVel = abs(this.xVel)*coefRest;
         }
         break;
       case 3: // Right Bumper
-        if(this.x > bumper.x1 - this.radius &&  bumper.y4 >= this.y >= bumper.y1){
+        if(this.x > bumper.x1 - this.radius &&  bumper.y4 >= this.y  && this.y >= bumper.y1){
           this.x = bumper.x1 - this.radius;
           this.xVel = -abs(this.xVel)*coefRest;
         }
         break;
       case 4: // Bottom Bumpers
-        if(this.y > bumper.y1 - this.radius &&  bumper.x2 >= this.x >= bumper.x1){
+        if(this.y > bumper.y1 - this.radius &&  bumper.x2 >= this.x && this.x >= bumper.x1){
           this.y = bumper.y1 - this.radius;
           this.yVel = abs(this.yVel)*coefRest;
         }
@@ -223,15 +221,16 @@ class Circle {
     }
   }
 
+  // Do not need this anymore
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
-    if (this.x > xMax - this.radius)  {
-      this.x = xMax - this.radius;
-      this.xVel = -abs(this.xVel)*coefRest;
-    } else if (this.x < xMin + this.radius) {
-      this.x = xMin + this.radius;
-      this.xVel = abs(this.xVel)*coefRest;
-    }
-
+      if (this.x > xMax - this.radius)  {
+        this.x = xMax - this.radius;
+        this.xVel = -abs(this.xVel)*coefRest;
+      } else if (this.x < xMin + this.radius) {
+        this.x = xMin + this.radius;
+        this.xVel = abs(this.xVel)*coefRest;
+      }
+  
     if (this.y > yMax - this.radius)  {
       this.y = yMax - this.radius;
       this.yVel = -abs(this.yVel)*coefRest;
@@ -242,7 +241,7 @@ class Circle {
   }
 
   holeCollision(hole){
-    if(dist(this.x,this.y,hole.x,hole.y) < this.radius){
+    if(dist(this.x,this.y,hole.x,hole.y) < hole.radius){
       this.potted = true;
     }
   }
