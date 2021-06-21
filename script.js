@@ -41,6 +41,10 @@ function draw() {
 
     circles[i].wallCollision(wallL, wallR, wallT, wallB, wallCoefRest);
 
+    // for(let j = 0; j < bumpers.length;j++){
+    //   circles[i].bumperCollision(bumpers[j]);
+    // }
+
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
@@ -68,32 +72,38 @@ function resetGame(){
   bumpers.push(new Bumper(poolTableBorder+holeRadius, poolTableBorder, // top left corner
                           poolTableX/2-holeRadius, poolTableBorder, // top right corner
                           poolTableX/2-holeRadius-bumperIndent, poolTableBorder+bumperLength, // bottom right corner
-                          poolTableBorder+holeRadius+bumperIndent, poolTableBorder+bumperLength)); // bottom left corner
+                          poolTableBorder+holeRadius+bumperIndent, poolTableBorder+bumperLength, // bottom left corner
+                          1));
   // TOP RIGHT bumper
   bumpers.push(new Bumper(poolTableX/2+holeRadius, poolTableBorder, // top left corner
                           poolTableX-poolTableBorder-holeRadius, poolTableBorder, // top right corner
                           poolTableX-poolTableBorder-holeRadius-bumperIndent, poolTableBorder+bumperLength, // bottom right corner
-                          poolTableX/2+holeRadius+bumperIndent, poolTableBorder+bumperLength)); // bottom left corner
+                          poolTableX/2+holeRadius+bumperIndent, poolTableBorder+bumperLength, // bottom left corner
+                          1));
   // LEFT bumper
   bumpers.push(new Bumper(poolTableBorder, poolTableBorder+holeRadius, // top left corner
                           poolTableBorder+bumperLength, poolTableBorder+holeRadius+bumperIndent, // top right corner
                           poolTableBorder+bumperLength, poolTableY-poolTableBorder-holeRadius-bumperIndent, // bottom right corner
-                          poolTableBorder, poolTableY-poolTableBorder-holeRadius)); // bottom left corner
+                          poolTableBorder, poolTableY-poolTableBorder-holeRadius, // bottom left corner
+                          2));
   // RIGHT bumper
   bumpers.push(new Bumper(poolTableX-poolTableBorder-bumperLength, poolTableBorder+holeRadius+bumperIndent, // top left corner
                           poolTableX-poolTableBorder, poolTableBorder+holeRadius, // top right corner
                           poolTableX-poolTableBorder, poolTableY-poolTableBorder-holeRadius, // bottom right corner
-                          poolTableX-poolTableBorder-bumperLength, poolTableY-poolTableBorder-holeRadius-bumperIndent)); // bottom left corner
+                          poolTableX-poolTableBorder-bumperLength, poolTableY-poolTableBorder-holeRadius-bumperIndent, // bottom left corner
+                          3));
   // BOTTOM LEFT bumper
   bumpers.push(new Bumper(poolTableBorder+holeRadius+bumperIndent, poolTableY-poolTableBorder-bumperLength, // top left corner
                           poolTableX/2-holeRadius-bumperIndent, poolTableY-poolTableBorder-bumperLength, // top right corner
                           poolTableX/2-holeRadius, poolTableY-poolTableBorder, // bottom right corner
-                          poolTableBorder+holeRadius, poolTableY-poolTableBorder)); // bottom left corner
+                          poolTableBorder+holeRadius, poolTableY-poolTableBorder, // bottom left corner
+                          4));
   // BOTTOM RIGHT bumper
   bumpers.push(new Bumper(poolTableX/2+holeRadius+bumperIndent, poolTableY-poolTableBorder-bumperLength, // top left corner
                           poolTableX-poolTableBorder-holeRadius-bumperIndent, poolTableY-poolTableBorder-bumperLength, // top right corner
                           poolTableX-poolTableBorder-holeRadius, poolTableY-poolTableBorder, // bottom right corner
-                          poolTableX/2+holeRadius, poolTableY-poolTableBorder)); // bottom left corner
+                          poolTableX/2+holeRadius, poolTableY-poolTableBorder, // bottom left corner
+                          4));
 
   holes.push(new Hole(poolTableBorder, poolTableBorder, holeRadius));
   holes.push(new Hole(poolTableX/2, poolTableBorder, holeRadius));
@@ -147,38 +157,58 @@ class Circle {
     this.clickable = true;
     this.clicked = false;
     this.locked = false;
+    this.potted = false;
   }
 
   show() {
-    this.x += this.xVel;
-    this.y += this.yVel;
+    if(!this.potted){
+      this.x += this.xVel;
+      this.y += this.yVel;
 
-    noStroke();
-    if(this.locked) {
-      stroke(0);
-      strokeWeight(4);
-    }
+      noStroke();
+      if(this.locked) {
+        stroke(0);
+        strokeWeight(4);
+      }
 
-    fill(this.colour);
-    circle(this.x, this.y, this.diameter);
-    if (this.number >= 9 && this.number <= 15) {
-      fill(255);
-      arc(this.x, this.y, this.diameter, this.diameter, PI/4, 3*PI/4, OPEN);
-      arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
-    }
+      fill(this.colour);
+      circle(this.x, this.y, this.diameter);
+      if (this.number >= 9 && this.number <= 15) {
+        fill(255);
+        arc(this.x, this.y, this.diameter, this.diameter, PI/4, 3*PI/4, OPEN);
+        arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
+      }
 
-    if(this.projection) {
-      stroke(0);
-      strokeWeight(2);
-      line(this.linex,this.liney,this.x,this.y);
+      if(this.projection) {
+        stroke(0);
+        strokeWeight(2);
+        line(this.linex,this.liney,this.x,this.y);
+      }
     }
   }
 
   shoot(){
     this.projection = false;
-    this.clickable = false;
+    // this.clickable = false;
     circles[0].xVel = 20;
     circles[0].yVel = 0;
+  }
+
+  bumperCollision(bumper){
+    switch(bumper.id) {
+      case 1: // Top Bumper
+
+        break;
+      case 2: // Left Bumper
+
+        break;
+      case 3: // Right Bumper
+
+        break;
+      case 4: // Bottom Bumper
+
+        break;
+    }
   }
 
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
@@ -200,7 +230,9 @@ class Circle {
   }
 
   holeCollision(hole){
-    
+    if(dist(this.x,this.y,hole.x,hole.y) < this.radius){
+      this.potted = true;
+    }
   }
 
   circleCollisionCheck(otherCircle) {
@@ -304,26 +336,7 @@ class Circle {
         this.yVel = 0;
       }
     }
-  }
-
-  //Broken Friction function.
-  friction(){
-    if(this.xVel > 0.2){
-      this.xVel -= 0.2;
-    } else if(this.xVel < -0.2){
-      this.xVel += 0.2;
-    } else{
-      this.xVel = 0;
-    }
-    if(this.yVel > 0.2){
-      this.yVel -= 0.2;
-    } else if(this.yVel < -0.2){
-      this.yVel += 0.2;
-    } else{
-      this.yVel = 0;
-    }
-  
-  }
+  }  
 
   click() {
     if (dist(mouseX, mouseY, this.x, this.y) < this.radius && this.clickable) {
@@ -350,7 +363,7 @@ class Hole {
 }
 
 class Bumper {
-  constructor(x1, y1, x2, y2, x3, y3, x4, y4) {
+  constructor(x1, y1, x2, y2, x3, y3, x4, y4,id) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -359,6 +372,7 @@ class Bumper {
     this.y3 = y3;
     this.x4 = x4;
     this.y4 = y4;
+    this.id = id;
   }
 
   show(){
