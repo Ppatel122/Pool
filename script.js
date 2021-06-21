@@ -39,11 +39,11 @@ function draw() {
   for (let i=0; i < circles.length; i++) {
     circles[i].click();
 
-    circles[i].wallCollision(wallL, wallR, wallT, wallB, wallCoefRest);
+    // circles[i].wallCollision(wallL, wallR, wallT, wallB, wallCoefRest);
 
-    // for(let j = 0; j < bumpers.length;j++){
-    //   circles[i].bumperCollision(bumpers[j]);
-    // }
+    for(let j = 0; j < bumpers.length;j++){
+      circles[i].bumperCollision(bumpers[j]);
+    }
 
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
@@ -196,17 +196,29 @@ class Circle {
 
   bumperCollision(bumper){
     switch(bumper.id) {
-      case 1: // Top Bumper
-
+      case 1: // Top Bumpers
+        if(this.y < bumper.y3 + this.radius &&  bumper.x3 >= this.x >= bumper.x4){
+          this.y = bumper.y3 + this.radius;
+          this.yVel = abs(this.yVel)*coefRest;
+        }
         break;
       case 2: // Left Bumper
-
+        if(this.x < bumper.x3 + this.radius &&  bumper.y3 >= this.y >= bumper.y2){
+          this.x = bumper.x3 + this.radius;
+          this.xVel = abs(this.xVel)*coefRest;
+        }
         break;
       case 3: // Right Bumper
-
+        if(this.x > bumper.x1 - this.radius &&  bumper.y4 >= this.y >= bumper.y1){
+          this.x = bumper.x1 - this.radius;
+          this.xVel = -abs(this.xVel)*coefRest;
+        }
         break;
-      case 4: // Bottom Bumper
-
+      case 4: // Bottom Bumpers
+        if(this.y > bumper.y1 - this.radius &&  bumper.x2 >= this.x >= bumper.x1){
+          this.y = bumper.y1 - this.radius;
+          this.yVel = abs(this.yVel)*coefRest;
+        }
         break;
     }
   }
@@ -387,7 +399,7 @@ class Bumper {
 function mousePressed() {
   if(circles[0].clicked){
     circles[0].locked = true;
-    Stroke(0);
+    stroke(0);
   } else{
     circles[0].locked = false;
   }
