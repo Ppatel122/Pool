@@ -112,27 +112,41 @@
         bodyB: body,
         stiffness: 0.02,
       };
+      this.isConstrained = true;
       this.sling = Constraint.create(options);
-      World.add(world, this.sling);
+      World.add(world, [body,this.sling]);
     }
   
-    fly() {
-      this.sling.bodyB = null;
+    shoot() {
+      const timeoutID = setTimeout(() => {
+        this.isConstrained = false;
+        World.remove(world, this.sling);
+        clearTimeout(timeoutID);
+      }, 25);
     }
   
     show() {
-      if (this.sling.bodyB) {
+      if (this.isConstrained) {
         stroke(0);
         strokeWeight(4);
         const posA = this.sling.pointA;
         const posB = this.sling.bodyB.position;
         line(posA.x, posA.y, posB.x, posB.y);
       }
+      if (this.isConstrained) {
+        return;
+      }
+      // if the white ball is slow enough reset the constraint on the ball
+      if (Math.abs(balls[0].body.velocity.x) <= 0.01 && Math.abs(balls[0].body.velocity.y) < 0.01) {
+        this.isConstrained = true;
+        const { x, y } = balls[0].body.position;
+        this.sling.pointA.x = x;
+        this.sling.pointA.y = y;
+        World.add(world, this.sling);
+      }
     }
   
-    attach(body) {
-      this.sling.bodyB = body;
-    }
+
   }
 
   class Ball {
@@ -156,9 +170,11 @@
 
       if(this.number === 0){
         slingshot = new SlingShot(this.body.position.x, this.body.position.y, this.body);
-        const canvasmouse = Mouse.create(canvas.elt);
-        const mouseConstraint = MouseConstraint.create(engine, {mouse:canvasmouse});
+        var canvasmouse = Mouse.create(canvas.elt);
+        var mouseConstraint = MouseConstraint.create(engine, {mouse:canvasmouse});
+        mouseConstraint.collisionFilter.mask = 0x0001;
         World.add(world, mouseConstraint);
+
       }
 
     }
@@ -454,8 +470,8 @@
 
   function mouseReleased(){
     setTimeout(() => {
-      slingshot.fly();
-    }, 50);
+      slingshot.shoot();
+    }, 25);
   }
   
   function draw() {
