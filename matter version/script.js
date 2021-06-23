@@ -120,6 +120,7 @@
     shoot() {
       const timeoutID = setTimeout(() => {
         this.isConstrained = false;
+        cue.show = false;
         World.remove(world, this.sling);
         clearTimeout(timeoutID);
       }, 25);
@@ -149,16 +150,68 @@
 
   }
 
+  class Cue {
+    constructor(x,y,ball){
+      this.position = createVector(x,y)
+      this.width = 10
+      this.length = 10
+      this.col = cue
+      this.show = true
+      const options = {
+        restitution: 0.9,
+        friction: 0.05,
+        density: 0.0001,
+        collisionFilter: {
+          category: this.col,
+          mask: normal
+        }
+      }
+      this.body = Bodies.rectangle(this.position.x,this.position.y,this.width,this.height,options)
+      this.body.label = "cue";
+      this.id = this.body.id;
+      World.add(world,this.body)
+    }
+
+    update() {
+      this.position.x = this.body.position.x;
+      this.position.y = this.body.position.y;
+    }
+
+    render(){
+      push();
+      if(this.show){
+        fill(COLORS.blue);
+        noStroke();
+        rect(this.position.x - this.width/2,this.position.y - this.length/2,this.width,this.length);
+        translate(this.body.position.x, this.body.position.y)
+        rotate(this.body.angle)
+      }
+      pop();
+      if (Math.abs(balls[0].body.velocity.x) <= 0.01 && Math.abs(balls[0].body.velocity.y) < 0.01) {
+        this.show = true;
+      }
+    }
+  }
+
   class Ball {
     constructor(number, x, y) {
       this.position = createVector(x, y)
       this.radius = width/32
       this.number = number
-      const options = {
-        restitution: 0.9,
-        friction: 0.05,
-        density: 0.0001
-      }
+      this.col = white
+      if (number > 0){
+        this.col = normal
+      } 
+      
+        const options = {
+          restitution: 0.9,
+          friction: 0.05,
+          density: 0.0001,
+          collisionFilter: {
+            category: this.col,
+          }
+        }
+
       this.body = Bodies.circle(
         this.position.x, this.position.y, this.radius/2, options
       )
@@ -172,13 +225,13 @@
         slingshot = new SlingShot(this.body.position.x, this.body.position.y, this.body);
         var canvasmouse = Mouse.create(canvas.elt);
         var mouseConstraint = MouseConstraint.create(engine, {mouse:canvasmouse});
-        mouseConstraint.collisionFilter.mask = 0x0001;
+        mouseConstraint.collisionFilter.mask = white;
         World.add(world, mouseConstraint);
 
-      }
+        }
 
-    }
-  
+      }
+    
     update() {
       this.position.x = this.body.position.x;
       this.position.y = this.body.position.y;
@@ -271,6 +324,8 @@
   let engine;
   let world;
   let slingshot;
+  let cue;
+  let white = 0x0001, normal = 0x0002;
 
   const exaustClouds = 25;
   
@@ -464,13 +519,14 @@
     } else if (keyCode === 82) {
       resetGame();
     } else if (keyCode === 80) {
-      slingshot.attach(balls[0]);
+      
     }
   }
 
   function mouseReleased(){
     setTimeout(() => {
       slingshot.shoot();
+      cue.show = false;
     }, 25);
   }
   
@@ -486,6 +542,7 @@
     Engine.update(engine);
     
     balls.forEach(b => b.update())
+    cue.update();
 
   }
   
@@ -493,6 +550,8 @@
     drawPoolTable()
     balls.length > 0 ? balls.forEach(b => b.render()) : setupRackOfBalls();
     slingshot.show();
+    cue = new Cue(200,250,balls[0])
+    cue.render();
   }
   
   function isGameOver() {
