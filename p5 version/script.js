@@ -5,8 +5,9 @@ let bumpers = []; // array to hold all Bumper objects
 let poolTableX = 1000; // width of the pool table (also the canvas width)
 let poolTableY = 500; // height of the pool table (also the canvas height)
 let poolTableBorder = 30; // width of the border around the pool table
-let bumperLength = 10; // width of the bumpers around the pool table
-let bumperIndent = 10; // length of the corner cut-outs on the bumpers
+let bumperLength = 7; // width of the bumpers around the pool table
+let bumperIndent = 7; // length of the corner cut-outs on the bumpers
+let middleHoleShift = 5; // the distance that the middle holes are shifted away from the border
 let holeRadius = 20; // radius of the holes
 
 let wallT = poolTableBorder + bumperLength; // position of the top wall (used for collision)
@@ -104,10 +105,10 @@ function resetGame(){
                           4));
 
   holes.push(new Hole(poolTableBorder, poolTableBorder, holeRadius));
-  holes.push(new Hole(poolTableX/2, poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableX/2, poolTableBorder - middleHoleShift, holeRadius));
   holes.push(new Hole(poolTableX - poolTableBorder, poolTableBorder, holeRadius));
   holes.push(new Hole(poolTableBorder, poolTableY - poolTableBorder, holeRadius));
-  holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder, holeRadius));
+  holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder + middleHoleShift, holeRadius));
   holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder, holeRadius));
 
   circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
@@ -116,7 +117,7 @@ function resetGame(){
   circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   1)); // Yellow
   circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
   circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),     3)); // Red
-  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(90, 25, 140),   4)); // Purple
+  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140), 4)); // Purple
   circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
   circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
   circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(128, 0, 0),     7)); // Maroon
@@ -126,7 +127,7 @@ function resetGame(){
   circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(255, 0, 0),   11)); // Red
   circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140),   12)); // Purple
   circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0),   13)); // Orange
-  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(0, 255, 0),   14)); // Green
+  circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0),     14)); // Green
   circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
 }
 
