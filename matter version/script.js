@@ -153,8 +153,8 @@
   class Cue {
     constructor(x,y,ball){
       this.position = createVector(x,y)
-      this.width = 10
-      this.length = 10
+      this.width = 20
+      this.length = 20
       this.col = cue
       this.show = true
       const options = {
@@ -170,6 +170,14 @@
       this.body.label = "cue";
       this.id = this.body.id;
       World.add(world,this.body)
+
+      // slingshot = new SlingShot(this.body.position.x, this.body.position.y, this.body);
+      // var canvasmouse = Mouse.create(canvas.elt);
+      // var mouseConstraint = MouseConstraint.create(engine, {mouse:canvasmouse});
+      // mouseConstraint.collisionFilter.mask = cue;
+      // World.add(world, mouseConstraint);
+
+      
     }
 
     update() {
@@ -179,13 +187,13 @@
 
     render(){
       push();
-      if(this.show){
+      console.log("yes")
         fill(COLORS.blue);
         noStroke();
         rect(this.position.x - this.width/2,this.position.y - this.length/2,this.width,this.length);
         translate(this.body.position.x, this.body.position.y)
         rotate(this.body.angle)
-      }
+      
       pop();
       if (Math.abs(balls[0].body.velocity.x) <= 0.01 && Math.abs(balls[0].body.velocity.y) < 0.01) {
         this.show = true;
@@ -228,7 +236,7 @@
         mouseConstraint.collisionFilter.mask = white;
         World.add(world, mouseConstraint);
 
-        }
+      }
 
       }
     
@@ -353,6 +361,8 @@
 
   
     // remove previous balls and setup new balls
+    World.remove(world,cue.body)
+    cue = new Cue(200,250,balls[0])
     balls.forEach(b => {
       World.remove(world, b.body);
     })
@@ -384,7 +394,7 @@
   
 
     setupRackOfBalls();
-
+    cue = new Cue(200,250,balls[0])
     gameStarted = true;
   }
   
@@ -523,10 +533,14 @@
     }
   }
 
+  function mousePressed(){
+ 
+  }
+
   function mouseReleased(){
     setTimeout(() => {
       slingshot.shoot();
-      cue.show = false;
+
     }, 25);
   }
   
@@ -548,10 +562,11 @@
   
   function drawGame() {
     drawPoolTable()
+
     balls.length > 0 ? balls.forEach(b => b.render()) : setupRackOfBalls();
     slingshot.show();
-    cue = new Cue(200,250,balls[0])
     cue.render();
+
   }
   
   function isGameOver() {
@@ -567,8 +582,6 @@
     }
     return gameOver;
   }
-  
-  
   
   function distanceBetween(object1, object2) {
     const a2 = Math.pow(object1.position.x - object2.position.x, 2);
