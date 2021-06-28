@@ -70,7 +70,12 @@ function draw() {
   }
   cue.show();
   projection.show();
-
+  if(circles[0].xVel === 0 && circles[0].yVel === 0){
+    projection.updateX(parseFloat(validateInput(elXVel)));
+    projection.updateY(parseFloat(validateInput(elYVel)));
+    projection.on = true;
+  }
+  
 }
 
 // creates objects on table
@@ -196,10 +201,12 @@ class Projection {
   }
 
   updateX(xVel){
+    this.x1 = circles[0].x;
     this.x2 = this.x1 + 40*xVel;
   }
 
   updateY(yVel){
+    this.y1 = circles[0].y;
     this.y2 = this.y1 + 40*yVel;
   }
   
@@ -228,8 +235,12 @@ class Circle {
   constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255), number = 0) {
     this.x = x;
     this.y = y;
+    this.xCalc = x;
+    this.yCalc = y;
     this.xVel = xVel;
     this.yVel = yVel;
+    this.xVelCalc = xVel;
+    this.yVelCalc = yVel;
     this.radius = radius;
     this.diameter = radius*2;
     this.mass = mass;
@@ -242,11 +253,19 @@ class Circle {
     this.potted = false;
   }
 
+  calculate(xVel,yVel){
+    this.xVelCalc = xVel;
+    this.yVelCalc = yVel; 
+  }
+
   show() {
     if(!this.potted){
       if(!backgroundShot){
         this.x += this.xVel;
         this.y += this.yVel;
+      } else{
+        this.xCalc += this.xVelCalc;
+        this.yCalc += this.yVelCalc;
       }
       noStroke();
       if(this.locked) {
@@ -261,8 +280,18 @@ class Circle {
         arc(this.x, this.y, this.diameter, this.diameter, PI/4, 3*PI/4, OPEN);
         arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
       }
-
+      if(backgroundShot){
+        fill(this.colour)
+        ellipse(this.xCalc,this.yCalc,3)
+      }
     }
+  }
+
+  shoot(xVel,yVel){
+    this.xVel = xVel;
+    this.yVel = yVel;
+    projection.on = false;
+    cue.on = false;
   }
 
   shootMouse(cue){
@@ -485,16 +514,16 @@ class Bumper {
   }
 }
 
-// All the functions below this are for mouse/keyboard input. I can explain them to you tommorow
-// we're gonna need to generalize these functions
+
 function mousePressed() {
-  if(circles[0].clicked){
-    circles[0].locked = true;
-    cue.on = true;
-    projection.on = true;
-  } else{
-    circles[0].locked = false;
-  }
+  // if(circles[0].clicked){
+  //   circles[0].locked = true;
+  //   cue.on = true;
+  //   projection.on = true;
+
+  // } else{
+  //   circles[0].locked = false;
+  // }
 }
 
 function mouseDragged() {

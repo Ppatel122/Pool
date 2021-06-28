@@ -12,7 +12,7 @@ window.onload = () => {
   el2 = document.querySelector("#e2");
   shootbutton = document.querySelector("#shootbutton");
   resetbutton = document.querySelector("#resetbutton");
-  projectbutton = document.querySelector("#projectbutton");
+  calculatebutton = document.querySelector("#calculatebutton");
 
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));
@@ -21,12 +21,13 @@ window.onload = () => {
   };
   elYVel.onchange = () => {
     console.log("Y Velocity: " + validateInput(elYVel));
+    projection.updateY(parseFloat(validateInput(elYVel)));
     el2.innerHTML = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
   };
 
   shootbutton.onclick = () => {
     console.log("Shooting!");
-    balls[0].shoot(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
+    circles[0].shoot(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
   }
 
   resetbutton.onclick = () => {
@@ -40,8 +41,9 @@ window.onload = () => {
     projection.updateY(0);
   }
   
-  projectbutton.onclick = () => {
-    
+  calculatebutton.onclick = () => {
+    backgroundShot = true;
+    circles[0].calculate(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
   }
 }
 
