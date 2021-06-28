@@ -1,4 +1,4 @@
-var elXVel,elYVel,shootbutton,el1,el2;
+var elXVel,elYVel,shootbutton,resetbutton,el1,el2;
 
 window.onload = () => {
   //Prevent right-click on simulation from bringing up the context menu
@@ -11,6 +11,7 @@ window.onload = () => {
   el1 = document.querySelector("#e1");
   el2 = document.querySelector("#e2");
   shootbutton = document.querySelector("#shootbutton");
+  resetbutton = document.querySelector("#resetbutton");
 
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));
@@ -26,6 +27,17 @@ window.onload = () => {
   shootbutton.onclick = () => {
     console.log("Shooting!");
     balls[0].shoot(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
+  }
+
+  resetbutton.onclick = () => {
+    console.log("Reseting!");
+    resetGame();
+    el1.innerHTML = 0;
+    el2.innerHTML = 0;
+    elXVel.value = 0;
+    elYVel.value = 0;
+    projection.updateX(0);
+    projection.updateY(0);
   }
 }
 

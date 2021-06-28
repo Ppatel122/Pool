@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href = "./styles/style.css">
+      <link rel="stylesheet" href="./styles/reset.css" >
+      <link rel="stylesheet" href="./styles/styl.css">
+      <script src="./js/p5.min.js"></script>
+      <script src="./js/pool.js"></script>
+      <script src="./js/poolInput.js" defer></script>
+      <title>Optical Diagnostics Group | MecE265</title>
+    </head>
+    <body>
+      <div id="header">
+        <div id="header_in">
+          <h1><a href="NOBES_MecE_265.html"><b>NOBES<br>SOLIDWORKS</b></a></h1>
+          <div id="menu">
+            <ul>
+              <li><a href="NOBES_MecE_265.html">MecE 265</a></li>
+              <li><a href="NOBES_MecE_468.html">MecE 468</a></li>
+              <li><a href="NOBES_CSWA.html">CSWA/CSWP</a></li>
+              <li><a href="NOBES_SIM.html" class="active">Simulations</a></li>
+              <li><a href="NOBES_SW_Tutorials.html">SW Tutorials</a></li>
+              <li><a href="NOBES_SW.html">Extra Resources</a></li>
+              <li><a href="NOBES_Quiz.html">Quiz</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="main_part_inner">
+        <div id="main_part_inner_in">
+          <h2>Pool Simulation</h2>
+        </div>
+      </div>
+      <noscript>
+        <style type="text/css">
+          #content_inner {display: none};
+        </style>
+        This page requires javascript to be enabled or a javascript able browser.
+      </noscript>
+      <div id="content_inner">
+        <div id="sim-title">Pool Simulation</div>
+        <div id="simulation">
+          <div class="box-border" id="container"></div>
+          <div class="input-container">
+            <b>CONTROLS</b> <span class="dropdown" onclick="showMenu('control-content')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="dropdown-btn bi bi-question-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+              </svg>
+              <div id="control-content" class="dropdown-content">
+                <b>CONTROLS</b>
+                <div>
+                  <b>Circle:</b><br>
+                  The circle, in the simulation, is draggable.<br>
+                  <b>Sliders:</b><br>
+                  Click on the orange box and drag it around to change the value.<br>
+                  <b>X Velocity</b> [min:-40 max:40 step:0.001]<br>
+                  <b>Y Velocity</b> [min:-40 max:40 step:0.001]<br>
+                </div>
+              </div>
+            </span>
+            <div class="box-border" id="input">
+              <label for="xVel">X Velocity(<span id="e1">0</span> m/s):</label><br/>
+              <input class="slider" type="range" min="-40" max="40" value="0" step="0.001" id="xVel"><br/>
+
+  
+              <label for="yVel">Y Velocity (<span id="e2">0</span> m/s):</label><br/>
+              <input class="slider" type="range" min="-40" max="40" value="0" step="0.001" id="yVel"><br/>
+
+              <button id="calculatebutton">Calculate</button>
+
+              <button id="shootbutton">Shoot</button>
+              
+              <button id ="resetbutton">Reset</button>
+
+            </div>
+            <div class="output-container">
+              <b>OUTPUT</b> <span class="dropdown" onclick="showMenu('output-content')">
+                <svg xmlns="http://www.w3.org/2000/svg"  width="15" height="15" fill="currentColor" class="dropdown-btn bi bi-question-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                  <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+                <div id="output-content" class="dropdown-content">
+                  <b>Output</b><br>
+                </div>
+              </span>
+              <div class="box-border" id="output">
+                <div id="terminal-calculation">
+
+                </div>
+                <div id="terminal-calculation-dynamic">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="footer">
+        <div id="footer_in">
+          <p>Copyright © 2016 <a href="#">Optical Diagnostics Group</a>. All Rights Reserved</p>
+          <span>Design By: Bianca Angotti and Carmen Leung</span> <br>
+          <p></p>
+          <span>Simulation By: Pranj Patel and Logan Vaughan</span>
+        </div>
+      </div>
+      
+     
+    </body>
+    
+</html>

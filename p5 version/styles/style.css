@@ -1,0 +1,253 @@
+:root {
+    --black: #101115;
+    --orange: #e66e0d;
+    --white: #ffffff;
+    --grey: #d4d4d4;
+  }
+  
+  .box-border {
+    border: 3px solid var(--black);
+  }
+  
+  .p5-container {
+    text-align: center;
+  }
+  
+  #container {
+    text-align: center;
+  }
+  
+  #content_inner {
+    width:auto;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+  
+  #sim-title{
+    margin: 10px 0px 0px 0px;
+    font-size: 30pt;
+    font-weight: bold;
+  }
+  
+  /* --CONTAINERS-- */
+  #simulation {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  #simulation > div {
+    flex-grow: 1;
+  }
+  
+  #input {
+    padding: 20px;
+  }
+  
+  #output {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  #tasks {
+    padding: 10px;
+    user-select: text;
+  }
+  
+  .input-container {
+    margin: auto;
+    padding: 10px;
+    width: 500px;
+    font-size: 10pt;
+    user-select: none;
+  }
+  
+  .output-container {
+    margin: 5px 0;
+  }
+  
+  .question-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .speed-toggle-container {
+    display: flex;
+  }
+  
+  .mc-container {
+    width: 95%;
+  }
+  
+  /* --MULTIPLE CHOICE-- */
+  .question {
+    padding: 5px;
+    border-radius: 5px;
+    border: 3px solid grey;
+    background:grey;
+    display: block;
+    width: 100%;
+  }
+  
+  .mc-option {
+    margin: 5px;
+    padding: 2px;
+    border-radius: 5px;
+    border: 3px solid grey;
+    width: 100%;
+    display:block;
+    user-select: none;
+  }
+  
+  .mc-option:hover {
+    background-color: var(--grey);
+  }
+  
+  /* --TOGGLE BUTTONS-- */
+  .speed-toggle {
+    display: inline-block;
+    margin: auto;
+    background-color: var(--black);
+    color: var(--white);
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px 20px;
+    border-radius: 5px;
+    transition: color .5s
+  }
+  
+  .speed-toggle:hover {
+    background-color: var(--grey);
+  }
+  
+  .speed-toggle-active {
+    background-color: var(--grey);
+    color: var(--black);
+    transition: color .5s
+  }
+  
+  input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* --SLIDER-- */
+  /* https://www.w3schools.com/howto/howto_js_rangeslider.asp */
+  .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 10px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
+  
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 10px; /* Slider handle height */
+    background: var(--orange); /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 8px; /* Slider handle height */
+    background: var(--orange); /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+  
+  /* --CHECKBOX-- */
+  /* https://www.w3schools.com/howto/howto_css_switch.asp */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 20px;
+    margin: 5px;
+  }
+  
+  .checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .checkbox:checked + .checkbox-slider::before{
+    transform: translateX(40px);
+  }
+  
+  .checkbox:checked + .checkbox-slider{
+    background: var(--orange);
+  }
+  
+  .checkbox-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: var(--grey);
+    box-shadow: 0 0 2px var(--black);
+    transition: .4s;
+    border-radius: 5px;
+  }
+  
+  .checkbox-slider::before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 0px;
+    bottom: 0px;
+    background: var(--white);
+    transition: .4s;
+    border-radius: 5px;
+  }
+  
+  /* --DROPDOWN-- */
+  .dropdown {
+    position: relative;
+    width: 15px;
+    height: 15px;
+  }
+  
+  .dropdown-btn {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .dropdown-btn:hover{
+    fill: grey;
+  }
+  
+  .dropdown-content{
+    display: none;
+    position: absolute;
+    width: 500px;
+    padding: 10px;
+    background: var(--white);
+    box-shadow: 0px 0px 5px var(--black);
+    z-index: 100;
+  }
+  
+  .show {
+    display: block;
+  }
+  
