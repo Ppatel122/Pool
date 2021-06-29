@@ -24,6 +24,7 @@ let circleCoefRest = 0.9; // coefficient of restitution for collisions between m
 let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
 
 let backgroundShot = false;
+let motion = false;
 
 function setup() {
   frameRate(60);
@@ -51,6 +52,7 @@ function draw() {
   }
   for (let i=0; i < circles.length; i++) {
     circles[i].click();
+    
 
     for(let j = 0; j < bumpers.length;j++){
       circles[i].bumperCollision(bumpers[j],wallCoefRest);
@@ -64,7 +66,9 @@ function draw() {
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-            circles[i].drawNewLine()
+            circles[i].drawNewLine();
+            this.xPrev = this.x;
+            this.yPrev = this.y;
         }   
     }
 
@@ -84,6 +88,8 @@ function draw() {
     projection.updateX(parseFloat(validateInput(elXVel)));
     projection.updateY(parseFloat(validateInput(elYVel)));
 
+  } else if(circles[0].xVel === 0 && circles[0].yVel === 0){
+    circles[0].showShadow();
   }
 
 }
@@ -259,9 +265,11 @@ class Projection {
 }
 
 class Circle {
-  constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255), number = 0) {
+  constructor(x, y, xVel, yVel, radius = 10, mass = 1, color = color(255), number = 0) {
     this.x = x;
     this.y = y;
+    this.xInit = x;
+    this.yInit = y;
     this.xPrev = x;
     this.yPrev = y;
     this.xVel = xVel;
@@ -269,7 +277,7 @@ class Circle {
     this.radius = radius;
     this.diameter = radius*2;
     this.mass = mass;
-    this.colour = colour;
+    this.color = color;
     this.number = number;
 
     this.clickable = true;
@@ -279,8 +287,10 @@ class Circle {
   }
 
   update(){
-    this.x += this.xVel;
-    this.y += this.yVel;
+    if(!this.potted){
+      this.x += this.xVel;
+      this.y += this.yVel;
+    }
   }
   calculate(xVel,yVel){
     this.xVel = xVel;
@@ -295,7 +305,7 @@ class Circle {
         stroke(0);
         strokeWeight(4);
       }
-        fill(this.colour);
+        fill(this.color);
         ellipse(this.x, this.y, this.diameter);
         if (this.number >= 9 && this.number <= 15) {
           fill(255);
@@ -303,6 +313,14 @@ class Circle {
           arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
         }
     }
+  }
+
+  showShadow(){
+    projectionLines.push(new Line(this.x,this.y,this.xPrev,this.yPrev,this.color));
+    stroke(this.color);
+    strokeWeight(2);
+    fill(10, 108, 3);
+    ellipse(this.x,this.y,this.diameter);
   }
 
   shoot(xVel,yVel){
@@ -360,7 +378,7 @@ class Circle {
 
   drawNewLine(){
     if(backgroundShot){
-      projectionLines.push(new Line(this.xPrev,this.yPrev,this.x,this.y,this.colour));
+      projectionLines.push(new Line(this.xPrev,this.yPrev,this.x,this.y,this.color));
       this.xPrev = this.x;
       this.yPrev = this.y;
     }
