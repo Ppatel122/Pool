@@ -28,6 +28,7 @@ window.onload = () => {
   shootbutton.onclick = () => {
     console.log("Shooting!");
     circles[0].shoot(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
+    backgroundShot = false;
   }
 
   resetbutton.onclick = () => {
@@ -39,10 +40,14 @@ window.onload = () => {
     elYVel.value = 0;
     projection.updateX(0);
     projection.updateY(0);
+    backgroundShot = false;
   }
   
   calculatebutton.onclick = () => {
     backgroundShot = true;
+    projection.on = false;
+    circles[0].xPrev = circles[0].x;
+    circles[0].yPrev = circles[0].y;
     circles[0].calculate(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
   }
 }
