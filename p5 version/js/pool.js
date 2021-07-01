@@ -25,6 +25,7 @@ let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
 
 let backgroundShot = false;
 let motion = false;
+let ballHit;
 
 function setup() {
   frameRate(60);
@@ -34,6 +35,7 @@ function setup() {
 };
 
 function draw() {
+  console.log(backgroundShot);
   if(!backgroundShot){
     background(10, 108, 3);
     drawBorder();
@@ -51,6 +53,13 @@ function draw() {
     }
   }
   for (let i=0; i < circles.length; i++) {
+
+    
+
+    if(!backgroundShot){
+      circles[i].show();
+    }
+
     circles[i].click();
     
 
@@ -78,18 +87,20 @@ function draw() {
 
     circles[i].accelerate(circleAcceleration);
     circles[i].update();
-    if(!backgroundShot){
-      circles[i].show();
-    }
+
   }
   cue.show();
   projection.show();
-  if(circles[0].xVel === 0 && circles[0].yVel === 0 && !backgroundShot){
+  checkForMotion();
+  if(!motion && !backgroundShot){
     projection.updateX(parseFloat(validateInput(elXVel)));
     projection.updateY(parseFloat(validateInput(elYVel)));
-
-  } else if(circles[0].xVel === 0 && circles[0].yVel === 0){
-    circles[0].showShadow();
+    for(let i = 0; i < circles.length; i++){
+      circles[i].xInit = circles[i].x;
+      circles[i].yInit = circles[i].y;
+    }
+  } else if(!motion){
+    circles[0].showShadow(color(10,108,3));
   }
 
 }
@@ -256,10 +267,10 @@ class Projection {
   }
 
   show(){
-    if(this.on){
-      // stroke(0);
-      // strokeWeight(2);
-      // line(this.x1,this.y1,this.x2,this.y2)
+    if(!motion){
+      stroke(0);
+      strokeWeight(2);
+      line(this.x1,this.y1,this.x2,this.y2)
     }
   }
 }
@@ -315,11 +326,11 @@ class Circle {
     }
   }
 
-  showShadow(){
+  showShadow(color){
     projectionLines.push(new Line(this.x,this.y,this.xPrev,this.yPrev,this.color));
     stroke(this.color);
     strokeWeight(2);
-    fill(10, 108, 3);
+    fill(color);
     ellipse(this.x,this.y,this.diameter);
   }
 
@@ -377,7 +388,7 @@ class Circle {
   }
 
   drawNewLine(){
-    if(backgroundShot){
+    if(backgroundShot && (this.number === ballHit || this.number === 0)){
       projectionLines.push(new Line(this.xPrev,this.yPrev,this.x,this.y,this.color));
       this.xPrev = this.x;
       this.yPrev = this.y;
@@ -405,6 +416,13 @@ class Circle {
 
   holeCollision(hole){
     if(dist(this.x,this.y,hole.x,hole.y) < hole.radius){
+      if(backgroundShot){
+        this.drawNewLine();
+        this.x = hole.x;
+        this.y = hole.y;
+        this.showShadow(color(0));
+        return;
+      }
       if(this.number === 0){
         this.resetWhite();
         return;
@@ -569,6 +587,14 @@ class Bumper {
   }
 }
 
+function checkForMotion(){
+  motion = false;
+  for(let i = 0; i < circles.length;i++){
+    if(circles[i].xVel != 0 || circles[i].yVel != 0){
+      motion = true;
+    }
+  }
+}
 
 function mousePressed() {
   // if(circles[0].clicked){

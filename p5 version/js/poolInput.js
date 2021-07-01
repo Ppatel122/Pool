@@ -26,6 +26,7 @@ window.onload = () => {
   };
 
   shootbutton.onclick = () => {
+    ballHit = 0;
     console.log("Shooting!");
     projectionLines = [];
     for(let i = 0; i < circles.length; i++){
@@ -37,6 +38,7 @@ window.onload = () => {
   }
 
   resetbutton.onclick = () => {
+    ballHit = 0;
     console.log("Reseting!");
     resetGame();
     el1.innerHTML = 0;
@@ -49,13 +51,16 @@ window.onload = () => {
   }
   
   calculatebutton.onclick = () => {
-
+    ballHit = 0;
     backgroundShot = true;
-    projection.on = false;
-    circles[0].xPrev = circles[0].x;
-    circles[0].yPrev = circles[0].y;
-    circles[0].xInit = circles[0].x;
-    circles[0].yInit = circles[0].y;
+    for(let i = 0; i < circles.length; i++){
+
+      circles[i].xPrev = circles[i].x;
+      circles[i].yPrev = circles[i].y;
+      circles[i].xInit = circles[i].x;
+      circles[i].yInit = circles[i].y;
+    }
+
     circles[0].calculate(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
   }
 }
