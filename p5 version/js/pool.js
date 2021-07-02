@@ -3,7 +3,8 @@
 let circles = []; // array to hold all Circle objects
 let holes = []; // array to hold all Hole objects
 let bumpers = []; // array to hold all Bumper objects
-let projectionLines = []; // array to hold all Projection Lines
+let projectionLines = []; // array to hold all Projection lines
+
 
 let poolTableX = 1000; // width of the pool table (also the canvas width)
 let poolTableY = 500; // height of the pool table (also the canvas height)
@@ -25,7 +26,7 @@ let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
 
 let backgroundShot = false;
 let motion = false;
-let ballHit;
+let ballHit = 0;
 
 function setup() {
   frameRate(60);
@@ -34,22 +35,26 @@ function setup() {
   resetGame();
 };
 
+function drawTable(){
+  background(10, 108, 3);
+  drawBorder();
+
+  for (let i = 0; i < bumpers.length;i++){
+    bumpers[i].show();
+  }
+
+  for (let i=0; i < holes.length; i++) {
+    holes[i].show();
+  }
+}
 function draw() {
   console.log(backgroundShot);
   if(!backgroundShot){
-    background(10, 108, 3);
-    drawBorder();
-
-    for (let i = 0; i < bumpers.length;i++){
-      bumpers[i].show();
-    }
-
-    for (let i=0; i < holes.length; i++) {
-      holes[i].show();
-    }
-  } else{
+    drawTable();
+  } else {
     for(let i = 0; i < projectionLines.length; i++){
       projectionLines[i].show();
+      
     }
   }
   for (let i=0; i < circles.length; i++) {
@@ -75,6 +80,9 @@ function draw() {
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+            if( i === 0 && ballHit === 0){
+              ballHit = j;
+            }
             circles[i].drawNewLine();
             this.xPrev = this.x;
             this.yPrev = this.y;
@@ -93,16 +101,23 @@ function draw() {
   projection.show();
   checkForMotion();
   if(!motion && !backgroundShot){
-    projection.updateX(parseFloat(validateInput(elXVel)));
-    projection.updateY(parseFloat(validateInput(elYVel)));
+
     for(let i = 0; i < circles.length; i++){
       circles[i].xInit = circles[i].x;
       circles[i].yInit = circles[i].y;
     }
   } else if(!motion){
-    circles[0].showShadow(color(10,108,3));
-  }
 
+    circles[0].showShadow(color(10,108,3));
+    circles[ballHit].showShadow(color(10,108,3));
+
+    for(let i = 0; i < circles.length; i++){
+      circles[i].x = circles[i].xInit;
+      circles[i].y = circles[i].yInit;
+      }  
+    }
+  projection.updateX(parseFloat(validateInput(elXVel)));
+  projection.updateY(parseFloat(validateInput(elYVel)));
 }
 
 // creates objects on table
@@ -295,6 +310,7 @@ class Circle {
     this.clicked = false;
     this.locked = false;
     this.potted = false;
+    this.shadowon = false;
   }
 
   update(){
@@ -327,11 +343,14 @@ class Circle {
   }
 
   showShadow(color){
-    projectionLines.push(new Line(this.x,this.y,this.xPrev,this.yPrev,this.color));
-    stroke(this.color);
-    strokeWeight(2);
-    fill(color);
-    ellipse(this.x,this.y,this.diameter);
+    if(!this.shadowon){
+      this.shadowon = true;
+      projectionLines.push(new Line(this.x,this.y,this.xPrev,this.yPrev,this.color));
+      stroke(this.color);
+      strokeWeight(2);
+      fill(color);
+      ellipse(this.x,this.y,this.diameter);
+    }
   }
 
   shoot(xVel,yVel){

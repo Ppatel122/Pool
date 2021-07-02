@@ -29,9 +29,11 @@ window.onload = () => {
     ballHit = 0;
     console.log("Shooting!");
     projectionLines = [];
+
     for(let i = 0; i < circles.length; i++){
     circles[i].x = circles[i].xInit;
     circles[i].y = circles[i].yInit;
+    circles[i].shadowon = false;
     }
     circles[0].shoot(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
     backgroundShot = false;
@@ -52,6 +54,16 @@ window.onload = () => {
   
   calculatebutton.onclick = () => {
     ballHit = 0;
+    if(backgroundShot){
+      drawTable();
+      projectionLines = [];
+      for(let i = 0; i < circles.length; i++){
+        circles[i].x = circles[i].xInit;
+        circles[i].y = circles[i].yInit;
+        circles[i].show();
+        circles[i].shadowon = false;
+        }
+    }
     backgroundShot = true;
     for(let i = 0; i < circles.length; i++){
 
