@@ -16,10 +16,13 @@ let wallR = poolTableX - poolTableBorder - bumperLength; // position of the righ
 
 let wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
 let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
-let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
+let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
+
+let predictionView = false;
+let directionView = true;
 
 function setup() {
-  frameRate(60);
+  frameRate(144);
   createCanvas(poolTableX, poolTableY);
   resetGame();
 };
@@ -51,7 +54,30 @@ function draw() {
   }
 
   for (let i=0; i < circles.length; i++) {
+    circles[i].move();
     circles[i].show();
+  }
+
+  text(circles[0].xVelShot, 100, 20);
+  text(circles[0].yVelShot, 120, 20);
+  text(frameRate(), 140, 20);
+
+  if (predictionView) {
+    for (let i=0; i < circles.length; i++) {
+      for (let j=1; j < circles[i].xCollisions.length; j++) {
+        strokeWeight(1);
+        stroke(circles[i].colour);
+        line(circles[i].xCollisions[j-1], circles[i].yCollisions[j-1], circles[i].xCollisions[j], circles[i].yCollisions[j]);
+      }
+    }
+  }
+
+  if (directionView) {
+    if (circles[0].xVelShot != 0 || circles[0].yVelShot != 0) {
+      strokeWeight(1);
+      stroke(0);
+      line(circles[0].x, circles[0].y, circles[0].x + circles[0].xVelShot, circles[0].y - circles[0].yVelShot);
+    }
   }
 }
 
@@ -100,24 +126,73 @@ function resetGame(){
   holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder, holeRadius));
   holes.push(new Hole(poolTableX - poolTableBorder, poolTableY - poolTableBorder, holeRadius));
 
-  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
-  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
+  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),            0)); // White
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),              8)); // Black
   // SOLIDS
-  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   1)); // Yellow
-  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
-  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),     3)); // Red
-  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140), 4)); // Purple
-  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
-  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
-  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0),   7)); // Maroon
+  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),    1)); // Yellow
+  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),    2)); // Blue
+  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),      3)); // Red
+  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140),  4)); // Purple
+  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0),    5)); // Orange
+  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),    6)); // Green
+  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0),    7)); // Maroon
   // STRIPES
-  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 9)); // Yellow
+  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0),  9)); // Yellow
   circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255),   10)); // Blue
   circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(255, 0, 0),     11)); // Red
   circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140),   12)); // Purple
   circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0),   13)); // Orange
   circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0),     14)); // Green
   circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
+}
+
+// predicts a shot and draws lines
+// press Q to run the prediction
+function predictShot() {
+  predictionView = true;
+
+  // store initial circle positions
+  xInitial = [];
+  yInitial = [];
+  for (let i=0; i < circles.length; i++) {
+    xInitial[i] = circles[i].x;
+    yInitial[i] = circles[i].y;
+  }
+
+  // calculate the entire shot
+  circles[0].shoot();
+  for (let i=0; i < circles.length; i++) {
+    circles[i].xCollisions.push(circles[i].x);
+    circles[i].yCollisions.push(circles[i].y);
+  }
+  for (let i=0; i<10000; i++) {
+    for (let i=0; i < circles.length; i++) {
+  
+      circles[i].wallCollision(wallL, wallR, wallT, wallB, wallCoefRest);
+  
+      for (let j=i+1; j < circles.length; j++) {
+          if (circles[i].circleCollisionCheck(circles[j])) {
+              circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+          }
+      }
+  
+      circles[i].accelerate(circleAcceleration);
+    }
+  
+    for (let i=0; i < circles.length; i++) {
+      circles[i].move();
+    }
+  }
+  for (let i=0; i < circles.length; i++) {
+    circles[i].xCollisions.push(circles[i].x);
+    circles[i].yCollisions.push(circles[i].y);
+  }
+
+  // restore initial circle positions
+  for (let i=0; i < circles.length; i++) {
+    circles[i].x = xInitial[i];
+    circles[i].y = yInitial[i];
+  }
 }
 
 // draws border around the outside of the table
@@ -142,21 +217,27 @@ class Circle {
     this.colour = colour;
     this.number = number;
 
+    this.xVelShot = 0;
+    this.yVelShot = 0;
+    this.xCollisions = [];
+    this.yCollisions = [];
+
     this.clickable = true;
     this.clicked = false;
     this.locked = false;
   }
 
-  show() {
+  move() {
     this.x += this.xVel;
     this.y += this.yVel;
+  }
 
+  show() {
     noStroke();
     if(this.locked) {
       stroke(0);
       strokeWeight(4);
     }
-
     fill(this.colour);
     circle(this.x, this.y, this.diameter);
     if (this.number >= 9 && this.number <= 15) {
@@ -164,36 +245,40 @@ class Circle {
       arc(this.x, this.y, this.diameter, this.diameter, PI/4, 3*PI/4, OPEN);
       arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
     }
-
-    if(this.projection) {
-      stroke(0);
-      strokeWeight(2);
-      line(this.linex,this.liney,this.x,this.y);
-    }
   }
 
-  shoot(){
-    this.projection = false;
-    // this.clickable = false;
-    circles[0].xVel = 20;
-    circles[0].yVel = 0;
+  shoot() {
+    for (let i=0; i < circles.length; i++) {
+      circles[i].xCollisions = [];
+      circles[i].yCollisions = [];
+    }
+    this.xVel = this.xVelShot;
+    this.yVel = -this.yVelShot;
   }
 
   wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
     if (this.x > xMax - this.radius)  {
       this.x = xMax - this.radius;
       this.xVel = -abs(this.xVel)*coefRest;
+      this.xCollisions.push(this.x);
+      this.yCollisions.push(this.y);
     } else if (this.x < xMin + this.radius) {
       this.x = xMin + this.radius;
       this.xVel = abs(this.xVel)*coefRest;
+      this.xCollisions.push(this.x);
+      this.yCollisions.push(this.y);
     }
 
     if (this.y > yMax - this.radius)  {
       this.y = yMax - this.radius;
       this.yVel = -abs(this.yVel)*coefRest;
+      this.xCollisions.push(this.x);
+      this.yCollisions.push(this.y);
     } else if (this.y < yMin + this.radius) {
       this.y = yMin + this.radius;
       this.yVel = abs(this.yVel)*coefRest;
+      this.xCollisions.push(this.x);
+      this.yCollisions.push(this.y);
     }
   }
 
@@ -202,6 +287,11 @@ class Circle {
   }
 
   circleCollisionCalc(otherCircle, coefRest = 1) {
+    this.xCollisions.push(this.x);
+    this.yCollisions.push(this.y);
+    otherCircle.xCollisions.push(otherCircle.x);
+    otherCircle.yCollisions.push(otherCircle.y);
+
     let mt = this.mass;
     let mo = otherCircle.mass;
     let dx = otherCircle.x - this.x;
@@ -391,29 +481,37 @@ function mouseReleased() {
 }
 
 function keyReleased() {
-
 }
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    circles[0].linex += 5;
+    circles[0].xVelShot += 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode === LEFT_ARROW) {
-    circles[0].linex -= 5;
+    circles[0].xVelShot -= 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode === UP_ARROW) {
-
+    circles[0].yVelShot += 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode === DOWN_ARROW) {
-
-  } else if (keyCode == ENTER){
+    circles[0].yVelShot -= 1;
+    predictionView = false;
+    predictShot();
+  } else if (keyCode === ENTER){
+    predictionView = false;
     circles[0].shoot();
-  } else if (keyCode == 82) { // R
+    circles[0].xVelShot = 0;
+    circles[0].yVelShot = 0;
+  } else if (keyCode === 82) { // R
+    predictionView = false;
     resetGame();
-  } else if (keyCode === 32 ) { // SpaceBar
-    if(circles[0].projection){
-      circles[0].projection = false;
-    } else{
-      circles[0].projection = true;
-    }
   } else if (keyCode === 81) { // Q
-
+    predictionView = false;
+    predictShot();
+  } else if (keyCode === 69) { // E
+    directionView = !directionView;
   }
 }
