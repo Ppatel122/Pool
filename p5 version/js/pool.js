@@ -97,8 +97,9 @@ function draw() {
     circles[i].update();
 
   }
-  cue.show();
+
   projection.show();
+  cue.show();
   checkForMotion();
   if(!motion && !backgroundShot){
 
@@ -343,7 +344,7 @@ class Circle {
   }
 
   showShadow(color){
-    if(!this.shadowon){
+    if(!this.shadowon && !this.potted){
       this.shadowon = true;
       projectionLines.push(new Line(this.x,this.y,this.xPrev,this.yPrev,this.color));
       stroke(this.color);
@@ -440,6 +441,9 @@ class Circle {
         this.x = hole.x;
         this.y = hole.y;
         this.showShadow(color(0));
+        if(this.number === 0){
+          this.resetWhite()
+        }
         return;
       }
       if(this.number === 0){
