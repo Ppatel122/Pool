@@ -46,8 +46,20 @@ window.onload = () => {
     if(!motion){
       predictionView = false;
       predictShot();
+      updateCalculations();
       }
   }
+  }
+
+  function updateCalculations() {
+    let white, other;
+    let whiteBallEquation = document.getElementById("white-ball-calculation");
+    let otherBallEquation = document.getElementById("other-ball-calculation");
+    white = `\\[ v_f = \\sqrt{} = \\mathrm{\\;m/s}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
+    other = `\\[ v_f = \\sqrt{} = \\mathrm{\\;m/s}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
+    whiteBallEquation.innerHTML = white;
+    otherBallEquation.innerHTML = other;
+    MathJax.typeset();
   }
 
 function validateInput(input) {

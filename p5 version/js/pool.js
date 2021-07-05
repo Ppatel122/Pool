@@ -67,9 +67,9 @@ function draw() {
     circles[i].show();
   }
 
-  text(circles[0].xVelShot, 100, 20);
-  text(circles[0].yVelShot, 120, 20);
-  text(frameRate(), 140, 20);
+  // text(circles[0].xVelShot, 100, 20);
+  // text(circles[0].yVelShot, 120, 20);
+  // text(frameRate(), 140, 20);
 
   if (predictionView) {
     for (let i=0; i < circles.length; i++) {
@@ -627,24 +627,24 @@ function keyReleased() {
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
     circles[0].xVelShot += 1;
-    
     predictionView = false;
     predictShot();
+    updateCalculations();
   } else if (keyCode === LEFT_ARROW) {
-    circles[0].xVelShot -= 1;
-    
+    circles[0].xVelShot -= 1; 
     predictionView = false;
     predictShot();
+    updateCalculations();
   } else if (keyCode === UP_ARROW) {
     circles[0].yVelShot += 1;
     predictionView = false;
-    
     predictShot();
+    updateCalculations();
   } else if (keyCode === DOWN_ARROW) {
     circles[0].yVelShot -= 1;
     predictionView = false;
-
     predictShot();
+    updateCalculations();
   } else if (keyCode === ENTER){
     predictionView = false;
     cue.on = false;
@@ -654,12 +654,12 @@ function keyPressed() {
     circles[0].yVelShot = 0;
   } else if (keyCode === 82) { // R
     predictionView = false;
-    
     resetGame();
   } else if (keyCode === 81) { // Q
     if(!motion){
     predictionView = false;
     predictShot();
+    updateCalculations();
     }
   } else if (keyCode === 69) { // E
     directionView = !directionView;
