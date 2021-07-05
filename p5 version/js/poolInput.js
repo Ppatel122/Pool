@@ -12,7 +12,7 @@ window.onload = () => {
   el2 = document.querySelector("#e2");
   shootbutton = document.querySelector("#shootbutton");
   resetbutton = document.querySelector("#resetbutton");
-  projectbutton = document.querySelector("#calculatebutton");
+  calculatebutton = document.querySelector("#calculatebutton");
 
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));
@@ -25,8 +25,12 @@ window.onload = () => {
   };
 
   shootbutton.onclick = () => {
-    console.log("Shooting!");
-    balls[0].shoot(parseFloat(validateInput(elXVel)),parseFloat(validateInput(elYVel)));
+    predictionView = false;
+    cue.on = false;
+    cue.reset(circles[0]);
+    circles[0].shoot();
+    circles[0].xVelShot = 0;
+    circles[0].yVelShot = 0;
   }
 
   resetbutton.onclick = () => {
@@ -36,14 +40,15 @@ window.onload = () => {
     el2.innerHTML = 0;
     elXVel.value = 0;
     elYVel.value = 0;
-    projection.updateX(0);
-    projection.updateY(0);
   }
   
-  projectbutton.onclick = () => {
-    
+  calculatebutton.onclick = () => {
+    if(!motion){
+      predictionView = false;
+      predictShot();
+      }
   }
-}
+  }
 
 function validateInput(input) {
   if (parseFloat(input.value) > parseFloat(input.max) ) {
