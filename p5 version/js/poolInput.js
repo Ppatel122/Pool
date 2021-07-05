@@ -12,7 +12,7 @@ window.onload = () => {
   el2 = document.querySelector("#e2");
   shootbutton = document.querySelector("#shootbutton");
   resetbutton = document.querySelector("#resetbutton");
-  projectbutton = document.querySelector("#projectbutton");
+  projectbutton = document.querySelector("#calculatebutton");
 
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));

@@ -20,10 +20,11 @@ let wallCoefRest = 0.5; // coefficient of restitution for collisions between cir
 let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
 let circleAcceleration = -0.05; // circleAcceleration is in units/frame^2
 
-let backgroundShot = false
+let predictionView = false;
+let directionView = true;
 
 function setup() {
-  frameRate(60);
+  frameRate(144);
   var canvas = createCanvas(poolTableX, poolTableY);
   canvas.parent("container");
   resetGame();
@@ -66,10 +67,30 @@ function draw() {
     circles[i].accelerate(circleAcceleration);
 
     circles[i].show();
-  
+    circles[i].move();
   }
   cue.show();
-  projection.show();
+  text(circles[0].xVelShot, 100, 20);
+  text(circles[0].yVelShot, 120, 20);
+  text(frameRate(), 140, 20);
+
+  if (predictionView) {
+    for (let i=0; i < circles.length; i++) {
+      for (let j=1; j < circles[i].xCollisions.length; j++) {
+        strokeWeight(1);
+        stroke(circles[i].colour);
+        line(circles[i].xCollisions[j-1], circles[i].yCollisions[j-1], circles[i].xCollisions[j], circles[i].yCollisions[j]);
+      }
+    }
+  }
+
+  if (directionView) {
+    if (circles[0].xVelShot != 0 || circles[0].yVelShot != 0) {
+      strokeWeight(1);
+      stroke(0);
+      line(circles[0].x, circles[0].y, circles[0].x + circles[0].xVelShot, circles[0].y - circles[0].yVelShot);
+    }
+  }
 
 }
 
@@ -145,6 +166,55 @@ function resetGame(){
 
   cue = new Cue(circles[0]);
   projection = new Projection(circles[0]);
+}
+
+// predicts a shot and draws lines
+// press Q to run the prediction
+function predictShot() {
+  predictionView = true;
+
+  // store initial circle positions
+  xInitial = [];
+  yInitial = [];
+  for (let i=0; i < circles.length; i++) {
+    xInitial[i] = circles[i].x;
+    yInitial[i] = circles[i].y;
+  }
+
+  // calculate the entire shot
+  circles[0].shoot();
+  for (let i=0; i < circles.length; i++) {
+    circles[i].xCollisions.push(circles[i].x);
+    circles[i].yCollisions.push(circles[i].y);
+  }
+  for (let i=0; i<10000; i++) {
+    for (let i=0; i < circles.length; i++) {
+  
+      circles[i].wallCollision(wallL, wallR, wallT, wallB, wallCoefRest);
+  
+      for (let j=i+1; j < circles.length; j++) {
+          if (circles[i].circleCollisionCheck(circles[j])) {
+              circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+          }
+      }
+  
+      circles[i].accelerate(circleAcceleration);
+    }
+  
+    for (let i=0; i < circles.length; i++) {
+      circles[i].move();
+    }
+  }
+  for (let i=0; i < circles.length; i++) {
+    circles[i].xCollisions.push(circles[i].x);
+    circles[i].yCollisions.push(circles[i].y);
+  }
+
+  // restore initial circle positions
+  for (let i=0; i < circles.length; i++) {
+    circles[i].x = xInitial[i];
+    circles[i].y = yInitial[i];
+  }
 }
 
 // draws border around the outside of the table
@@ -241,13 +311,13 @@ class Circle {
     this.locked = false;
     this.potted = false;
   }
-
+  move(){
+    this.x += this.xVel;
+    this.y += this.yVel;
+  }
   show() {
-    if(!this.potted){
-      if(!backgroundShot){
-        this.x += this.xVel;
-        this.y += this.yVel;
-      }
+
+
       noStroke();
       if(this.locked) {
         stroke(0);
@@ -262,7 +332,15 @@ class Circle {
         arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
       }
 
+  }
+
+  shoot() {
+    for (let i=0; i < circles.length; i++) {
+      circles[i].xCollisions = [];
+      circles[i].yCollisions = [];
     }
+    this.xVel = this.xVelShot;
+    this.yVel = -this.yVelShot;
   }
 
   shootMouse(cue){
@@ -277,24 +355,32 @@ class Circle {
         if(this.y < bumper.y3 + this.radius &&  bumper.x3 >= this.x  && this.x >= bumper.x4){
           this.y = bumper.y3 + this.radius;
           this.yVel = abs(this.yVel)*coefRest;
+          this.xCollisions.push(this.x);
+          this.yCollisions.push(this.y);
         }
         break;
       case 2: // Left Bumper
         if(this.x < bumper.x3 + this.radius &&  bumper.y3 >= this.y && this.y >= bumper.y2){
           this.x = bumper.x3 + this.radius;
           this.xVel = abs(this.xVel)*coefRest;
+          this.xCollisions.push(this.x);
+          this.yCollisions.push(this.y);
         }
         break;
       case 3: // Right Bumper
         if(this.x > bumper.x1 - this.radius &&  bumper.y4 >= this.y  && this.y >= bumper.y1){
           this.x = bumper.x1 - this.radius;
           this.xVel = -abs(this.xVel)*coefRest;
+          this.xCollisions.push(this.x);
+          this.yCollisions.push(this.y);
         }
         break;
       case 4: // Bottom Bumpers
         if(this.y > bumper.y1 - this.radius &&  bumper.x2 >= this.x && this.x >= bumper.x1){
           this.y = bumper.y1 - this.radius;
           this.yVel = -abs(this.yVel)*coefRest;
+          this.xCollisions.push(this.x);
+          this.yCollisions.push(this.y);
         }
         break;
     }
@@ -334,6 +420,11 @@ class Circle {
   }
 
   circleCollisionCalc(otherCircle, coefRest = 1) {
+    this.xCollisions.push(this.x);
+    this.yCollisions.push(this.y);
+    otherCircle.xCollisions.push(otherCircle.x);
+    otherCircle.yCollisions.push(otherCircle.y);
+
     let mt = this.mass;
     let mo = otherCircle.mass;
     let dx = otherCircle.x - this.x;
@@ -521,16 +612,26 @@ function keyReleased() {
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    circles[0].linex += 5;
+    circles[0].xVelShot += 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode === LEFT_ARROW) {
-    circles[0].linex -= 5;
+    circles[0].xVelShot -= 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode === UP_ARROW) {
-
+    circles[0].yVelShot += 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode === DOWN_ARROW) {
-
+    circles[0].yVelShot -= 1;
+    predictionView = false;
+    predictShot();
   } else if (keyCode == ENTER){
+    predictionView = false;
     circles[0].shoot();
   } else if (keyCode == 82) { // R
+    predictionView = false;
     resetGame();
   } else if (keyCode === 32 ) { // SpaceBar
     if(circles[0].projection){
