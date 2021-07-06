@@ -16,16 +16,18 @@ window.onload = () => {
 
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));
-    projection.updateX(parseFloat(validateInput(elXVel)));
+    circles[0].xVelShot = elXVel;
     el1.innerHTML = parseFloat(elXVel.value).toFixed(3).replace('-0', '0');
   };
   elYVel.onchange = () => {
     console.log("Y Velocity: " + validateInput(elYVel));
+    circles[0].yVelShot = elYVel;
     el2.innerHTML = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
   };
 
   shootbutton.onclick = () => {
     predictionView = false;
+    ballhit = false;
     cue.on = false;
     cue.reset(circles[0]);
     circles[0].shoot();
@@ -45,6 +47,7 @@ window.onload = () => {
   calculatebutton.onclick = () => {
     if(!motion){
       predictionView = false;
+      ballhit = false;
       predictShot();
       updateCalculations();
       }
@@ -54,11 +57,11 @@ window.onload = () => {
   function updateCalculations() {
     let white, other;
     let whiteBallEquation = document.getElementById("white-ball-calculation");
-    let otherBallEquation = document.getElementById("other-ball-calculation");
-    white = `\\[ v_f = \\sqrt{} = \\mathrm{\\;m/s}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
-    other = `\\[ v_f = \\sqrt{} = \\mathrm{\\;m/s}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
+    // let otherBallEquation = document.getElementById("other-ball-calculation");
+    white = `White Ball: \n \\[ v_f = \\sqrt{} = \\mathrm{\\;}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
+    other = `Other Ball: \n \\[ v_f = \\sqrt{} = \\mathrm{\\;}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
     whiteBallEquation.innerHTML = white;
-    otherBallEquation.innerHTML = other;
+    // otherBallEquation.innerHTML = other;
     MathJax.typeset();
   }
 

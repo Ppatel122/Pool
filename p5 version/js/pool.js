@@ -5,7 +5,7 @@ let bumpers = []; // array to hold all Bumper objects
 let poolTableX = 1000; // width of the pool table (also the canvas width)
 let poolTableY = 500; // height of the pool table (also the canvas height)
 let poolTableBorder = 30; // width of the border around the pool table
-let bumperLength = 7; // width of the bumpers around the pool table
+let bumperLength = 6; // width of the bumpers around the pool table
 let bumperIndent = 2; // length of the corner cut-outs on the bumpers
 let cornerHoleShift = 5; // the distance that the corner holes are shifted away from the border
 let middleHoleShift = 5; // the distance that the middle holes are shifted away from the border
@@ -22,6 +22,8 @@ let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
 
 let predictionView = false;
 let directionView = true;
+let motion  = false;
+let ballHit = false;
 
 function setup() {
   frameRate(144);
@@ -76,14 +78,14 @@ function draw() {
       if(!circles[i].potted){
         for (let j=1; j < circles[i].xCollisions.length; j++) {
           strokeWeight(1);
-          stroke(circles[i].colour);
+          stroke(circles[i].color);
           line(circles[i].xCollisions[j-1], circles[i].yCollisions[j-1], circles[i].xCollisions[j], circles[i].yCollisions[j]);
         }
       }
     }
   }
 
-  if (directionView) {
+  if (directionView && !motion) {
     if (circles[0].xVelShot != 0 || circles[0].yVelShot != 0) {
       strokeWeight(3);
       stroke(0);
@@ -93,9 +95,12 @@ function draw() {
   cue.show();
 
   checkForMotion();
-  if(!motion && !cue.on){
+  if(!motion && !cue.on && circles[0].locked){
     cue.update(circles[0]);
     cue.on = true;
+  }
+  if(!motion && ballHit){
+    ballHit = false;
   }
 }
 
@@ -150,24 +155,24 @@ function resetGame(){
   holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder + middleHoleShift, holeRadius));
   holes.push(new Hole(poolTableX - poolTableBorder - cornerHoleShift, poolTableY - poolTableBorder - cornerHoleShift, holeRadius));
 
-  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),            0)); // White
-  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),              8)); // Black
+  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
   // SOLIDS
-  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),    1)); // Yellow
-  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),    2)); // Blue
-  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),      3)); // Red
-  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140),  4)); // Purple
-  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(255, 160, 0),    5)); // Orange
-  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),    6)); // Green
-  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(128, 0, 0),    7)); // Maroon
+  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 1)); // Yellow
+  circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
+  circles.push(new Circle(750, 275, 0, 0, 12.5, 10, color(255, 0, 0),     3)); // Red
+  circles.push(new Circle(725, 262.5, 0, 0, 12.5, 10, color(90, 25, 140), 4)); // Purple
+  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
+  circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
+  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(128, 0, 0),     7)); // Maroon
   // STRIPES
-  circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0),  9)); // Yellow
+  circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   9)); // Yellow
   circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255),   10)); // Blue
-  circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(255, 0, 0),     11)); // Red
+  circles.push(new Circle(775, 237.5, 0, 0, 12.5, 10, color(255, 0, 0),   11)); // Red
   circles.push(new Circle(800, 200, 0, 0, 12.5, 10, color(90, 25, 140),   12)); // Purple
   circles.push(new Circle(800, 250, 0, 0, 12.5, 10, color(255, 160, 0),   13)); // Orange
   circles.push(new Circle(800, 275, 0, 0, 12.5, 10, color(0, 255, 0),     14)); // Green
-  circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
+  circles.push(new Circle(750, 225, 0, 0, 12.5, 10, color(128, 0, 0),     15)); // Maroon
 
   cue = new Cue(circles[0]);
 }
@@ -212,6 +217,8 @@ function predictShot() {
       for (let j=i+1; j < circles.length; j++) {
           if (circles[i].circleCollisionCheck(circles[j])) {
               circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+
+
           }
       }
   
@@ -274,7 +281,7 @@ class Cue{
 }
 
 class Circle {
-  constructor(x, y, xVel, yVel, radius = 10, mass = 1, colour = color(255), number = 0) {
+  constructor(x, y, xVel, yVel, radius = 10, mass = 1, color = color(255), number = 0) {
     this.x = x;
     this.y = y;
     this.xVel = xVel;
@@ -282,7 +289,7 @@ class Circle {
     this.radius = radius;
     this.diameter = radius*2;
     this.mass = mass;
-    this.colour = colour;
+    this.color = color;
     this.number = number;
 
     this.xVelShot = 0;
@@ -307,7 +314,7 @@ class Circle {
         stroke(0);
         strokeWeight(4);
       }
-      fill(this.colour);
+      fill(this.color);
       circle(this.x, this.y, this.diameter);
       if (this.number >= 9 && this.number <= 15) {
         fill(255);
@@ -441,6 +448,10 @@ class Circle {
     let mo = otherCircle.mass;
     let dx = otherCircle.x - this.x;
     let dy = otherCircle.y - this.y;
+    let vtxi = this.xVel;
+    let vtyi = this.yVel;
+    let voxi = otherCircle.xVel;
+    let voyi = otherCircle.yVel;
 
     // finding angles and initial velocities
     let vt = Math.sqrt(this.xVel * this.xVel + this.yVel * this.yVel);
@@ -473,6 +484,19 @@ class Circle {
     this.y += halfOverlap * -Math.sin(phi);
     otherCircle.x += halfOverlap * Math.cos(phi);
     otherCircle.y += halfOverlap * Math.sin(phi);
+
+    if(predictionView && this.number === 0 && !ballHit){
+      ballHit = true;
+      otherball.on = true;
+      otherball.x = (otherCircle.x - this.x)*2 + whiteball.x
+      otherball.y = (otherCircle.y - this.y)*2 + whiteball.y
+      otherball.color = otherCircle.color;
+      otherball.id = otherCircle.number;
+      console.log(vtxi,vtyi,this.xVel,this.yVel);
+      whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
+      otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
+    }
+    
   }
 
   findAngle(x, y) {
@@ -535,24 +559,8 @@ class Circle {
     }
   }
 
-  //Broken Friction function.
-  friction(){
-    if(this.xVel > 0.2){
-      this.xVel -= 0.2;
-    } else if(this.xVel < -0.2){
-      this.xVel += 0.2;
-    } else{
-      this.xVel = 0;
-    }
-    if(this.yVel > 0.2){
-      this.yVel -= 0.2;
-    } else if(this.yVel < -0.2){
-      this.yVel += 0.2;
-    } else{
-      this.yVel = 0;
-    }
   
-  }
+  
 
   click() {
     if (dist(mouseX, mouseY, this.x, this.y) < this.radius && this.clickable) {
@@ -599,6 +607,7 @@ class Bumper {
 }
 
 function mousePressed() {
+
   if(circles[0].clicked){
     circles[0].locked = true;
     stroke(0);
@@ -628,25 +637,31 @@ function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
     circles[0].xVelShot += 1;
     predictionView = false;
+    ballhit = false;
     predictShot();
     updateCalculations();
   } else if (keyCode === LEFT_ARROW) {
     circles[0].xVelShot -= 1; 
     predictionView = false;
+    ballhit = false;
     predictShot();
     updateCalculations();
   } else if (keyCode === UP_ARROW) {
     circles[0].yVelShot += 1;
     predictionView = false;
+    ballhit = false;
     predictShot();
     updateCalculations();
   } else if (keyCode === DOWN_ARROW) {
     circles[0].yVelShot -= 1;
     predictionView = false;
+    ballhit = false;
     predictShot();
     updateCalculations();
   } else if (keyCode === ENTER){
     predictionView = false;
+    ballhit = false;
+
     cue.on = false;
     cue.reset(circles[0]);
     circles[0].shoot();
@@ -654,10 +669,12 @@ function keyPressed() {
     circles[0].yVelShot = 0;
   } else if (keyCode === 82) { // R
     predictionView = false;
+    ballhit = false;
     resetGame();
   } else if (keyCode === 81) { // Q
     if(!motion){
     predictionView = false;
+    ballhit = false;
     predictShot();
     updateCalculations();
     }

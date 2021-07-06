@@ -11,7 +11,8 @@
       <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       <script src="./js/p5.min.js"></script>
       <script src="./js/pool.js"></script>
-      <script src="./js/poolInput.js" defer></script>
+      <script src="./js/poolFBD.js"></script>
+      <script src="./js/poolInput.js"></script>
       <title>Optical Diagnostics Group | MecE265</title>
     </head>
     <body>
@@ -79,6 +80,8 @@
               <button id ="resetbutton">Reset</button>
 
             </div>
+
+          </div>
             <div class="output-container">
               <b>OUTPUT</b> <span class="dropdown" onclick="showMenu('output-content')">
                 <svg xmlns="http://www.w3.org/2000/svg"  width="15" height="15" fill="currentColor" class="dropdown-btn bi bi-question-circle" viewBox="0 0 16 16">
@@ -90,24 +93,17 @@
                 </div>
               </span>
               <div class="box-border" id="output">
-                Equations:
-                <div id = "equations">
-                  \[ v_f = \sqrt{}  \qquad  \theta_f = \sqrt{}\]
-
+                <div>
+                  Equations:
+                  <div id = "equations">
+                    \[ v_f = \sqrt{}  \qquad  \theta_f = \sqrt{}\]
+                  </div>
+                  <div id="white-ball-calculation"></div>
                 </div>
-                White Ball:
-                <div id="white-ball-calculation">
-                  
-
-                </div>
-                Other Ball:
-                <div id="other-ball-calculation">
-                  
-                </div>
-            
+                <div id = "container1"></div>
               </div>
             </div>
-          </div>
+
         </div>
       </div>
       <div id="footer">
