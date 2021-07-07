@@ -700,6 +700,10 @@ function keyPressed() {
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
+    elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+    elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+    el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+    el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
   } else if (keyCode === 82) { 
     
   } else if (keyCode === 81) { // Q
