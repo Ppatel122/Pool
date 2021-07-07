@@ -11,14 +11,6 @@ let sim = function(p) {
         otherball.show(p);
     };
 
-
-    p.mousePressed = function() {
-
-    };
-  
-    p.mouseReleased = function() {
-
-    };
 }
  
 
@@ -49,10 +41,10 @@ Ball.prototype.show = function(p) {
             p.arc(this.x, this.y, this.rad, this.rad, -3*PI/4, -PI/4, OPEN);
         }
         p.strokeWeight(2);
-        p.stroke(0);
-        p.line(this.x,this.y,this.x - this.xVelI*5,this.y - this.yVelI*5);
         p.stroke(255,0,0);
-        p.line(this.x,this.y,this.x + this.xVelF*5,this.y + this.yVelF*5);
+        p.line(this.x,this.y,this.x - this.xVelI*10,this.y - this.yVelI*10);
+        p.stroke(0);
+        p.line(this.x,this.y,this.x + this.xVelF*10,this.y + this.yVelF*10);
 
     }
 }

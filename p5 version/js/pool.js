@@ -492,9 +492,10 @@ class Circle {
       otherball.y = (otherCircle.y - this.y)*2 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
-      console.log(vtxi,vtyi,this.xVel,this.yVel);
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
       otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
+      console.log(this.xVel,this.yVel);
+      updateCalculations();
     }
     
   }
@@ -639,25 +640,25 @@ function keyPressed() {
     predictionView = false;
     ballhit = false;
     predictShot();
-    updateCalculations();
+
   } else if (keyCode === LEFT_ARROW) {
     circles[0].xVelShot -= 1; 
     predictionView = false;
     ballhit = false;
     predictShot();
-    updateCalculations();
+
   } else if (keyCode === UP_ARROW) {
     circles[0].yVelShot += 1;
     predictionView = false;
     ballhit = false;
     predictShot();
-    updateCalculations();
+
   } else if (keyCode === DOWN_ARROW) {
     circles[0].yVelShot -= 1;
     predictionView = false;
     ballhit = false;
     predictShot();
-    updateCalculations();
+
   } else if (keyCode === ENTER){
     predictionView = false;
     ballhit = false;
@@ -676,7 +677,7 @@ function keyPressed() {
     predictionView = false;
     ballhit = false;
     predictShot();
-    updateCalculations();
+
     }
   } else if (keyCode === 69) { // E
     directionView = !directionView;

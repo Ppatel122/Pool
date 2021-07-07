@@ -49,19 +49,20 @@ window.onload = () => {
       predictionView = false;
       ballhit = false;
       predictShot();
-      updateCalculations();
       }
   }
   }
 
   function updateCalculations() {
-    let white, other;
+    console.log(circles[0].xVel,circles[0].yVel);
+    let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
+    let vfy = Number.parseFloat(circles[0].yVel).toFixed(2);
+    let vf = Number.parseFloat(Math.sqrt(vfx*vfx + vfy*vfy)).toFixed(2);
+    let thetaf = Number.parseFloat(circles[0].findAngle(vfx,-vfy)*(180/PI)).toFixed(2);
+    let white;
     let whiteBallEquation = document.getElementById("white-ball-calculation");
-    // let otherBallEquation = document.getElementById("other-ball-calculation");
-    white = `White Ball: \n \\[ v_f = \\sqrt{} = \\mathrm{\\;}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
-    other = `Other Ball: \n \\[ v_f = \\sqrt{} = \\mathrm{\\;}\\  \\qquad  \\theta_f = \\sqrt{} = {\\;^\\circ}\\]`;
+    white =  `White Ball: \n \\[ v_{fx} = \\sqrt{}  \\qquad v_{fy} = \\sqrt{}  \\qquad v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf} \\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}}) = ${thetaf}^{\\circ}\\]`;
     whiteBallEquation.innerHTML = white;
-    // otherBallEquation.innerHTML = other;
     MathJax.typeset();
   }
 
