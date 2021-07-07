@@ -19,6 +19,7 @@ let wallR = poolTableX - poolTableBorder - bumperLength; // position of the righ
 let wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
 let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
 let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
+let projectionMode = 3;
 
 let predictionView = false;
 let directionView = true;
@@ -76,10 +77,17 @@ function draw() {
   if (predictionView) {
     for (let i=0; i < circles.length; i++) {
       if(!circles[i].potted){
-        for (let j=1; j < circles[i].xCollisions.length; j++) {
-          strokeWeight(1);
-          stroke(circles[i].color);
-          line(circles[i].xCollisions[j-1], circles[i].yCollisions[j-1], circles[i].xCollisions[j], circles[i].yCollisions[j]);
+        switch(projectionMode){
+          case 1:
+            if(i === 0){
+              drawProjections(i);
+            }
+            break;
+          case 2:
+
+          case 3:
+            drawProjections(i);
+            break;
         }
       }
     }
@@ -101,6 +109,14 @@ function draw() {
   }
   if(!motion && ballHit){
     ballHit = false;
+  }
+}
+
+function drawProjections(i){
+  for (let j=1; j < circles[i].xCollisions.length; j++) {
+    strokeWeight(1);
+    stroke(circles[i].color);
+    line(circles[i].xCollisions[j-1], circles[i].yCollisions[j-1], circles[i].xCollisions[j], circles[i].yCollisions[j]);
   }
 }
 
@@ -187,6 +203,7 @@ function checkForMotion(){
 // predicts a shot and draws lines
 // press Q to run the prediction
 function predictShot() {
+  console.log(circles[0].xVelShot,circles[0].yVelShot);
   predictionView = true;
 
   // store initial circle positions
@@ -203,7 +220,8 @@ function predictShot() {
     circles[i].xCollisions.push(circles[i].x);
     circles[i].yCollisions.push(circles[i].y);
   }
-  for (let i=0; i<10000; i++) {
+
+  for (let k=0; k<10000; k++) {
     for (let i=0; i < circles.length; i++) {
       
       for(let j = 0; j < bumpers.length;j++){
@@ -213,7 +231,9 @@ function predictShot() {
       for(let j = 0; j < holes.length;j++){
         circles[i].holeCollision(holes[j]);
       }
-  
+      
+
+
       for (let j=i+1; j < circles.length; j++) {
           if (circles[i].circleCollisionCheck(circles[j])) {
               circles[i].circleCollisionCalc(circles[j], circleCoefRest);
@@ -221,14 +241,18 @@ function predictShot() {
 
           }
       }
-  
+
       circles[i].accelerate(circleAcceleration);
+
+
     }
   
     for (let i=0; i < circles.length; i++) {
+
       circles[i].move();
     }
   }
+
   for (let i=0; i < circles.length; i++) {
     circles[i].xCollisions.push(circles[i].x);
     circles[i].yCollisions.push(circles[i].y);
@@ -259,11 +283,11 @@ class Cue{
     this.y2 = ball.y
     this.on = true
   }
-  update(ball){
+  update(ball,x = mouseX, y = mouseY){
     this.x1 = ball.x;
-    this.x2 = mouseX;
+    this.x2 = x;
     this.y1 = ball.y;
-    this.y2 = mouseY;
+    this.y2 = y;
   }
 
   reset(ball){
@@ -329,8 +353,10 @@ class Circle {
       circles[i].xCollisions = [];
       circles[i].yCollisions = [];
     }
-    this.xVel = this.xVelShot;
+    console.log(this.xVelShot,this.yVelShot);
+    this.xVel = +this.xVelShot;
     this.yVel = -this.yVelShot;
+
   }
 
   resetWhite(hole){
@@ -494,7 +520,6 @@ class Circle {
       otherball.id = otherCircle.number;
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
       otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
-      console.log(this.xVel,this.yVel);
       updateCalculations();
     }
     
@@ -607,6 +632,10 @@ class Bumper {
   }
 }
 
+function updateSliders(){
+
+}
+
 function mousePressed() {
 
   if(circles[0].clicked){
@@ -621,6 +650,10 @@ function mouseDragged() {
   if(circles[0].locked){
     circles[0].xVelShot = (mouseX - circles[0].x) * -0.1;
     circles[0].yVelShot = (mouseY - circles[0].y) * 0.1;
+    elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+    elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+    el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+    el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
     cue.update(circles[0]);
 
   }
@@ -662,16 +695,13 @@ function keyPressed() {
   } else if (keyCode === ENTER){
     predictionView = false;
     ballhit = false;
-
     cue.on = false;
     cue.reset(circles[0]);
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
-  } else if (keyCode === 82) { // R
-    predictionView = false;
-    ballhit = false;
-    resetGame();
+  } else if (keyCode === 82) { 
+    
   } else if (keyCode === 81) { // Q
     if(!motion){
     predictionView = false;

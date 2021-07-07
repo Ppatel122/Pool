@@ -1,8 +1,8 @@
 let sim = function(p) {
     p.setup = function() {
         p.createCanvas(200, 200);
-        whiteball = new Ball(p,100,100,50,0,0,0,0,color(255),0,true);
-        otherball = new Ball(p,100,100,50,0,0,0,0,color(255,255,0),0,false);
+        reset(p);
+
     };
   
     p.draw = function() {
@@ -56,3 +56,7 @@ Ball.prototype.updateVectors = function(xVel1,yVel1,xVel2,yVel2){
     this.yVelF = yVel2;
 }
 
+reset = function(p){
+    whiteball = new Ball(p,100,100,50,0,0,0,0,color(255),0,true);
+    otherball = new Ball(p,100,100,50,0,0,0,0,color(255,255,0),0,false);
+}
