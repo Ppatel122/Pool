@@ -20,7 +20,6 @@ window.onload = () => {
   resetbutton = document.querySelector("#resetbutton");
   calculatebutton = document.querySelector("#calculatebutton");
 
-
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));
     circles[0].xVelShot = parseFloat(elXVel.value).toFixed(3).replace('-0', '0');
@@ -29,7 +28,9 @@ window.onload = () => {
 
   elYVel.onchange = () => {
     console.log("Y Velocity: " + validateInput(elYVel));
+
     circles[0].yVelShot = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
+
     el2.innerHTML = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
   };
 
@@ -49,6 +50,7 @@ window.onload = () => {
   };
 
   shootbutton.onclick = () => {
+
     predictionView = false;
     ballhit = false;
     cue.on = false;
@@ -56,9 +58,11 @@ window.onload = () => {
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
+
   }
 
   resetbutton.onclick = () => {
+    ballHit = 0;
     console.log("Reseting!");
     resetGame();
     reset();
@@ -70,6 +74,7 @@ window.onload = () => {
     el5.innerHTML = -0.01;
     elXVel.value = 0;
     elYVel.value = 0;
+
     elCoeffBumper = 0.5;
     elCoeffBalls = 0.9;
     elDecel = -0.01;
@@ -95,6 +100,7 @@ window.onload = () => {
     white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf} \\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
     whiteBallEquation.innerHTML = white;
     MathJax.typeset();
+
   }
 
 function validateInput(input) {
