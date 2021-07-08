@@ -48,13 +48,18 @@
   
   #input {
     padding: 20px;
+
   }
   
   #output {
     padding: 10px;
     text-align: center;
   }
-  
+  .buttons {
+    display: flex;
+    vertical-align: middle;
+  }
+
   #tasks {
     padding: 10px;
     user-select: text;
@@ -78,7 +83,12 @@
     flex-wrap: wrap;
   }
   
-  .speed-toggle-container {
+  .button-container {
+    display:flex;
+    justify-content: center;
+  }
+
+  .projection-mode-container {
     display: flex;
   }
   
@@ -111,7 +121,7 @@
   }
   
   /* --TOGGLE BUTTONS-- */
-  .speed-toggle {
+  .projection-mode-toggle {
     display: inline-block;
     margin: auto;
     background-color: var(--black);
@@ -123,11 +133,11 @@
     transition: color .5s
   }
   
-  .speed-toggle:hover {
+  .projection-mode-toggle:hover {
     background-color: var(--grey);
   }
   
-  .speed-toggle-active {
+  .projection-mode-toggle-active {
     background-color: var(--grey);
     color: var(--black);
     transition: color .5s
@@ -187,6 +197,10 @@
     margin: 5px;
   }
   
+  .buttons {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
   .checkbox {
     opacity: 0;
     width: 0;

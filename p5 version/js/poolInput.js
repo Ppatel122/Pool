@@ -44,8 +44,8 @@ window.onload = () => {
   };
 
   elDecel.onchange = () => {
-    circleAcceleration = -parseFloat(elDecel.value).toFixed(2).replace('-0', '0');
-    el5.innerHTML = -parseFloat(elDecel.value).toFixed(2).replace('-0', '0');
+    circleAcceleration = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
+    el5.innerHTML = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
   };
 
   shootbutton.onclick = () => {
