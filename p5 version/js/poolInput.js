@@ -110,7 +110,7 @@ function updateCalculations() {
 
   let white;
   let whiteBallEquation = document.getElementById("white-ball-calculation");
-  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf} \\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
+  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf}\\] \n \\[\\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
   whiteBallEquation.innerHTML = white;
   MathJax.typeset();
 }

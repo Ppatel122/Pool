@@ -514,8 +514,10 @@ class Circle {
     if(predictionView && this.number === 0 && !ballHit){
       ballHit = true;
       otherball.on = true;
-      otherball.x = (otherCircle.x - this.x)*2 + whiteball.x
-      otherball.y = (otherCircle.y - this.y)*2 + whiteball.y
+      otherball.x = (otherCircle.x - this.x)*3 + whiteball.x
+      otherball.y = (otherCircle.y - this.y)*3 + whiteball.y
+      otherball.v0.x = (otherCircle.x - this.x)*3 + whiteball.x
+      otherball.v0.y = (otherCircle.y - this.y)*3 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);

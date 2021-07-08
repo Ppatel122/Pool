@@ -35,7 +35,7 @@
   
   /* --CONTAINERS-- */
   #simulation {
-    align-items: center;
+    align-items: left;
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -54,6 +54,7 @@
   #output {
     padding: 10px;
     text-align: center;
+    width: 350px;
   }
   .buttons {
     display: flex;
@@ -68,14 +69,15 @@
   .input-container {
     margin: auto;
     padding: 10px;
-    width: 500px;
     font-size: 10pt;
+    width:500px;
     user-select: none;
   }
   
   .output-container {
     align-items: left;
     margin: 5px 0;
+    width:auto;
   }
   
   .question-container {
@@ -96,29 +98,6 @@
     width: 95%;
   }
   
-  /* --MULTIPLE CHOICE-- */
-  .question {
-    padding: 5px;
-    border-radius: 5px;
-    border: 3px solid grey;
-    background:grey;
-    display: block;
-    width: 100%;
-  }
-  
-  .mc-option {
-    margin: 5px;
-    padding: 2px;
-    border-radius: 5px;
-    border: 3px solid grey;
-    width: 100%;
-    display:block;
-    user-select: none;
-  }
-  
-  .mc-option:hover {
-    background-color: var(--grey);
-  }
   
   /* --TOGGLE BUTTONS-- */
   .projection-mode-toggle {
@@ -201,6 +180,7 @@
     padding-left: 10px;
     padding-right: 10px;
   }
+
   .checkbox {
     opacity: 0;
     width: 0;
