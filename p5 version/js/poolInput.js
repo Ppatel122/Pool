@@ -1,4 +1,4 @@
-var elXVel,elYVel,elCoeffBumper,elCoeffBalls,elDecel,shootbutton,resetbutton,el1,el2,el3,el4,el5;
+var elXVel,elYVel,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5;
 
 window.onload = () => {
   //Prevent right-click on simulation from bringing up the context menu
@@ -11,6 +11,7 @@ window.onload = () => {
   elCoeffBumper = document.querySelector("#coeffBumper");
   elCoeffBalls = document.querySelector("#coeffBalls");
   elDecel = document.querySelector("#Decel");
+  elProjectionMode = document.querySelectorAll(".projection-mode-toggle");
   el1 = document.querySelector("#e1");
   el2 = document.querySelector("#e2");
   el3 = document.querySelector("#e3");
@@ -88,18 +89,31 @@ window.onload = () => {
   }
   }
 
-  function updateCalculations() {
-    let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
-    let vfy = Number.parseFloat(circles[0].yVel).toFixed(2);
-    let vf = Number.parseFloat(Math.sqrt(vfx*vfx + vfy*vfy)).toFixed(2);
-    let thetaf = Number.parseFloat(circles[0].findAngle(vfx,-vfy)*(180/PI)).toFixed(2);
-
-    let white;
-    let whiteBallEquation = document.getElementById("white-ball-calculation");
-    white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf} \\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
-    whiteBallEquation.innerHTML = white;
-    MathJax.typeset();
+  for (const elProjectionModeBtn of elProjectionMode) {
+    elProjectionModeBtn.onclick = function() {
+      projectionMode = parseFloat(elProjectionModeBtn.firstElementChild.value);
+      for (let elProjectionModeBtn2 of document.querySelectorAll(".projection-mode-toggle")) {
+        if (this === elProjectionModeBtn2) {
+          elProjectionModeBtn2.classList.add("projection-mode-toggle-active");
+        } else {
+          elProjectionModeBtn2.classList.remove("projection-mode-toggle-active");
+        }
+      }
+    }
   }
+
+function updateCalculations() {
+  let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
+  let vfy = Number.parseFloat(circles[0].yVel).toFixed(2);
+  let vf = Number.parseFloat(Math.sqrt(vfx*vfx + vfy*vfy)).toFixed(2);
+  let thetaf = Number.parseFloat(circles[0].findAngle(vfx,-vfy)*(180/PI)).toFixed(2);
+
+  let white;
+  let whiteBallEquation = document.getElementById("white-ball-calculation");
+  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf} \\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
+  whiteBallEquation.innerHTML = white;
+  MathJax.typeset();
+}
 
 function validateInput(input) {
   if (parseFloat(input.value) > parseFloat(input.max) ) {
