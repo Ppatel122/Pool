@@ -74,9 +74,9 @@ window.onload = () => {
     el5.innerHTML = -0.01;
     elXVel.value = 0;
     elYVel.value = 0;
-    elCoeffBumper = 0.5;
-    elCoeffBalls = 0.9;
-    elDecel = -0.01;
+    elCoeffBumper.value = 0.5;
+    elCoeffBalls.value = 0.9;
+    elDecel.value = -0.01;
   }
   
   calculatebutton.onclick = () => {
