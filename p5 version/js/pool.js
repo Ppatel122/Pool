@@ -25,6 +25,7 @@ let predictionView = false;
 let directionView = true;
 let motion  = false;
 let ballHit = false;
+let calc = false;
 
 function setup() {
   frameRate(144);
@@ -514,15 +515,17 @@ class Circle {
     if(predictionView && this.number === 0 && !ballHit){
       ballHit = true;
       otherball.on = true;
+      calc = true;
       otherball.x = (otherCircle.x - this.x)*3 + whiteball.x
       otherball.y = (otherCircle.y - this.y)*3 + whiteball.y
       otherball.v0.x = (otherCircle.x - this.x)*3 + whiteball.x
       otherball.v0.y = (otherCircle.y - this.y)*3 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
+      updateCalculations();
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
       otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
-      updateCalculations();
+ 
     }
     
   }

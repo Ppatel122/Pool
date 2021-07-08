@@ -50,7 +50,13 @@
     padding: 20px;
 
   }
-  
+
+  #extra-calc {
+    padding:20px;
+
+
+  }
+
   #output {
     padding: 10px;
     text-align: center;
@@ -76,10 +82,19 @@
   
   .output-container {
     align-items: left;
+    font-size:10pt;
     margin: 5px 0;
     width:auto;
   }
-  
+  .extra-calc-container {
+    font-size:10pt;
+  }
+
+  .extra-calc-child {
+    width: 50%;
+    float: left;
+  }
+
   .question-container {
     display: flex;
     flex-wrap: wrap;
@@ -250,3 +265,6 @@
     display: block;
   }
   
+  .hide {
+    display:none;
+  }

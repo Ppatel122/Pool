@@ -1,4 +1,5 @@
-var elXVel,elYVel,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5;
+var elXVel,elYVel,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5;
+let thetaf;
 
 window.onload = () => {
   //Prevent right-click on simulation from bringing up the context menu
@@ -12,6 +13,7 @@ window.onload = () => {
   elCoeffBalls = document.querySelector("#coeffBalls");
   elDecel = document.querySelector("#Decel");
   elProjectionMode = document.querySelectorAll(".projection-mode-toggle");
+  elOtherCalc = document.getElementsByClassName(".checkbox");
   el1 = document.querySelector("#e1");
   el2 = document.querySelector("#e2");
   el3 = document.querySelector("#e3");
@@ -48,6 +50,10 @@ window.onload = () => {
     circleAcceleration = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
     el5.innerHTML = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
   };
+
+  elOtherCalc.onclick = function(){
+
+  }
 
   shootbutton.onclick = () => {
     predictionView = false;
@@ -106,11 +112,11 @@ function updateCalculations() {
   let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
   let vfy = Number.parseFloat(circles[0].yVel).toFixed(2);
   let vf = Number.parseFloat(Math.sqrt(vfx*vfx + vfy*vfy)).toFixed(2);
-  let thetaf = Number.parseFloat(circles[0].findAngle(vfx,-vfy)*(180/PI)).toFixed(2);
+  thetaf = Number.parseFloat(circles[0].findAngle(vfx,-vfy)*(180/PI)).toFixed(2);
 
   let white;
   let whiteBallEquation = document.getElementById("white-ball-calculation");
-  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${vfy})^2} = ${vf}\\] \n \\[\\qquad \\theta_f = \\arctan(\\frac{${vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
+  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${-vfy})^2} = ${vf}\\] \n \\[\\qquad \\theta_f = \\arctan(\\frac{${-vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
   whiteBallEquation.innerHTML = white;
   MathJax.typeset();
 }

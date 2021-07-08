@@ -108,7 +108,7 @@
               <input class="slider" type="range" min="-0.100" max="0" value="-0.010" step="0.001" id="Decel"><br/>
               <br>
               
-              <label></label>
+              <label>Actions: </label>
               <div class = "button-container">
                 <div class = "buttons">
                   <button id="calculatebutton">Project</button>
@@ -138,10 +138,32 @@
                 <input type="radio" name="projectionMode" value="3" checked> All
               </label>
             </div>
+            <br>
+            <label>
+              Other Calculations: <br>
+              <label class="switch">
+                <input id = "other-calc" class="checkbox" type="checkbox" checked>
+                <span class="checkbox-slider"></span>
+              </label>
+            </label>
             </div>
 
           </div>
-
+          <div class = "extra-calc-container">
+            <b>OTHER CALCULATIONS</b>
+            <div class="box-border" id="extra-calc">
+              <div class="extra-calc-child">
+                <div id="white-extra-calc">
+                  White Ball:
+                </div>
+              </div>
+              <div class = "extra-calc-child">
+                <div id = "other-extra-calc">
+                  OtherBall:
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div id="footer">
