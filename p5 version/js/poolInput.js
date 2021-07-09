@@ -116,8 +116,30 @@ function updateCalculations() {
 
   let white;
   let whiteBallEquation = document.getElementById("white-ball-calculation");
-  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${-vfy})^2} = ${vf}\\] \n \\[\\qquad \\theta_f = \\arctan(\\frac{${-vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
+  white =  `White Ball: \n \\[v_{f} = \\sqrt{(${vfx})^2 + (${-vfy})^2}\\;\\mathrm{m/s} = ${vf}\\;\\mathrm{m/s}\\] \n \\[\\qquad \\theta_f = \\arctan(\\frac{${-vfy}}{${vfx}})^{\\circ} = ${thetaf}^{\\circ}\\]`;
   whiteBallEquation.innerHTML = white;
+  MathJax.typeset();
+}
+
+function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi,vtx,vty,vox,voy,vtfx,vtfy,vofx,vofy,xVel,yVel) {
+  if(voxi === 0 && voyi === 0){
+    ao === 0;
+  } else {
+    ao = TWO_PI - ao;
+  }
+  let white;
+  let whiteBallEquation = document.getElementById("white-extra-calc");
+  white =  `White Ball: \n \\[m_{w} = 1 \\;\\mathrm{kg} \\qquad v_{ix} = ${vtxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${-vtyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
+            \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${-vtyi.toFixed(2)}}{${vtxi.toFixed(2)}})^{\\circ} = ${(360-((at*180)/PI)).toFixed(2)}^{\\circ}\\] \n
+            \\[ v_{i} = \\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;\\mathrm{m/s}=\\sqrt{{(${vtxi.toFixed(2)})}^2 + {(${-vtyi.toFixed(2)})}^2} \\;\\mathrm{m/s} = ${vt.toFixed(2)} \\;\\mathrm{m/s} \\]`;
+  whiteBallEquation.innerHTML = white;
+
+  let other;
+  let otherBallEquation = document.getElementById("other-extra-calc");
+  other =  `Other Ball: \n \\[m_{w} = 1 \\;\\mathrm{kg} \\qquad v_{ix} = ${voxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${voyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
+            \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${voyi.toFixed(2)}}{${voxi.toFixed(2)}})^{\\circ} = ${((ao*180)/PI).toFixed(2)}^{\\circ}\\] \n
+            \\[ v_{i} = \\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;\\mathrm{m/s}=\\sqrt{{${voxi.toFixed(2)}}^2 + {${voyi.toFixed(2)}}^2} \\;\\mathrm{m/s}  \\]`;
+  otherBallEquation.innerHTML = other;
   MathJax.typeset();
 }
 

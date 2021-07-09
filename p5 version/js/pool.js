@@ -124,6 +124,17 @@ function drawProjections(i){
 // creates objects on table
 // press "R" to reset the table to this position
 function resetGame(){
+  wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
+  circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
+  circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
+  projectionMode = 3;
+
+  predictionView = false;
+  directionView = true;
+  motion  = false;
+  ballHit = false;
+  calc = false;
+
   circles = [];
   holes = [];
   bumpers = [];
@@ -522,6 +533,7 @@ class Circle {
       otherball.v0.y = (otherCircle.y - this.y)*3 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
+      updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi,vtx,vty,vox,voy,vtfx,vtfy,vofx,vofy,this.xVel,this.yVel);
       updateCalculations();
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
       otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
