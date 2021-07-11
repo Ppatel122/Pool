@@ -69,23 +69,31 @@ Ball.prototype.show = function(p) {
         p.fill(0);
         if(calc){
         if(this.v0 != this.v1 && this.id === 0){
-            // p.line(this.x,this.y,this.v1.x,this.v1.y);
+            this.scaleArrows(p,1,this);
             drawArrow(p,this.v1,this.v3,color(0),this.id);
         }
         if(this.v0 != this.v2){
-            // p.line(this.x,this.y,this.v2.x,this.v2.y);
+            this.scaleArrows(p,2,this);
             drawArrow(p,this.v0,this.v2,color(0),this.id);
         }
         if(this.id === 0){
             angle = circles[0].findAngle(this.v2.x,-this.v2.y);
             p.fill(255,0,0)
-            p.text('θ = ' + thetaf ,length/2 + 20,width/2);
+            p.text('θ = ' + thetaf + "°",length/2 + 20,width/2);
             p.noFill();
             p.stroke(255,0,0);
             p.arc(width/2,length/2,30,30,TWO_PI - angle,TWO_PI);
         }
         }
     }
+}
+
+Ball.prototype.scaleArrows = function(p,mode,ball){
+    // if(mode === 1){
+    //     if()
+    // } else if(mode === 2){
+
+    // }
 }
 
 Ball.prototype.updateVectors = function(xVel1,yVel1,xVel2,yVel2){

@@ -533,7 +533,7 @@ class Circle {
       otherball.v0.y = (otherCircle.y - this.y)*3 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
-      updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi,vtx,vty,vox,voy,vtfx,vtfy,vofx,vofy,this.xVel,this.yVel);
+      updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi,vtx,vty,vox,voy,vtfx,vtfy,vofx,vofy,this.xVel,this.yVel,otherCircle.xVel,otherCircle.yVel);
       updateCalculations();
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
       otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
@@ -667,6 +667,12 @@ function mouseDragged() {
   if(circles[0].locked){
     circles[0].xVelShot = (mouseX - circles[0].x) * -0.1;
     circles[0].yVelShot = (mouseY - circles[0].y) * 0.1;
+    if(circles[0].xVelShot > 30){
+      circles[0].xVelShot = 30;
+    }
+    if(circles[0].yVelShot > 30){
+      circles[0].yVelShot = 30;
+    }
     elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
     elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
     el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
@@ -677,6 +683,11 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
+  if(circles[0].locked){
+  predictionView = false;
+  ballhit = false;
+  predictShot();
+  }
   circles[0].locked = false;
 }
 
@@ -686,28 +697,16 @@ function keyReleased() {
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    circles[0].xVelShot += 1;
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === LEFT_ARROW) {
-    circles[0].xVelShot -= 1; 
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === UP_ARROW) {
-    circles[0].yVelShot += 1;
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === DOWN_ARROW) {
-    circles[0].yVelShot -= 1;
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === ENTER){
     predictionView = false;
@@ -722,15 +721,7 @@ function keyPressed() {
     el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
     el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
   } else if (keyCode === 82) { 
-    
   } else if (keyCode === 81) { // Q
-    if(!motion){
-    predictionView = false;
-    ballhit = false;
-    predictShot();
-
-    }
   } else if (keyCode === 69) { // E
-    directionView = !directionView;
   }
 }
