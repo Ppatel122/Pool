@@ -23,7 +23,7 @@
   }
 
   #content_inner {
-    
+    width: 1300px;
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -82,6 +82,7 @@
   #output {
     padding: 10px;
     height: 415px;
+    font-size: 9.5pt;
     text-align: center;
     
   }

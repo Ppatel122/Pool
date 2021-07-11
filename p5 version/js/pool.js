@@ -25,6 +25,7 @@ let predictionView = false;
 let directionView = true;
 let motion  = false;
 let ballHit = false;
+let ballNum = 0;
 let calc = false;
 
 function setup() {
@@ -85,7 +86,10 @@ function draw() {
             }
             break;
           case 2:
-
+            if(i === 0 || i === ballNum){
+              drawProjections(i);
+            }
+            break;
           case 3:
             drawProjections(i);
             break;
@@ -109,6 +113,7 @@ function draw() {
     cue.on = true;
   }
   if(!motion && ballHit){
+
     ballHit = false;
   }
 }
@@ -523,8 +528,10 @@ class Circle {
     otherCircle.x += halfOverlap * Math.cos(phi);
     otherCircle.y += halfOverlap * Math.sin(phi);
 
-    if(predictionView && this.number === 0 && !ballHit){
+    if(predictionView && this.number === 0 && !ballHit && ballNum === 0){
       ballHit = true;
+      ballNum = otherCircle.number;
+      console.log(ballNum);
       otherball.on = true;
       calc = true;
       otherball.x = (otherCircle.x - this.x)*3 + whiteball.x
@@ -686,6 +693,7 @@ function mouseReleased() {
   if(circles[0].locked){
   predictionView = false;
   ballhit = false;
+  ballNum = 0;
   predictShot();
   }
   circles[0].locked = false;
@@ -711,6 +719,7 @@ function keyPressed() {
   } else if (keyCode === ENTER){
     predictionView = false;
     ballhit = false;
+    ballNum = 0;
     cue.on = false;
     cue.reset(circles[0]);
     circles[0].shoot();

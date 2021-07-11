@@ -70,6 +70,8 @@ Ball.prototype.show = function(p) {
         if(calc){
         if(this.v0 != this.v1 && this.id === 0){
             this.scaleArrows(p,1,this);
+            p.fill(255,0,0);
+            drawText()
             drawArrow(p,this.v1,this.v3,color(0),this.id);
         }
         if(this.v0 != this.v2){
@@ -89,11 +91,23 @@ Ball.prototype.show = function(p) {
 }
 
 Ball.prototype.scaleArrows = function(p,mode,ball){
-    // if(mode === 1){
-    //     if()
-    // } else if(mode === 2){
-
-    // }
+    if(ball.id === 0){
+        arrowLength = 80;
+    } else {
+        arrowLength = 50;
+    }
+    if(mode === 1){
+        let ang = circles[0].findAngle(ball.v3.x,ball.v3.y);
+        ball.v3.x = arrowLength*Math.cos(ang);
+        ball.v3.y = arrowLength*Math.sin(ang);
+        ball.v1.x = width/2 - ball.v3.x;
+        ball.v1.y = length/2 - ball.v3.y;
+        
+    } else if(mode === 2){
+        let ang = circles[0].findAngle(ball.v2.x,ball.v2.y);
+        ball.v2.x = arrowLength*Math.cos(ang);
+        ball.v2.y = arrowLength*Math.sin(ang);
+    }
 }
 
 Ball.prototype.updateVectors = function(xVel1,yVel1,xVel2,yVel2){

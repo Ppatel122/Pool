@@ -65,6 +65,7 @@ window.onload = () => {
   shootbutton.onclick = () => {
     predictionView = false;
     ballhit = false;
+    ballNum = 0;
     cue.on = false;
     cue.reset(circles[0]);
     circles[0].shoot();
@@ -100,7 +101,7 @@ window.onload = () => {
       predictShot();
     }
   }
-  }
+  
 
   for (const elProjectionModeBtn of elProjectionMode) {
     elProjectionModeBtn.onclick = function() {
@@ -114,6 +115,7 @@ window.onload = () => {
       }
     }
   }
+}
 
 function updateCalculations() {
   let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
