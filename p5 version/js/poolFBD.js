@@ -50,12 +50,14 @@ let Ball =  function(p,x,y,r,xVel1,yVel1,xVel2,yVel2,color,id,show){
     this.v2 = createVector( + xVel2*10, + yVel2*10);
     this.v3 = createVector(xVel1*10,yVel1*10);
     this.color = color;
+    this.textcolor = 'red';
     this.id = id;
     this.on = show;
 }
 
 Ball.prototype.show = function(p) {
     if(this.on){
+
         p.fill(this.color);
         p.noStroke();
         p.ellipse(this.x,this.y,this.rad);
@@ -70,20 +72,26 @@ Ball.prototype.show = function(p) {
         if(calc){
         if(this.v0 != this.v1 && this.id === 0){
             this.scaleArrows(p,1,this);
-            p.fill(255,0,0);
-            drawText()
             drawArrow(p,this.v1,this.v3,color(0),this.id);
+            let ang1 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.fill(this.textcolor);
+            p.text("Vin", this.v1.x-5*Math.cos(ang1),this.v1.y-5*Math.sin(ang1));
+
         }
         if(this.v0 != this.v2){
             this.scaleArrows(p,2,this);
             drawArrow(p,this.v0,this.v2,color(0),this.id);
+            let ang2 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.fill(this.textcolor);
+            p.text("Vout", this.v0.x + this.v2.x + 5*Math.cos(ang2),this.v0.y + this.v2.y +5*Math.sin(ang2));
+
         }
         if(this.id === 0){
             angle = circles[0].findAngle(this.v2.x,-this.v2.y);
-            p.fill(255,0,0)
+            p.fill(this.textcolor);
             p.text('θ = ' + thetaf + "°",length/2 + 20,width/2);
             p.noFill();
-            p.stroke(255,0,0);
+            p.stroke(0);
             p.arc(width/2,length/2,30,30,TWO_PI - angle,TWO_PI);
         }
         }
@@ -94,7 +102,7 @@ Ball.prototype.scaleArrows = function(p,mode,ball){
     if(ball.id === 0){
         arrowLength = 80;
     } else {
-        arrowLength = 50;
+        arrowLength = 40;
     }
     if(mode === 1){
         let ang = circles[0].findAngle(ball.v3.x,ball.v3.y);
