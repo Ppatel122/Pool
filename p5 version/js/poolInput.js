@@ -16,7 +16,7 @@ window.onload = () => {
   elDecel = document.querySelector("#Decel");
   elProjectionMode = document.querySelectorAll(".projection-mode-toggle");
   elCoordinateSystem = document.querySelectorAll(".coordinate-system-toggle");
-  elOtherCalc = document.querySelector("#calc-toggle");
+  elOtherCalc = document.querySelector("#calculation-toggle");
   el1 = document.querySelector("#e1");
   el2 = document.querySelector("#e2");
   el3 = document.querySelector("#e3");
@@ -27,14 +27,10 @@ window.onload = () => {
   shootbutton = document.querySelector("#shootbutton");
   resetbutton = document.querySelector("#resetbutton");
 
-
-
   elXVel[0].onchange = () => {
-
     circles[0].xVelShot = parseFloat(elXVel[0].value).toFixed(3).replace('-0', '0');
     el1.innerHTML = parseFloat(elXVel[0].value).toFixed(3).replace('-0', '0');
     elXVel[1].value = elXVel[0].value;
-
     circles[0].vel = circles[0].findVelocity();
     circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
     updateControls();
@@ -45,7 +41,6 @@ window.onload = () => {
   };
 
   elXVel[1].onchange = () => {
-
     circles[0].xVelShot = parseFloat(elXVel[1].value).toFixed(3).replace('-0', '0');
     el1.innerHTML = parseFloat(elXVel[1].value).toFixed(3).replace('-0', '0');
     elXVel[0].value = elXVel[1].value;
@@ -59,7 +54,6 @@ window.onload = () => {
   };
 
   elYVel[0].onchange = () => {
-
     circles[0].yVelShot = parseFloat(elYVel[0].value).toFixed(3).replace('-0', '0');
     el2.innerHTML = parseFloat(elYVel[0].value).toFixed(3).replace('-0', '0');
     elYVel[1].value = elYVel[0].value;
@@ -73,7 +67,6 @@ window.onload = () => {
   };
 
   elYVel[1].onchange = () => {
-
     circles[0].yVelShot = parseFloat(elYVel[1].value).toFixed(3).replace('-0', '0');
     el2.innerHTML = parseFloat(elYVel[1].value).toFixed(3).replace('-0', '0');
     elYVel[0].value = elYVel[1].value;
@@ -87,7 +80,6 @@ window.onload = () => {
   };
 
   elVel[0].onchange = () => {
-
     circles[0].vel = parseFloat(elVel[0].value).toFixed(3).replace('-0', '0');
     el6.innerHTML = parseFloat(elVel[0].value).toFixed(3).replace('-0', '0');
     elVel[1].value = elVel[0].value;
@@ -101,7 +93,6 @@ window.onload = () => {
   };
 
   elVel[1].onchange = () => {
-
     circles[0].vel = parseFloat(elVel[1].value).toFixed(3).replace('-0', '0');
     el6.innerHTML = parseFloat(eVel[1].value).toFixed(3).replace('-0', '0');
     elVel[0].value = elVel[1].value;
@@ -240,7 +231,7 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
     ao = TWO_PI - ao;
   }
   let white;
-  let whiteBallEquation = document.getElementById("white-extra-calc");
+  let whiteBallEquation = document.getElementById("white-extra-calculation");
   white =  `<u><b>White Ball:</b></u> <br>
             <b>Initial Values:</b> \n\\[m_{w} = ${mt.toFixed(2)} \\;\\mathrm{kg} \\qquad v_{ix} = ${vtxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${-vtyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
             \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${-vtyi.toFixed(2)}}{${vtxi.toFixed(2)}})^{\\circ} = ${(360-((at*180)/PI)).toFixed(2)}^{\\circ}\\] \n
@@ -257,7 +248,7 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
   whiteBallEquation.innerHTML = white;
 
   let other;
-  let otherBallEquation = document.getElementById("other-extra-calc");
+  let otherBallEquation = document.getElementById("other-extra-calculation");
   other =  `<b><u>Other Ball:</u></b> <br> 
             <b>Initial Values:</b> \n \\[m_{w} = ${mo.toFixed(2)}\\;\\mathrm{kg} \\qquad v_{ix} = ${voxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${voyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
             \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${voyi.toFixed(2)}}{${voxi.toFixed(2)}})^{\\circ} = ${((ao*180)/PI).toFixed(2)}^{\\circ}\\] \n
@@ -292,12 +283,12 @@ function resetEquations(){
   white = ``;
   whiteBallEquation.innerHTML = white;
 
-  whiteBallEquation = document.getElementById("white-extra-calc");
+  whiteBallEquation = document.getElementById("white-extra-calculation");
   white = `Hit a colored ball to see impact calculations.`;
   whiteBallEquation.innerHTML = white;
 
   let other;
-  let otherBallEquation = document.getElementById("other-extra-calc");
+  let otherBallEquation = document.getElementById("other-extra-calculation");
   other = `Hit a colored ball to see impact calculations.`;
   otherBallEquation.innerHTML = other;
 }
@@ -318,8 +309,26 @@ function toggleCoordinates(coordinateSystem){
 
 }
 
+/**
+ * Update the values in the input box
+*/ 
+function updateControls(){
+  elXVel[0].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+  elXVel[1].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+  el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+  elYVel[0].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+  elYVel[1].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+  el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+  elVel[0].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
+  elVel[1].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
+  el6.innerHTML = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
+  elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+  elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+  el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+}
+
 function toggleExtraCalc() {
-  var x = document.getElementById("impact-calc");
+  var x = document.getElementById("impact-calculation");
   if (x.style.display === "none") {
     x.style.display = "block";
   } else {

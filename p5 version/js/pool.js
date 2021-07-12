@@ -1,7 +1,19 @@
+/**
+ * Main script file for the pool simulation
+ * Script contains the following Classes:
+ *  CUE
+ *  CIRCLE
+ *  HOLE
+ *  BUMPER
+ *
+ * @author Pranj Patel, Logan Vaughan
+ *
+ */
+
+// Global Variables
 let circles = []; // array to hold all Circle objects
 let holes = []; // array to hold all Hole objects
 let bumpers = []; // array to hold all Bumper objects
-
 let poolTableX = 1000; // width of the pool table (also the canvas width)
 let poolTableY = 500; // height of the pool table (also the canvas height)
 let poolTableBorder = 30; // width of the border around the pool table
@@ -10,25 +22,25 @@ let bumperIndent = 2; // length of the corner cut-outs on the bumpers
 let cornerHoleShift = 5; // the distance that the corner holes are shifted away from the border
 let middleHoleShift = 5; // the distance that the middle holes are shifted away from the border
 let holeRadius = 20; // radius of the holes
-
 let wallT = poolTableBorder + bumperLength; // position of the top wall (used for collision)
 let wallB = poolTableY - poolTableBorder - bumperLength; // position of the bottom wall (used for collision)
 let wallL = poolTableBorder + bumperLength; // position of the left wall (used for collision)
 let wallR = poolTableX - poolTableBorder - bumperLength; // position of the right wall (used for collision)
-
 let wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
 let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
 let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
-let projectionMode = 3;
-let coordinateSystem = 1;
-
-let predictionView = false;
-let directionView = true;
-let motion  = false;
-let ballHit = false;
-let ballNum = 0;
+let projectionMode = 3; // chosen projection mode
+let coordinateSystem = 1; // chosen coordinate system
+let predictionView = false; // whether or not projections are being shown
+let directionView = true; // whether or not direction is being shown
+let motion  = false; // whether or not any balls are moving
+let ballHit = false; // whether or not a ball has been hit
+let ballNum = 0; // the number of the first ball hit
 let calc = false;
 
+/**
+ * Creates the canvas and sets up the pool table
+ */
 function setup() {
   frameRate(144);
   var canvas = createCanvas(poolTableX, poolTableY);
@@ -36,47 +48,37 @@ function setup() {
   resetGame();
 };
 
+/**
+ * Runs and updates the game 
+ */
 function draw() {
   background(10, 108, 3);
   drawBorder();
-
   for (let i = 0; i < bumpers.length;i++){
     bumpers[i].show();
   }
-
   for (let i=0; i < holes.length; i++) {
     holes[i].show();
   }
-
   for (let i=0; i < circles.length; i++) {
     circles[i].click();
-
     for(let j = 0; j < bumpers.length;j++){
       circles[i].bumperCollision(bumpers[j],wallCoefRest);
     }
-
     for(let j = 0; j < holes.length;j++){
       circles[i].holeCollision(holes[j]);
     }
-
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
         }
     }
-
     circles[i].accelerate(circleAcceleration);
   }
-
   for (let i=0; i < circles.length; i++) {
     circles[i].move();
     circles[i].show();
   }
-
-  // text(circles[0].xVelShot, 100, 20);
-  // text(circles[0].yVelShot, 120, 20);
-  // text(frameRate(), 140, 20);
-
   if (predictionView) {
     for (let i=0; i < circles.length; i++) {
       if(!circles[i].potted){
@@ -98,7 +100,6 @@ function draw() {
       }
     }
   }
-
   if (directionView && !motion) {
     if (circles[0].xVelShot != 0 || circles[0].yVelShot != 0) {
       strokeWeight(3);
@@ -107,18 +108,20 @@ function draw() {
     }
   }
   cue.show();
-
   checkForMotion();
   if(!motion && !cue.on && circles[0].locked){
     cue.update(circles[0]);
     cue.on = true;
   }
   if(!motion && ballHit){
-
     ballHit = false;
   }
 }
 
+/**
+ * Draws the projection lines for a ball
+ * @param {int} i The id of the ball
+ */
 function drawProjections(i){
   for (let j=1; j < circles[i].xCollisions.length; j++) {
     strokeWeight(1);
@@ -127,20 +130,21 @@ function drawProjections(i){
   }
 }
 
-// creates objects on table
-// press "R" to reset the table to this position
+/**
+ * Resets the game back to its initial position
+ */
 function resetGame(){
-  wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
-  circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
-  circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
+  wallCoefRest = 0.5; 
+  circleCoefRest = 0.9; 
+  circleAcceleration = -0.01; 
   projectionMode = 3;
-
+  coordinateSystem = 1;
   predictionView = false;
   directionView = true;
   motion  = false;
   ballHit = false;
   calc = false;
-
+  ballNum = 0;
   circles = [];
   holes = [];
   bumpers = [];
@@ -210,6 +214,10 @@ function resetGame(){
 
   cue = new Cue(circles[0]);
 }
+
+/**
+ * Checks if any balls are moving
+ */
 function checkForMotion(){
   motion = false;
   for(let i = 0; i < circles.length;i++){
@@ -218,11 +226,12 @@ function checkForMotion(){
     }
   }
 }
-// predicts a shot and draws lines
-// press Q to run the prediction
+
+/**
+ * Predicts the path of all the balls after a shot
+ */
 function predictShot() {
   predictionView = true;
-
   // store initial circle positions
   xInitial = [];
   yInitial = [];
@@ -230,58 +239,44 @@ function predictShot() {
     xInitial[i] = circles[i].x;
     yInitial[i] = circles[i].y;
   }
-
   // calculate the entire shot
   circles[0].shoot();
   for (let i=0; i < circles.length; i++) {
     circles[i].xCollisions.push(circles[i].x);
     circles[i].yCollisions.push(circles[i].y);
   }
-
   for (let k=0; k<10000; k++) {
-    for (let i=0; i < circles.length; i++) {
-      
+    for (let i=0; i < circles.length; i++) {      
       for(let j = 0; j < bumpers.length;j++){
         circles[i].bumperCollision(bumpers[j],wallCoefRest);
       }
-
       for(let j = 0; j < holes.length;j++){
         circles[i].holeCollision(holes[j]);
       }
-      
-
-
       for (let j=i+1; j < circles.length; j++) {
           if (circles[i].circleCollisionCheck(circles[j])) {
               circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-
           }
       }
-
       circles[i].accelerate(circleAcceleration);
-
-
-    }
-  
+    }  
     for (let i=0; i < circles.length; i++) {
-
       circles[i].move();
     }
   }
-
   for (let i=0; i < circles.length; i++) {
     circles[i].xCollisions.push(circles[i].x);
     circles[i].yCollisions.push(circles[i].y);
   }
-
-  // restore initial circle positions
   for (let i=0; i < circles.length; i++) {
     circles[i].x = xInitial[i];
     circles[i].y = yInitial[i];
   }
 }
 
-// draws border around the outside of the table
+/**
+ * Draws border around the outside of the table 
+*/ 
 function drawBorder() {
   stroke(170,114,67);
   strokeWeight(2*poolTableBorder);
@@ -291,34 +286,64 @@ function drawBorder() {
   line(0,0,0,poolTableY);
 }
 
-class Cue{
-  constructor(ball){
-    this.x1 = ball.x
-    this.y1 = ball.y
-    this.x2 = ball.x
-    this.y2 = ball.y
-    this.on = true
-  }
-  update(ball,x = mouseX, y = mouseY){
-    this.x1 = ball.x;
-    this.x2 = x;
-    this.y1 = ball.y;
-    this.y2 = y;
-  }
-
-  reset(ball){
-    this.x2 = ball.x;
-    this.y2 = ball.y;
-  }
-
-  show(){
-    if(this.on){
+/**
+ * Deals with mouse click input
+*/ 
+function mousePressed() {
+  if(mouseButton === LEFT){
+    if(circles[0].clicked){
+      circles[0].locked = true;
       stroke(0);
-      strokeWeight(5);
-      line(this.x1,this.y1,this.x2,this.y2)
+    } else{
+      circles[0].locked = false;
     }
+  } else if(mouseButton === RIGHT){
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    cue.on = false;
+    cue.reset(circles[0]);
+    circles[0].shoot();
+    circles[0].xVelShot = 0;
+    circles[0].yVelShot = 0;
+    updateControls();
   }
 }
+
+/**
+ * Deals with mouse drag input
+*/ 
+function mouseDragged() {
+  if(circles[0].locked){
+    circles[0].xVelShot = (mouseX - circles[0].x) * -0.1;
+    circles[0].yVelShot = (mouseY - circles[0].y) * 0.1;
+    circles[0].vel = circles[0].findVelocity();
+    circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
+    if(circles[0].xVelShot > 30){
+      circles[0].xVelShot = 30;
+    }
+    if(circles[0].yVelShot > 30){
+      circles[0].yVelShot = 30;
+    }
+    updateControls();
+    cue.update(circles[0]);
+  }
+}
+
+/**
+ * Deals with mouse release input
+*/ 
+function mouseReleased() {
+  if(circles[0].locked){
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  }
+  circles[0].locked = false;
+}
+
+//CLASSES
 
 class Circle {
   constructor(x, y, xVel, yVel, radius = 10, mass = 1, color = color(255), number = 0) {
@@ -391,9 +416,7 @@ class Circle {
   }
 
   bumperCollision(bumper,coefRest){
-
     switch(bumper.id) {
-
       case 1: // Top Bumpers
         if(this.y < bumper.y3 + this.radius &&  bumper.x3 >= this.x  && this.x >= bumper.x4){
           this.y = bumper.y3 + this.radius;
@@ -401,7 +424,6 @@ class Circle {
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
         }
-
         break;
       case 2: // Left Bumper
         if(this.x < bumper.x3 + this.radius &&  bumper.y3 >= this.y && this.y >= bumper.y2){
@@ -410,7 +432,6 @@ class Circle {
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
         }
-
         break;
       case 3: // Right Bumper
         if(this.x > bumper.x1 - this.radius &&  bumper.y4 >= this.y  && this.y >= bumper.y1){
@@ -419,7 +440,6 @@ class Circle {
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
         }
-
         break;
       case 4: // Bottom Bumpers
         if(this.y > bumper.y1 - this.radius &&  bumper.x2 >= this.x && this.x >= bumper.x1){
@@ -428,7 +448,6 @@ class Circle {
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
         }
-
         break;
     }
   }
@@ -611,9 +630,6 @@ class Circle {
     }
   }
 
-  
-  
-
   click() {
     if (dist(mouseX, mouseY, this.x, this.y) < this.radius && this.clickable) {
       this.clicked = true;
@@ -623,7 +639,63 @@ class Circle {
   }
 }
 
+/**
+ * Creates a Cue object
+ */
+class Cue{
+  /**
+   * @constructor
+   * @param {Circle} ball The ball which the cue is for
+   */
+  constructor(ball){
+    this.x1 = ball.x
+    this.y1 = ball.y
+    this.x2 = ball.x
+    this.y2 = ball.y
+    this.on = true
+  }
+
+  /**
+   * Updates the cue
+   */
+  update(ball,x = mouseX, y = mouseY){
+    this.x1 = ball.x;
+    this.x2 = x;
+    this.y1 = ball.y;
+    this.y2 = y;
+  }
+
+  /**
+   * Resets the cue
+   */
+  reset(ball){
+    this.x2 = ball.x;
+    this.y2 = ball.y;
+  }
+
+  /**
+   * Shows the cue
+   */
+  show(){
+    if(this.on){
+      stroke(0);
+      strokeWeight(5);
+      line(this.x1,this.y1,this.x2,this.y2)
+    }
+  }
+}
+
+
+/**
+ * Creates a Hole object
+ */
 class Hole {
+  /**
+   * @constructor
+   * @param {float} x      X position of the hole
+   * @param {float} y      Y position of the hole
+   * @param {float} radius Radius of the hole
+   */
   constructor(x, y, radius = 15) {
     this.x = x;
     this.y = y;
@@ -631,6 +703,9 @@ class Hole {
     this.diameter = radius*2;
   }
 
+  /**
+   * Shows the hole
+   */
   show() {
     fill(0);
     noStroke();
@@ -638,7 +713,22 @@ class Hole {
   }
 }
 
+/**
+ * Creates a bumper object
+ */
 class Bumper {
+  /**
+   * @constructor
+   * @param {float} x1 X value of top left corner
+   * @param {float} y1 Y value of top left corner
+   * @param {float} x2 X value of top right corner
+   * @param {float} y2 Y value of top right corner
+   * @param {float} x3 X value of bottom right corner
+   * @param {float} y3 Y value of bottom right corner
+   * @param {float} x4 X value of bottom left corner
+   * @param {float} y4 Y value of bottom left corner
+   * @param {int} id ID of the bumper
+  */
   constructor(x1, y1, x2, y2, x3, y3, x4, y4, id) {
     this.x1 = x1;
     this.y1 = y1;
@@ -651,6 +741,9 @@ class Bumper {
     this.id = id;
   }
 
+  /**
+   * Shows the bumper
+   */
   show(){
     noStroke();
     fill(11, 130, 90);
@@ -658,88 +751,3 @@ class Bumper {
   }
 }
 
-function updateControls(){
-  elXVel[0].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-  elXVel[1].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-  elYVel[0].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-  elYVel[1].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-  elVel[0].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
-  elVel[1].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
-  elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
-  elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
-  el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-  el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-  el6.innerHTML = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
-  el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
-}
-
-function mousePressed() {
-  if(mouseButton === LEFT){
-    if(circles[0].clicked){
-      circles[0].locked = true;
-      stroke(0);
-    } else{
-      circles[0].locked = false;
-    }
-  } else if(mouseButton === RIGHT){
-    predictionView = false;
-    ballhit = false;
-    ballNum = 0;
-    cue.on = false;
-    cue.reset(circles[0]);
-    circles[0].shoot();
-    circles[0].xVelShot = 0;
-    circles[0].yVelShot = 0;
-    updateControls();
-  }
-}
-
-function mouseDragged() {
-  if(circles[0].locked){
-    circles[0].xVelShot = (mouseX - circles[0].x) * -0.1;
-    circles[0].yVelShot = (mouseY - circles[0].y) * 0.1;
-    if(circles[0].xVelShot > 30){
-      circles[0].xVelShot = 30;
-    }
-    if(circles[0].yVelShot > 30){
-      circles[0].yVelShot = 30;
-    }
-    updateControls();
-    cue.update(circles[0]);
-
-  }
-}
-
-function mouseReleased() {
-  if(circles[0].locked){
-    predictionView = false;
-    ballhit = false;
-    ballNum = 0;
-    predictShot();
-  }
-  circles[0].locked = false;
-}
-
-function keyReleased() {
-
-}
-
-function keyPressed() {
-  if (keyCode === RIGHT_ARROW) {
-
-
-  } else if (keyCode === LEFT_ARROW) {
-
-
-  } else if (keyCode === UP_ARROW) {
-
-
-  } else if (keyCode === DOWN_ARROW) {
-
-
-  } else if (keyCode === ENTER){
-  } else if (keyCode === 82) { 
-  } else if (keyCode === 81) { // Q
-  } else if (keyCode === 69) { // E
-  }
-}
