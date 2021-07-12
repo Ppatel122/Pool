@@ -189,7 +189,6 @@ function resetGame(){
   holes.push(new Hole(poolTableX - poolTableBorder - cornerHoleShift, poolTableY - poolTableBorder - cornerHoleShift, holeRadius));
 
   circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
-  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
   // SOLIDS
   circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 1)); // Yellow
   circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
@@ -198,6 +197,7 @@ function resetGame(){
   circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
   circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
   circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(128, 0, 0),     7)); // Maroon
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
   // STRIPES
   circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   9)); // Yellow
   circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255),   10)); // Blue
@@ -220,7 +220,6 @@ function checkForMotion(){
 // predicts a shot and draws lines
 // press Q to run the prediction
 function predictShot() {
-  console.log(circles[0].xVelShot,circles[0].yVelShot);
   predictionView = true;
 
   // store initial circle positions
@@ -254,7 +253,6 @@ function predictShot() {
       for (let j=i+1; j < circles.length; j++) {
           if (circles[i].circleCollisionCheck(circles[j])) {
               circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-
 
           }
       }
@@ -370,7 +368,6 @@ class Circle {
       circles[i].xCollisions = [];
       circles[i].yCollisions = [];
     }
-    console.log(this.xVelShot,this.yVelShot);
     this.xVel = +this.xVelShot;
     this.yVel = -this.yVelShot;
 
@@ -531,7 +528,6 @@ class Circle {
     if(predictionView && this.number === 0 && !ballHit && ballNum === 0){
       ballHit = true;
       ballNum = otherCircle.number;
-      console.log(ballNum);
       otherball.on = true;
       calc = true;
       otherball.x = (otherCircle.x - this.x)*3 + whiteball.x
@@ -691,10 +687,10 @@ function mouseDragged() {
 
 function mouseReleased() {
   if(circles[0].locked){
-  predictionView = false;
-  ballhit = false;
-  ballNum = 0;
-  predictShot();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
   }
   circles[0].locked = false;
 }

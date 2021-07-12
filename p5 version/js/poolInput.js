@@ -58,7 +58,6 @@ window.onload = () => {
   };
 
   elOtherCalc.onclick = function(){
-    console.log(true);
     toggleExtraCalc();
   }
 
@@ -78,7 +77,6 @@ window.onload = () => {
   }
 
   resetbutton.onclick = () => {
-    console.log("Reseting!");
     resetGame();
     reset();
     resetEquations();
@@ -190,12 +188,12 @@ function resetEquations(){
   whiteBallEquation.innerHTML = white;
 
   whiteBallEquation = document.getElementById("white-extra-calc");
-  white = ``;
+  white = `Hit a colored ball to see impact calculations.`;
   whiteBallEquation.innerHTML = white;
 
   let other;
   let otherBallEquation = document.getElementById("other-extra-calc");
-  other = ``;
+  other = `Hit a colored ball to see impact calculations.`;
   otherBallEquation.innerHTML = other;
 }
 
