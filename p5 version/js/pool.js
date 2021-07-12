@@ -1,6 +1,10 @@
+// The code is really messy at the moment (Many lines are hard coded, will fix at the end)
+
 let circles = []; // array to hold all Circle objects
 let holes = []; // array to hold all Hole objects
 let bumpers = []; // array to hold all Bumper objects
+let projectionLines = []; // array to hold all Projection lines
+
 
 let poolTableX = 1000; // width of the pool table (also the canvas width)
 let poolTableY = 500; // height of the pool table (also the canvas height)
@@ -21,12 +25,14 @@ let circleCoefRest = 0.9; // coefficient of restitution for collisions between m
 let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
 let projectionMode = 3;
 
+
 let predictionView = false;
 let directionView = true;
 let motion  = false;
 let ballHit = false;
 let ballNum = 0;
 let calc = false;
+
 
 function setup() {
   frameRate(144);
@@ -35,7 +41,7 @@ function setup() {
   resetGame();
 };
 
-function draw() {
+function drawTable(){
   background(10, 108, 3);
   drawBorder();
 
@@ -46,9 +52,27 @@ function draw() {
   for (let i=0; i < holes.length; i++) {
     holes[i].show();
   }
-
+}
+function draw() {
+  console.log(backgroundShot);
+  if(!backgroundShot){
+    drawTable();
+  } else {
+    for(let i = 0; i < projectionLines.length; i++){
+      projectionLines[i].show();
+      
+    }
+  }
   for (let i=0; i < circles.length; i++) {
+
+    
+
+    if(!backgroundShot){
+      circles[i].show();
+    }
+
     circles[i].click();
+    
 
     for(let j = 0; j < bumpers.length;j++){
       circles[i].bumperCollision(bumpers[j],wallCoefRest);
@@ -61,6 +85,7 @@ function draw() {
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+
         }
     }
 
@@ -124,6 +149,7 @@ function drawProjections(i){
     stroke(circles[i].color);
     line(circles[i].xCollisions[j-1], circles[i].yCollisions[j-1], circles[i].xCollisions[j], circles[i].yCollisions[j]);
   }
+
 }
 
 // creates objects on table
@@ -143,7 +169,8 @@ function resetGame(){
   circles = [];
   holes = [];
   bumpers = [];
-  
+  projectionLines = [];
+
   // TOP LEFT bumper
   bumpers.push(new Bumper(poolTableBorder+holeRadius, poolTableBorder, // top left corner
                           poolTableX/2-holeRadius, poolTableBorder, // top right corner
@@ -290,6 +317,22 @@ function drawBorder() {
   line(0,0,0,poolTableY);
 }
 
+class Line{
+  constructor(x1,y1,x2,y2,color){
+    this.x1 = x1
+    this.y1 = y1
+    this.x2 = x2
+    this.y2 = y2
+    this.color = color
+  }
+
+  show(){
+    stroke(this.color);
+    strokeWeight(1);
+    line(this.x1,this.y1,this.x2,this.y2);
+  }
+}
+
 class Cue{
   constructor(ball){
     this.x1 = ball.x
@@ -319,10 +362,15 @@ class Cue{
   }
 }
 
+
 class Circle {
   constructor(x, y, xVel, yVel, radius = 10, mass = 1, color = color(255), number = 0) {
     this.x = x;
     this.y = y;
+    this.xInit = x;
+    this.yInit = y;
+    this.xPrev = x;
+    this.yPrev = y;
     this.xVel = xVel;
     this.yVel = yVel;
     this.radius = radius;
@@ -339,11 +387,13 @@ class Circle {
     this.clickable = true;
     this.clicked = false;
     this.locked = false;
+
   }
 
   move() {
     this.x += this.xVel;
     this.y += this.yVel;
+
   }
 
   show() {
@@ -353,6 +403,7 @@ class Circle {
         stroke(0);
         strokeWeight(4);
       }
+
       fill(this.color);
       circle(this.x, this.y, this.diameter);
       if (this.number >= 9 && this.number <= 15) {
@@ -367,11 +418,13 @@ class Circle {
     for (let i=0; i < circles.length; i++) {
       circles[i].xCollisions = [];
       circles[i].yCollisions = [];
+
     }
     this.xVel = +this.xVelShot;
     this.yVel = -this.yVelShot;
 
   }
+
 
   resetWhite(hole){
     if(predictionView){
@@ -385,6 +438,7 @@ class Circle {
       this.xVel = 0;
       this.yVel = 0;
     }
+
   }
 
   bumperCollision(bumper,coefRest){
@@ -395,8 +449,10 @@ class Circle {
         if(this.y < bumper.y3 + this.radius &&  bumper.x3 >= this.x  && this.x >= bumper.x4){
           this.y = bumper.y3 + this.radius;
           this.yVel = abs(this.yVel)*coefRest;
+
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
+
         }
 
         break;
@@ -404,8 +460,10 @@ class Circle {
         if(this.x < bumper.x3 + this.radius &&  bumper.y3 >= this.y && this.y >= bumper.y2){
           this.x = bumper.x3 + this.radius;
           this.xVel = abs(this.xVel)*coefRest;
+
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
+
         }
 
         break;
@@ -413,8 +471,10 @@ class Circle {
         if(this.x > bumper.x1 - this.radius &&  bumper.y4 >= this.y  && this.y >= bumper.y1){
           this.x = bumper.x1 - this.radius;
           this.xVel = -abs(this.xVel)*coefRest;
+
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
+
         }
 
         break;
@@ -422,13 +482,16 @@ class Circle {
         if(this.y > bumper.y1 - this.radius &&  bumper.x2 >= this.x && this.x >= bumper.x1){
           this.y = bumper.y1 - this.radius;
           this.yVel = -abs(this.yVel)*coefRest;
+
           this.xCollisions.push(this.x);
           this.yCollisions.push(this.y);
+
         }
 
         break;
     }
   }
+
 
   holeCollision(hole){
     if(dist(this.x,this.y,hole.x,hole.y) < hole.radius){
@@ -442,6 +505,7 @@ class Circle {
       if(this.number === 0){
         this.resetWhite(hole);
         return;
+
       }
         this.potted = true;
       }
@@ -469,8 +533,10 @@ class Circle {
     } else if (this.y < yMin + this.radius) {
       this.y = yMin + this.radius;
       this.yVel = abs(this.yVel)*coefRest;
+
       this.xCollisions.push(this.x);
       this.yCollisions.push(this.y);
+
     }
   }
 
@@ -652,6 +718,7 @@ class Bumper {
   }
 }
 
+
 function updateSliders(){
 
 }
@@ -663,7 +730,19 @@ function mousePressed() {
     stroke(0);
   } else{
     circles[0].locked = false;
+
   }
+}
+
+function mousePressed() {
+  // if(circles[0].clicked){
+  //   circles[0].locked = true;
+  //   cue.on = true;
+  //   projection.on = true;
+
+  // } else{
+  //   circles[0].locked = false;
+  // }
 }
 
 function mouseDragged() {

@@ -23,7 +23,6 @@ window.onload = () => {
   resetbutton = document.querySelector("#resetbutton");
   calculatebutton = document.querySelector("#calculatebutton");
 
-
   elXVel.onchange = () => {
     console.log("X Velocity: " + validateInput(elXVel));
     circles[0].xVelShot = parseFloat(elXVel.value).toFixed(3).replace('-0', '0');
@@ -35,7 +34,9 @@ window.onload = () => {
 
   elYVel.onchange = () => {
     console.log("Y Velocity: " + validateInput(elYVel));
+
     circles[0].yVelShot = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
+
     el2.innerHTML = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
     predictionView = false;
     ballhit = false;
@@ -62,6 +63,7 @@ window.onload = () => {
   }
 
   shootbutton.onclick = () => {
+
     predictionView = false;
     ballhit = false;
     ballNum = 0;
@@ -70,6 +72,7 @@ window.onload = () => {
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
+
     elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
     elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
     el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
@@ -87,9 +90,11 @@ window.onload = () => {
     el5.innerHTML = -0.010.toFixed(3);
     elXVel.value = 0;
     elYVel.value = 0;
+
     elCoeffBumper.value = 0.5;
     elCoeffBalls.value = 0.9;
     elDecel.value = -0.01;
+
   }
   
   calculatebutton.onclick = () => {
@@ -115,6 +120,7 @@ window.onload = () => {
   }
 }
 
+
 function updateCalculations() {
   let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
   let vfy = Number.parseFloat(circles[0].yVel).toFixed(2);
@@ -133,6 +139,7 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
     ao === 0;
   } else {
     ao = TWO_PI - ao;
+
   }
   let white;
   let whiteBallEquation = document.getElementById("white-extra-calc");
