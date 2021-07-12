@@ -1,4 +1,4 @@
-var elXVel,elYVel,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5;
+var elXVel,elYVel,elVel,elAng,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,elCoordinateSystem,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5,el6,el7;
 let thetaf;
 
 window.onload = () => {
@@ -7,38 +7,136 @@ window.onload = () => {
   if (mouseX > 0 && mouseY > 0 && mouseX < width && mouseY < height)
     return false;
   }
-  elXVel = document.querySelector("#xVel");
-  elYVel = document.querySelector("#yVel");
+  elXVel = document.querySelectorAll("#xVel");
+  elYVel = document.querySelectorAll("#yVel");
+  elVel = document.querySelectorAll("#Vel");
+  elAng = document.querySelectorAll("#Ang");
   elCoeffBumper = document.querySelector("#coeffBumper");
   elCoeffBalls = document.querySelector("#coeffBalls");
   elDecel = document.querySelector("#Decel");
   elProjectionMode = document.querySelectorAll(".projection-mode-toggle");
+  elCoordinateSystem = document.querySelectorAll(".coordinate-system-toggle");
   elOtherCalc = document.querySelector("#calc-toggle");
   el1 = document.querySelector("#e1");
   el2 = document.querySelector("#e2");
   el3 = document.querySelector("#e3");
   el4 = document.querySelector("#e4");
   el5 = document.querySelector("#e5");
+  el6 = document.querySelector("#e6");
+  el7 = document.querySelector("#e7");
   shootbutton = document.querySelector("#shootbutton");
   resetbutton = document.querySelector("#resetbutton");
-  calculatebutton = document.querySelector("#calculatebutton");
 
 
-  elXVel.onchange = () => {
-    console.log("X Velocity: " + validateInput(elXVel));
-    circles[0].xVelShot = parseFloat(elXVel.value).toFixed(3).replace('-0', '0');
-    el1.innerHTML = parseFloat(elXVel.value).toFixed(3).replace('-0', '0');
+
+  elXVel[0].onchange = () => {
+
+    circles[0].xVelShot = parseFloat(elXVel[0].value).toFixed(3).replace('-0', '0');
+    el1.innerHTML = parseFloat(elXVel[0].value).toFixed(3).replace('-0', '0');
+    elXVel[1].value = elXVel[0].value;
+
+    circles[0].vel = circles[0].findVelocity();
+    circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
+    updateControls();
     predictionView = false;
     ballhit = false;
+    ballNum = 0;
     predictShot();
   };
 
-  elYVel.onchange = () => {
-    console.log("Y Velocity: " + validateInput(elYVel));
-    circles[0].yVelShot = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
-    el2.innerHTML = parseFloat(elYVel.value).toFixed(3).replace('-0', '0');
+  elXVel[1].onchange = () => {
+
+    circles[0].xVelShot = parseFloat(elXVel[1].value).toFixed(3).replace('-0', '0');
+    el1.innerHTML = parseFloat(elXVel[1].value).toFixed(3).replace('-0', '0');
+    elXVel[0].value = elXVel[1].value;
+    circles[0].vel = circles[0].findVelocity();
+    circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
+    updateControls();
     predictionView = false;
     ballhit = false;
+    ballNum = 0;
+    predictShot();
+  };
+
+  elYVel[0].onchange = () => {
+
+    circles[0].yVelShot = parseFloat(elYVel[0].value).toFixed(3).replace('-0', '0');
+    el2.innerHTML = parseFloat(elYVel[0].value).toFixed(3).replace('-0', '0');
+    elYVel[1].value = elYVel[0].value;
+    circles[0].vel = circles[0].findVelocity();
+    circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
+    updateControls();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  };
+
+  elYVel[1].onchange = () => {
+
+    circles[0].yVelShot = parseFloat(elYVel[1].value).toFixed(3).replace('-0', '0');
+    el2.innerHTML = parseFloat(elYVel[1].value).toFixed(3).replace('-0', '0');
+    elYVel[0].value = elYVel[1].value;
+    circles[0].vel = circles[0].findVelocity();
+    circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
+    updateControls();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  };
+
+  elVel[0].onchange = () => {
+
+    circles[0].vel = parseFloat(elVel[0].value).toFixed(3).replace('-0', '0');
+    el6.innerHTML = parseFloat(elVel[0].value).toFixed(3).replace('-0', '0');
+    elVel[1].value = elVel[0].value;
+    circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
+    circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
+    updateControls();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  };
+
+  elVel[1].onchange = () => {
+
+    circles[0].vel = parseFloat(elVel[1].value).toFixed(3).replace('-0', '0');
+    el6.innerHTML = parseFloat(eVel[1].value).toFixed(3).replace('-0', '0');
+    elVel[0].value = elVel[1].value;
+    circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
+    circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
+    updateControls();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  };
+
+  elAng[0].onchange = () => {
+    circles[0].angle = ((parseFloat(elAng[0].value))*(PI/180));
+    el7.innerHTML = ((parseFloat(elAng[1].value))*(PI/180)).toFixed(2).replace('-0', '0');
+    elAng[1].value = elAng[0].value;
+    circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
+    circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
+    updateControls();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  };
+
+  elAng[1].onchange = () => {
+    circles[0].angle = ((parseFloat(elAng[1].value))*(PI/180));
+    el7.innerHTML = ((parseFloat(elAng[1].value))*(PI/180)).toFixed(2).replace('-0', '0');
+    elAng[0].value = elAng[1].value;
+    circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
+    circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
+    updateControls();
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
     predictShot();
   };
 
@@ -70,10 +168,7 @@ window.onload = () => {
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
-    elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-    elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-    el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-    el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+    updateControls();
   }
 
   resetbutton.onclick = () => {
@@ -85,20 +180,15 @@ window.onload = () => {
     el3.innerHTML = 0.5;
     el4.innerHTML = 0.9;
     el5.innerHTML = -0.010.toFixed(3);
-    elXVel.value = 0;
-    elYVel.value = 0;
+    elXVel[0].value = 0;
+    elYVel[1].value = 0;
+    elXVel[0].value = 0;
+    elYVel[1].value = 0;
     elCoeffBumper.value = 0.5;
     elCoeffBalls.value = 0.9;
     elDecel.value = -0.01;
   }
   
-  calculatebutton.onclick = () => {
-    if(!motion){
-      predictionView = false;
-      ballhit = false;
-      predictShot();
-    }
-  }
   
 
   for (const elProjectionModeBtn of elProjectionMode) {
@@ -113,7 +203,22 @@ window.onload = () => {
       }
     }
   }
+  for (const elCoordinateSystemBtn of elCoordinateSystem) {
+    elCoordinateSystemBtn.onclick = function() {
+      coordinateSystem = parseFloat(elCoordinateSystemBtn.firstElementChild.value);
+      toggleCoordinates(coordinateSystem);
+      for (let elCoordinateSystemBtn2 of document.querySelectorAll(".coordinate-system-toggle")) {
+        if (this === elCoordinateSystemBtn2) {
+          elCoordinateSystemBtn2.classList.add("coordinate-system-toggle-active");
+        } else {
+          elCoordinateSystemBtn2.classList.remove("coordinate-system-toggle-active");
+        }
+      }
+    }
+  }
 }
+
+
 
 function updateCalculations() {
   let vfx = Number.parseFloat(circles[0].xVel).toFixed(2);
@@ -195,6 +300,22 @@ function resetEquations(){
   let otherBallEquation = document.getElementById("other-extra-calc");
   other = `Hit a colored ball to see impact calculations.`;
   otherBallEquation.innerHTML = other;
+}
+
+function toggleCoordinates(coordinateSystem){
+  var x = document.getElementById("cartesian-controls");
+  var y = document.getElementById("polar-controls");
+  switch(coordinateSystem){
+    case 1:
+      x.style.display = "block";
+      y.style.display = "none";
+      break;
+    case 2:
+      x.style.display = "none";
+      y.style.display = "block";
+      break;
+  }
+
 }
 
 function toggleExtraCalc() {

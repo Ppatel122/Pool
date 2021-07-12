@@ -43,7 +43,7 @@
         </style>
         This page requires javascript to be enabled or a javascript able browser.
       </noscript>
-      <div id="content_inner">
+      <div id="content_inner" style = "width:1320px">
         <div id="sim-title">Pool Simulation</div>
         <div id="simulation">
           <div  id="container"></div>
@@ -67,6 +67,7 @@
                 </div>
                 <div id="white-ball-calculation"></div>
               </div>
+              <label>Diagram:</label><br><br>
               <div id = "container1"></div>
             </div>
         </div>
@@ -101,13 +102,39 @@
               </div>
             </span>
             <div class="box-border" id="input">
-              <label for="xVel">X Velocity (<span id="e1">0</span> m/s):</label><br>
-              <input class="slider" type="range" min="-30" max="30" value="0" step="0.001" id="xVel"><br>
+              <label>Coordinate System:</label><br>
+              <div class="coordinate-system-container">
+                <label class="coordinate-system-toggle coordinate-system-toggle-active">
+                  <input type="radio" name="coordinateSystem" value="1" checked> Cartesian
+                </label>
+                <label class="coordinate-system-toggle">
+                  <input type="radio" name="coordinateSystem" value="2"> Polar
+                </label>
+              </div> <br>
+
+              <div id = "cartesian-controls">
+                <label for="xVel">X Velocity (<span id="e1">0</span> m/s):</label><br>
+                <input class="slider" type="range" min="-30" max="30" value="0" step="0.001" id="xVel"><br>
+                <input type="number" min="-30" max="30" value="0" step="0.01" id="xVel"><br/>
+                <br>
+    
+                <label for="yVel">Y Velocity (<span id="e2">0</span> m/s):</label><br/>
+                <input class="slider" type="range" min="-30" max="30" value="0" step="0.001" id="yVel"><br/>
+                <input type="number" min="-30" max="30" value="0" step="0.01" id="yVel"><br/>
+                <br>
+              </div>
+
+              <div id = "polar-controls">
+                <label for="Vel">Velocity (<span id="e6">0</span> m/s):</label><br>
+                <input class="slider" type="range" min="0" max="45" value="0" step="0.001" id="Vel"><br>
+                <input type="number" min="0" max="45" value="0" step="0.01" id="Vel"><br/>
+                <br>
+    
+                <label for="Ang">Angle (<span id="e7">0</span>°):</label><br/>
+                <input class="slider" type="range" min="0" max="359.99" value="0" step="0.01" id="Ang"><br/>
+                <input type="number" min="0" max="359.99" value="0" step="0.01" id="Ang"><br/>
               <br>
-  
-              <label for="yVel">Y Velocity (<span id="e2">0</span> m/s):</label><br/>
-              <input class="slider" type="range" min="-30" max="30" value="0" step="0.001" id="yVel"><br/>
-              <br>
+              </div>
 
               <label for="coeffBumper ">Coefficient of Resitution between Bumper and Ball (<span id="e3">0.5</span>):</label><br/>
               <input class="slider" type="range" min="0.25" max="1" value="0.5" step="0.01" id="coeffBumper"><br/>
@@ -122,10 +149,7 @@
               <br>
               
               <label>Actions: </label>
-              <div class = "button-container">
-                <div class = "buttons">
-                  <button id="calculatebutton">Project</button>
-                </div>              
+              <div class = "button-container">           
                 
                 <div class = "buttons">
                   <button id="shootbutton">Shoot</button>

@@ -20,6 +20,7 @@ let wallCoefRest = 0.5; // coefficient of restitution for collisions between cir
 let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
 let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
 let projectionMode = 3;
+let coordinateSystem = 1;
 
 let predictionView = false;
 let directionView = true;
@@ -333,6 +334,8 @@ class Circle {
 
     this.xVelShot = 0;
     this.yVelShot = 0;
+    this.vel = 0;
+    this.angle = 0;
     this.xCollisions = [];
     this.yCollisions = [];
 
@@ -530,10 +533,10 @@ class Circle {
       ballNum = otherCircle.number;
       otherball.on = true;
       calc = true;
-      otherball.x = (otherCircle.x - this.x)*3 + whiteball.x
-      otherball.y = (otherCircle.y - this.y)*3 + whiteball.y
-      otherball.v0.x = (otherCircle.x - this.x)*3 + whiteball.x
-      otherball.v0.y = (otherCircle.y - this.y)*3 + whiteball.y
+      otherball.x = (otherCircle.x - this.x)*3.7 + whiteball.x
+      otherball.y = (otherCircle.y - this.y)*3.7 + whiteball.y
+      otherball.v0.x = (otherCircle.x - this.x)*3.7 + whiteball.x
+      otherball.v0.y = (otherCircle.y - this.y)*3.7 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
       updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi,vtx,vty,vox,voy,vtfx,vtfy,vofx,vofy,this.xVel,this.yVel,otherCircle.xVel,otherCircle.yVel);
@@ -545,6 +548,9 @@ class Circle {
     
   }
 
+  findVelocity(){
+    return(abs(Math.sqrt(this.xVelShot*this.xVelShot+this.yVelShot*this.yVelShot)));
+  }
   findAngle(x, y) {
     if (x==0) {
       if (y > 0) {
@@ -652,17 +658,39 @@ class Bumper {
   }
 }
 
-function updateSliders(){
-
+function updateControls(){
+  elXVel[0].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+  elXVel[1].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+  elYVel[0].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+  elYVel[1].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+  elVel[0].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
+  elVel[1].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
+  elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+  elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+  el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+  el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+  el6.innerHTML = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
+  el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
 }
 
 function mousePressed() {
-
-  if(circles[0].clicked){
-    circles[0].locked = true;
-    stroke(0);
-  } else{
-    circles[0].locked = false;
+  if(mouseButton === LEFT){
+    if(circles[0].clicked){
+      circles[0].locked = true;
+      stroke(0);
+    } else{
+      circles[0].locked = false;
+    }
+  } else if(mouseButton === RIGHT){
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    cue.on = false;
+    cue.reset(circles[0]);
+    circles[0].shoot();
+    circles[0].xVelShot = 0;
+    circles[0].yVelShot = 0;
+    updateControls();
   }
 }
 
@@ -676,10 +704,7 @@ function mouseDragged() {
     if(circles[0].yVelShot > 30){
       circles[0].yVelShot = 30;
     }
-    elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-    elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-    el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-    el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+    updateControls();
     cue.update(circles[0]);
 
   }
@@ -713,18 +738,6 @@ function keyPressed() {
 
 
   } else if (keyCode === ENTER){
-    predictionView = false;
-    ballhit = false;
-    ballNum = 0;
-    cue.on = false;
-    cue.reset(circles[0]);
-    circles[0].shoot();
-    circles[0].xVelShot = 0;
-    circles[0].yVelShot = 0;
-    elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-    elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-    el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-    el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
   } else if (keyCode === 82) { 
   } else if (keyCode === 81) { // Q
   } else if (keyCode === 69) { // E

@@ -1,4 +1,4 @@
-let width = 250, length = 250;
+let width = 310, length = 310;
 
 let sim = function(p) {
     p.setup = function() {
@@ -8,7 +8,7 @@ let sim = function(p) {
     };
   
     p.draw = function() {
-        p.background(10, 108, 3);
+        p.background(255);
 
 
         otherball.show(p);
@@ -50,16 +50,16 @@ let Ball =  function(p,x,y,r,xVel1,yVel1,xVel2,yVel2,color,id,show){
     this.v2 = createVector( + xVel2*10, + yVel2*10);
     this.v3 = createVector(xVel1*10,yVel1*10);
     this.color = color;
-    this.textcolor = 'red';
+    this.textcolor = 'black';
     this.id = id;
     this.on = show;
 }
 
 Ball.prototype.show = function(p) {
     if(this.on){
-
-        p.fill(this.color);
-        p.noStroke();
+        p.fill(255);
+        p.strokeWeight(3);
+        p.stroke(this.color);
         p.ellipse(this.x,this.y,this.rad);
         if(this.id > 8 && this.id < 16){
             p.fill(255);
@@ -74,6 +74,8 @@ Ball.prototype.show = function(p) {
             this.scaleArrows(p,1,this);
             drawArrow(p,this.v1,this.v3,color(0),this.id);
             let ang1 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.textSize(18);
+            p.noStroke();
             p.fill(this.textcolor);
             p.text("Vin", this.v1.x-5*Math.cos(ang1),this.v1.y-5*Math.sin(ang1));
 
@@ -82,12 +84,14 @@ Ball.prototype.show = function(p) {
             this.scaleArrows(p,2,this);
             drawArrow(p,this.v0,this.v2,color(0),this.id);
             let ang2 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.noStroke();
             p.fill(this.textcolor);
             p.text("Vout", this.v0.x + this.v2.x + 5*Math.cos(ang2),this.v0.y + this.v2.y +5*Math.sin(ang2));
 
         }
         if(this.id === 0){
             angle = circles[0].findAngle(this.v2.x,-this.v2.y);
+            p.noStroke();
             p.fill(this.textcolor);
             p.text('θ = ' + thetaf + "°",length/2 + 20,width/2);
             p.noFill();
@@ -130,16 +134,12 @@ Ball.prototype.updateVectors = function(xVel1,yVel1,xVel2,yVel2){
 
 reset = function(p){
     axes = new Axis(p,length,width);
-    whiteball = new Ball(p,length/2,width/2,75,0,0,0,0,color(255),0,true);
-    otherball = new Ball(p,length/2,width/2,75,0,0,0,0,color(255,255,0),0,false);
+    whiteball = new Ball(p,length/2,width/2,length*0.3,0,0,0,0,color(0),0,true);
+    otherball = new Ball(p,length/2,width/2,length*0.3,0,0,0,0,color(0),0,false);
 }
 
 drawArrow = function(p,base,vec,color,id){
-    if(id === 8){
-        color = 'white';
-    } else{
-        color = 'black';
-    }
+    color = 'black';
     p.push();
     p.stroke(color);
     p.strokeWeight(3);
