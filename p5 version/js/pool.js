@@ -30,6 +30,8 @@ let predictionView = false;
 let directionView = true;
 let motion  = false;
 let ballHit = false;
+let ballNum = 0;
+let calc = false;
 
 
 function setup() {
@@ -109,7 +111,10 @@ function draw() {
             }
             break;
           case 2:
-
+            if(i === 0 || i === ballNum){
+              drawProjections(i);
+            }
+            break;
           case 3:
             drawProjections(i);
             break;
@@ -133,6 +138,7 @@ function draw() {
     cue.on = true;
   }
   if(!motion && ballHit){
+
     ballHit = false;
   }
 }
@@ -149,6 +155,17 @@ function drawProjections(i){
 // creates objects on table
 // press "R" to reset the table to this position
 function resetGame(){
+  wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
+  circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
+  circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
+  projectionMode = 3;
+
+  predictionView = false;
+  directionView = true;
+  motion  = false;
+  ballHit = false;
+  calc = false;
+
   circles = [];
   holes = [];
   bumpers = [];
@@ -199,7 +216,6 @@ function resetGame(){
   holes.push(new Hole(poolTableX - poolTableBorder - cornerHoleShift, poolTableY - poolTableBorder - cornerHoleShift, holeRadius));
 
   circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
-  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
   // SOLIDS
   circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 1)); // Yellow
   circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue
@@ -208,6 +224,7 @@ function resetGame(){
   circles.push(new Circle(800, 300, 0, 0, 12.5, 10, color(255, 160, 0),   5)); // Orange
   circles.push(new Circle(775, 212.5, 0, 0, 12.5, 10, color(0, 255, 0),   6)); // Green
   circles.push(new Circle(800, 225, 0, 0, 12.5, 10, color(128, 0, 0),     7)); // Maroon
+  circles.push(new Circle(750, 250, 0, 0, 12.5, 10, color(0),             8)); // Black
   // STRIPES
   circles.push(new Circle(700, 250, 0, 0, 12.5, 10, color(255, 255, 0),   9)); // Yellow
   circles.push(new Circle(775, 287.5, 0, 0, 12.5, 10, color(0, 0, 255),   10)); // Blue
@@ -230,7 +247,6 @@ function checkForMotion(){
 // predicts a shot and draws lines
 // press Q to run the prediction
 function predictShot() {
-  console.log(circles[0].xVelShot,circles[0].yVelShot);
   predictionView = true;
 
   // store initial circle positions
@@ -264,7 +280,6 @@ function predictShot() {
       for (let j=i+1; j < circles.length; j++) {
           if (circles[i].circleCollisionCheck(circles[j])) {
               circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-
 
           }
       }
@@ -405,7 +420,6 @@ class Circle {
       circles[i].yCollisions = [];
 
     }
-    console.log(this.xVelShot,this.yVelShot);
     this.xVel = +this.xVelShot;
     this.yVel = -this.yVelShot;
 
@@ -577,16 +591,22 @@ class Circle {
     otherCircle.x += halfOverlap * Math.cos(phi);
     otherCircle.y += halfOverlap * Math.sin(phi);
 
-    if(predictionView && this.number === 0 && !ballHit){
+    if(predictionView && this.number === 0 && !ballHit && ballNum === 0){
       ballHit = true;
+      ballNum = otherCircle.number;
       otherball.on = true;
-      otherball.x = (otherCircle.x - this.x)*2 + whiteball.x
-      otherball.y = (otherCircle.y - this.y)*2 + whiteball.y
+      calc = true;
+      otherball.x = (otherCircle.x - this.x)*3 + whiteball.x
+      otherball.y = (otherCircle.y - this.y)*3 + whiteball.y
+      otherball.v0.x = (otherCircle.x - this.x)*3 + whiteball.x
+      otherball.v0.y = (otherCircle.y - this.y)*3 + whiteball.y
       otherball.color = otherCircle.color;
       otherball.id = otherCircle.number;
+      updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi,vtx,vty,vox,voy,vtfx,vtfy,vofx,vofy,this.xVel,this.yVel,otherCircle.xVel,otherCircle.yVel);
+      updateCalculations();
       whiteball.updateVectors(vtxi,vtyi,this.xVel,this.yVel);
       otherball.updateVectors(voxi,voyi,otherCircle.xVel,otherCircle.yVel);
-      updateCalculations();
+ 
     }
     
   }
@@ -729,6 +749,12 @@ function mouseDragged() {
   if(circles[0].locked){
     circles[0].xVelShot = (mouseX - circles[0].x) * -0.1;
     circles[0].yVelShot = (mouseY - circles[0].y) * 0.1;
+    if(circles[0].xVelShot > 30){
+      circles[0].xVelShot = 30;
+    }
+    if(circles[0].yVelShot > 30){
+      circles[0].yVelShot = 30;
+    }
     elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
     elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
     el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
@@ -739,6 +765,12 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
+  if(circles[0].locked){
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
+  }
   circles[0].locked = false;
 }
 
@@ -748,47 +780,32 @@ function keyReleased() {
 
 function keyPressed() {
   if (keyCode === RIGHT_ARROW) {
-    circles[0].xVelShot += 1;
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === LEFT_ARROW) {
-    circles[0].xVelShot -= 1; 
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === UP_ARROW) {
-    circles[0].yVelShot += 1;
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === DOWN_ARROW) {
-    circles[0].yVelShot -= 1;
-    predictionView = false;
-    ballhit = false;
-    predictShot();
+
 
   } else if (keyCode === ENTER){
     predictionView = false;
     ballhit = false;
+    ballNum = 0;
     cue.on = false;
     cue.reset(circles[0]);
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
+    elXVel.value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+    elYVel.value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
+    el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
+    el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
   } else if (keyCode === 82) { 
-    
   } else if (keyCode === 81) { // Q
-    if(!motion){
-    predictionView = false;
-    ballhit = false;
-    predictShot();
-
-    }
   } else if (keyCode === 69) { // E
-    directionView = !directionView;
   }
 }

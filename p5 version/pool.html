@@ -46,7 +46,31 @@
       <div id="content_inner">
         <div id="sim-title">Pool Simulation</div>
         <div id="simulation">
-          <div class="box-border" id="container"></div>
+          <div  id="container"></div>
+          <div class="output-container">
+            <b>OUTPUT</b> <span class="dropdown" onclick="showMenu('output-content')">
+              <svg xmlns="http://www.w3.org/2000/svg"  width="15" height="15" fill="currentColor" class="dropdown-btn bi bi-question-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+              </svg>
+              <div id="output-content" class="dropdown-content">
+                <b>Output</b><br>
+                This section shows the final velocity calculations for the white ball. It also shows a diagram of the initial and final velocity vectors of the balls. Note: the vectors are not drawn to scale.
+
+              </div>
+            </span>
+            <div class="box-border" id="output">
+              <div>
+                Equations:
+                <div id = "equations">
+                  \[v_{f} = \sqrt{{v_{fx}}^2 + {v_{fy}}^2} \; \mathrm{m/s} \qquad \theta_f = \arctan(\frac{v_{fy}}{v_{fx}})^{\circ}\]
+                </div>
+                <div id="white-ball-calculation"></div>
+              </div>
+              <div id = "container1"></div>
+            </div>
+        </div>
+
           <div class="input-container">
             <b>CONTROLS</b> <span class="dropdown" onclick="showMenu('control-content')">
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="dropdown-btn bi bi-question-circle" viewBox="0 0 16 16">
@@ -57,67 +81,106 @@
                 <b>CONTROLS</b>
                 <div>
                   <b>Circle:</b><br>
-                  The circle, in the simulation, is draggable.<br>
+                  The white ball, in the simulation, is clickable.<br>
                   <b>Sliders:</b><br>
                   Click on the orange box and drag it around to change the value.<br>
-                  <b>X Velocity</b> [min:-40 max:40 step:0.001]<br>
-                  <b>Y Velocity</b> [min:-40 max:40 step:0.001]<br>
+                  <b>X Velocity</b> [min:-30 max:30 step:0.001]<br>
+                  <b>Y Velocity</b> [min:-30 max:30 step:0.001]<br>
+                  <b>Coefficient of Resitution between Bumper and Ball</b> [min:0.25 max:1 step:0.01]<br>
+                  <b>Coefficient of Resitution between Balls</b> [min:0.25 max:1 step:0.01]<br>
+                  <b>Deceleration due to Friction</b> [min:-0.1 max:0 step:0.01]<br>
+                  <b>Actions:</b><br>
+                  Project: Project the path of the balls after the shot<br>
+                  Shoot: Apply the specified x and y velocities to the ball<br> 
+                  Reset: Reset the simulation<br>
+                  <b>Projection Mode:</b><br>
+                  Choose which balls paths will be displayed<br>
+                  <b>Show Impact Calculations:</b><br>
+                  Toggle impact calculations on and off
                 </div>
               </div>
             </span>
             <div class="box-border" id="input">
 
-              <label for="xVel">X Velocity (<span id="e1">0</span>):</label><br/>
-              <input class="slider" type="range" min="-20" max="20" value="0" step="0.001" id="xVel"><br/>
+              <label for="xVel">X Velocity (<span id="e1">0</span> m/s):</label><br>
+              <input class="slider" type="range" min="-30" max="30" value="0" step="0.001" id="xVel"><br>
+              <br>
 
   
-              <label for="yVel">Y Velocity (<span id="e2">0</span>):</label><br/>
-              <input class="slider" type="range" min="-20" max="20" value="0" step="0.001" id="yVel"><br/>
+              <label for="yVel">Y Velocity (<span id="e2">0</span> m/s):</label><br/>
+              <input class="slider" type="range" min="-30" max="30" value="0" step="0.001" id="yVel"><br/>
+              <br>
 
               <label for="coeffBumper ">Coefficient of Resitution between Bumper and Ball (<span id="e3">0.5</span>):</label><br/>
               <input class="slider" type="range" min="0.25" max="1" value="0.5" step="0.01" id="coeffBumper"><br/>
-
+              <br>
   
               <label for="coeffBalls">Coefficient of Restitution between Balls (<span id="e4">0.9</span>):</label><br/>
               <input class="slider" type="range" min="0.25" max="1" value="0.9" step="0.01" id="coeffBalls"><br/>
+              <br>
 
-              <label for="Decel">Deceleration due to Friction(<span id="e5">-0.01</span>):</label><br/>
-              <input class="slider" type="range" min="-0.1" max="0" value="-0.01" step="0.001" id="Decel"><br/>
-
-  
-
-
-              <button id="calculatebutton">Calculate</button>
-
-              <button id="shootbutton">Shoot</button>
+              <label for="Decel">Deceleration due to Friction (<span id="e5">-0.010</span> m/s<sup>2</sup>):</label><br/>
+              <input class="slider" type="range" min="-0.100" max="0" value="-0.010" step="0.001" id="Decel"><br/>
+              <br>
               
-              <button id ="resetbutton">Reset</button>
+              <label>Actions: </label>
+              <div class = "button-container">
+                <div class = "buttons">
+                  <button id="calculatebutton">Project</button>
+                </div>              
+                
+                <div class = "buttons">
+                  <button id="shootbutton">Shoot</button>
+                </div>
+                
+                <div class = "buttons">
+                  <button id ="resetbutton">Reset</button>
+                </div>
 
+
+              </div>
+              <br>
+
+
+            <label>Projection Mode:</label><br>
+
+            <div class="projection-mode-container">
+              <label class="projection-mode-toggle">
+                <input type="radio" name="projectionMode" value="1"> White
+              </label>
+              <label class="projection-mode-toggle">
+                <input type="radio" name="projectionMode" value="2"> White + First Hit
+              </label>
+              <label class="projection-mode-toggle projection-mode-toggle-active">
+                <input type="radio" name="projectionMode" value="3" checked> All
+              </label>
+            </div>
+            <br>
+            <label>
+              Show Impact Calculations: <br>
+              <label class="switch">
+                <input id = "calc-toggle" class="checkbox" type="checkbox" checked>
+                <span class="checkbox-slider"></span>
+              </label>
+            </label>
             </div>
 
           </div>
-            <div class="output-container">
-              <b>OUTPUT</b> <span class="dropdown" onclick="showMenu('output-content')">
-                <svg xmlns="http://www.w3.org/2000/svg"  width="15" height="15" fill="currentColor" class="dropdown-btn bi bi-question-circle" viewBox="0 0 16 16">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                  <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
-                </svg>
-                <div id="output-content" class="dropdown-content">
-                  <b>Output</b><br>
+          <div class = "extra-calc-container" id ="impact-calc">
+            <b>IMPACT CALCULATIONS</b> 
+            <div class = "calc-box-border" id = "extra-calc"></div>
+              <div class="box-border" id="white-calc">
+                <div id="white-extra-calc">
+                  Hit a colored ball to see impact calculations.
                 </div>
-              </span>
-              <div class="box-border" id="output">
-                <div>
-                  Equations:
-                  <div id = "equations">
-                    \[v_{f} = \sqrt{{v_{fx}}^2 + {v_{fy}}^2} \qquad \theta_f = \arctan(\frac{v_{fy}}{v_{fx}})\]
-                  </div>
-                  <div id="white-ball-calculation"></div>
+              </div>
+              <div class = "box-border" id = "other-calc">
+                <div id = "other-extra-calc">
+                  Hit a colored ball to see impact calculations.
                 </div>
-                <div id = "container1"></div>
               </div>
             </div>
-
+          </div>
         </div>
       </div>
       <div id="footer">
