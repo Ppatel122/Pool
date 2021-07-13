@@ -605,8 +605,6 @@ class Circle {
    * @returns {float} the angle from the postive x axis
    */ 
   findAngle(x, y) {
-    x = circles[0].xVelShot;
-    y = circles[0].yVelShot;
     if (x==0) {
       if (y > 0) {
         return PI/2;

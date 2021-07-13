@@ -74,23 +74,32 @@ Ball.prototype.show = function(p) {
             this.scaleArrows(p,1,this);
             drawArrow(p,this.v1,this.v3,color(0),this.id);
             let ang1 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.textFont('STIX');
             p.textSize(18);
             p.noStroke();
             p.fill(this.textcolor);
-            p.text("Vin", this.v1.x-5*Math.cos(ang1),this.v1.y-5*Math.sin(ang1));
+            let vec = findTextLocation1(this.v1,this.v3);
+            p.text("V", vec.x,vec.y);
+            p.textSize(11);
+            p.text("in", vec.x+11,vec.y);
 
         }
         if(this.v0 != this.v2){
             this.scaleArrows(p,2,this);
             drawArrow(p,this.v0,this.v2,color(0),this.id);
             let ang2 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.textFont('STIX');
+            p.textSize(18);
             p.noStroke();
             p.fill(this.textcolor);
-            p.text("Vout", this.v0.x + this.v2.x + 5*Math.cos(ang2),this.v0.y + this.v2.y +5*Math.sin(ang2));
-
+            let vec1 = findTextLocation2(this.v0,this.v2);
+            p.text("V", vec1.x,vec1.y);
+            p.textSize(11);
+            p.text("out", vec1.x + 11,vec1.y);
         }
         if(this.id === 0){
             angle = circles[0].findAngle(this.v2.x,-this.v2.y);
+            p.textSize(18);
             p.noStroke();
             p.fill(this.textcolor);
             p.text('θ = ' + thetaf + "°",length/2 + 20,width/2);
@@ -130,6 +139,57 @@ Ball.prototype.updateVectors = function(xVel1,yVel1,xVel2,yVel2){
     this.v3.x =  xVel1*10;
     this.v3.y =  yVel1*10;
 
+}
+
+findTextLocation1 = function(base,vec) {  
+    let x,y;
+      if (vec.x > 0) {
+        if (vec.y > 0) {
+            x = base.x - 22;
+            y = base.y;
+            return{x,y};
+        } else {
+            x = base.x - 22;
+            y = base.y + 10;
+            return{x,y};
+        }
+      } else {
+        if (vec.y > 0) {
+            x = base.x;
+            y = base.y;
+            return{x,y};
+        } else {
+            x = base.x;
+            y = base.y + 10;
+            return{x,y};
+        }
+      }
+}
+
+findTextLocation2 = function(base,vec) {  
+    let x,y;
+
+      if (vec.x > 0) {
+        if (vec.y > 0) {
+            x = base.x + vec.x;
+            y = base.y + vec.y + 10;
+            return{x,y};
+        } else {
+            x = base.x + vec.x;
+            y = base.y + vec.y;
+            return{x,y};
+        }
+      } else {
+        if (vec.y > 0) {
+            x = base.x + vec.x - 27;
+            y = base.y + vec.y + 10;
+            return{x,y};
+        } else {
+            x = base.x + vec.x - 27;
+            y = base.y + vec.y;
+            return{x,y};
+        }
+      }
 }
 
 reset = function(p){
