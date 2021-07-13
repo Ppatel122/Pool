@@ -33,6 +33,7 @@ let projectionMode = 3; // chosen projection mode
 let coordinateSystem = 1; // chosen coordinate system
 let predictionView = false; // whether or not projections are being shown
 let directionView = true; // whether or not direction is being shown
+let coordinateView = true; // whether or not the axis is being shown
 let motion  = false; // whether or not any balls are moving
 let ballHit = false; // whether or not a ball has been hit
 let ballNum = 0; // the number of the first ball hit
@@ -141,6 +142,7 @@ function resetGame(){
   coordinateSystem = 1;
   predictionView = false;
   directionView = true;
+  coordinateView = true;
   motion  = false;
   ballHit = false;
   calc = false;
@@ -345,7 +347,22 @@ function mouseReleased() {
 
 //CLASSES
 
+/**
+ * Represents a pool ball
+ */ 
 class Circle {
+  /**
+   * @constructor
+   * 
+   * @param {float} x The x position of the ball
+   * @param {float} y The y position of the ball
+   * @param {float} xVel The x velocity of the ball
+   * @param {float} yVel The y xelocity of the ball
+   * @param {float} radius The radius of the ball
+   * @param {float} mass The mass of the ball
+   * @param {color} color The color of the ball
+   * @param {int} number The number of the ball
+   */ 
   constructor(x, y, xVel, yVel, radius = 10, mass = 1, color = color(255), number = 0) {
     this.x = x;
     this.y = y;
@@ -369,11 +386,17 @@ class Circle {
     this.locked = false;
   }
 
+  /**
+   * Moves the ball in the required x and y direction
+   */ 
   move() {
     this.x += this.xVel;
     this.y += this.yVel;
   }
 
+  /**
+   * Show the ball on the table
+   */ 
   show() {
     if(!this.potted){
       noStroke();
@@ -388,9 +411,21 @@ class Circle {
         arc(this.x, this.y, this.diameter, this.diameter, PI/4, 3*PI/4, OPEN);
         arc(this.x, this.y, this.diameter, this.diameter, -3*PI/4, -PI/4, OPEN);
       }
+      if(this.number === 0 && !motion && coordinateView){
+        strokeWeight(1);
+        stroke(0);
+        line(this.x,this.y, this.x, this.y - 50)
+        line(this.x,this.y,this.x + 50, this.y);
+        fill(0);
+        triangle(this.x,this.y -50,this.x-5,this.y -40,this.x + 5, this.y - 40);
+        triangle(this.x + 50,this.y, this.x + 40,this.y + 5, this.x + 40,this.y - 5);
+      }
     }
   }
 
+  /**
+   * Shoots the ball in the specified x and y direction 
+   */ 
   shoot() {
     for (let i=0; i < circles.length; i++) {
       circles[i].xCollisions = [];
@@ -400,8 +435,10 @@ class Circle {
     this.yVel = -this.yVelShot;
 
   }
-
-  resetWhite(hole){
+  /**
+   * Resets the white ball when potted
+   */ 
+  resetWhite(){
     if(predictionView){
       this.x = 200;
       this.y = 250;
@@ -415,6 +452,9 @@ class Circle {
     }
   }
 
+  /**
+   * Detects and deals with collisions with the bumper
+   */ 
   bumperCollision(bumper,coefRest){
     switch(bumper.id) {
       case 1: // Top Bumpers
@@ -452,6 +492,9 @@ class Circle {
     }
   }
 
+  /**
+   * Detects and deals with collisions with the hole
+   */ 
   holeCollision(hole){
     if(dist(this.x,this.y,hole.x,hole.y) < hole.radius){
       this.xCollisions.push(this.x);
@@ -470,36 +513,16 @@ class Circle {
     }
   }
 
-  wallCollision(xMin, xMax, yMin, yMax, coefRest = 1) {
-    if (this.x > xMax - this.radius)  {
-      this.x = xMax - this.radius;
-      this.xVel = -abs(this.xVel)*coefRest;
-      this.xCollisions.push(this.x);
-      this.yCollisions.push(this.y);
-    } else if (this.x < xMin + this.radius) {
-      this.x = xMin + this.radius;
-      this.xVel = abs(this.xVel)*coefRest;
-      this.xCollisions.push(this.x);
-      this.yCollisions.push(this.y);
-    }
-
-    if (this.y > yMax - this.radius)  {
-      this.y = yMax - this.radius;
-      this.yVel = -abs(this.yVel)*coefRest;
-      this.xCollisions.push(this.x);
-      this.yCollisions.push(this.y);
-    } else if (this.y < yMin + this.radius) {
-      this.y = yMin + this.radius;
-      this.yVel = abs(this.yVel)*coefRest;
-      this.xCollisions.push(this.x);
-      this.yCollisions.push(this.y);
-    }
-  }
-
+  /**
+   * Detects collisions with other balls
+   */ 
   circleCollisionCheck(otherCircle) {
     return dist(this.x, this.y, otherCircle.x, otherCircle.y) < this.radius + otherCircle.radius;
   }
 
+  /**
+   * Deals with collisions with the bumper and updates FBDa dn calculations
+   */ 
   circleCollisionCalc(otherCircle, coefRest = 1) {
     this.xCollisions.push(this.x);
     this.yCollisions.push(this.y);
@@ -567,10 +590,23 @@ class Circle {
     
   }
 
+  /**
+   * Finds the overall velocity based on the specified x and y velocities 
+   * @returns {float} Velocity of the ball
+   */ 
   findVelocity(){
     return(abs(Math.sqrt(this.xVelShot*this.xVelShot+this.yVelShot*this.yVelShot)));
   }
+
+  /**
+   * Find the angle based on the given x and y vectors
+   * @param {float} x The x vector given
+   * @param {float} y The y vector given
+   * @returns {float} the angle from the postive x axis
+   */ 
   findAngle(x, y) {
+    x = circles[0].xVelShot;
+    y = circles[0].yVelShot;
     if (x==0) {
       if (y > 0) {
         return PI/2;
@@ -606,6 +642,9 @@ class Circle {
     }
   }
 
+  /**
+   * Acts as the friction between the ball and the table cloth
+   */ 
   accelerate(acceleration) {
     if (acceleration == 0) {
       return;
@@ -630,6 +669,9 @@ class Circle {
     }
   }
 
+  /**
+   * Detects if the ball is clicked
+   */ 
   click() {
     if (dist(mouseX, mouseY, this.x, this.y) < this.radius && this.clickable) {
       this.clicked = true;
@@ -640,7 +682,7 @@ class Circle {
 }
 
 /**
- * Creates a Cue object
+ * Represents a Cue object
  */
 class Cue{
   /**
@@ -687,7 +729,7 @@ class Cue{
 
 
 /**
- * Creates a Hole object
+ * Represents a Hole object
  */
 class Hole {
   /**
@@ -714,7 +756,7 @@ class Hole {
 }
 
 /**
- * Creates a bumper object
+ * Represents a bumper object
  */
 class Bumper {
   /**

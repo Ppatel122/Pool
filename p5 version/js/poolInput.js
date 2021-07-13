@@ -1,4 +1,4 @@
-var elXVel,elYVel,elVel,elAng,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,elCoordinateSystem,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5,el6,el7;
+var elAxis,elXVel,elYVel,elVel,elAng,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,elCoordinateSystem,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5,el6,el7;
 let thetaf;
 
 window.onload = () => {
@@ -17,6 +17,7 @@ window.onload = () => {
   elProjectionMode = document.querySelectorAll(".projection-mode-toggle");
   elCoordinateSystem = document.querySelectorAll(".coordinate-system-toggle");
   elOtherCalc = document.querySelector("#calculation-toggle");
+  elAxis = document.querySelector("#axis-toggle");
   el1 = document.querySelector("#e1");
   el2 = document.querySelector("#e2");
   el3 = document.querySelector("#e3");
@@ -146,6 +147,10 @@ window.onload = () => {
     el5.innerHTML = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
   };
 
+  elAxis.onclick = function() {
+    toggleAxis();
+  }
+
   elOtherCalc.onclick = function(){
     toggleExtraCalc();
   }
@@ -159,6 +164,9 @@ window.onload = () => {
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
+    circles[0].yVelShot = 0;
+    circles[0].vel = 0;
+    circles[0].angle = 0;
     updateControls();
   }
 
@@ -171,10 +179,11 @@ window.onload = () => {
     el3.innerHTML = 0.5;
     el4.innerHTML = 0.9;
     el5.innerHTML = -0.010.toFixed(3);
-    elXVel[0].value = 0;
-    elYVel[1].value = 0;
-    elXVel[0].value = 0;
-    elYVel[1].value = 0;
+    circles[0].xVelShot = 0;
+    circles[0].yVelShot = 0;
+    circles[0].vel = 0;
+    circles[0].angle = 0;
+    updateControls();
     elCoeffBumper.value = 0.5;
     elCoeffBalls.value = 0.9;
     elDecel.value = -0.01;
@@ -233,15 +242,15 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
   let white;
   let whiteBallEquation = document.getElementById("white-extra-calculation");
   white =  `<u><b>White Ball:</b></u> <br>
-            <b>Initial Values:</b> \n\\[m_{w} = ${mt.toFixed(2)} \\;\\mathrm{kg} \\qquad v_{ix} = ${vtxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${-vtyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
+            <b>Starting with initial x and y velocities and finding intial velocity and angle:</b> \n\\[m_{w} = ${mt.toFixed(2)} \\;\\mathrm{kg} \\qquad v_{ix} = ${vtxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${-vtyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
             \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${-vtyi.toFixed(2)}}{${vtxi.toFixed(2)}})^{\\circ} = ${(360-((at*180)/PI)).toFixed(2)}^{\\circ}\\] \n
             \\[ v_{i} = \\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;\\mathrm{m/s}=\\sqrt{{(${vtxi.toFixed(2)})}^2 + {(${-vtyi.toFixed(2)})}^2} \\;\\mathrm{m/s} = ${vt.toFixed(2)} \\;\\mathrm{m/s} \\] \n
-            <b>Converting Initial Velocities to New Coordinate System:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vt.toFixed(2)})\\cos{( ${(360-((at*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vtx.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
+            <b>Rotating the axis of collision around the center of the white ball so only the x velocity is involved in the collision:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vt.toFixed(2)})\\cos{( ${(360-((at*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vtx.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
             \\[{v_{iy}}' = v_{i}\\sin{(\\theta_i-\\phi)} = (${vt.toFixed(2)})\\sin{( ${(360-((at*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${-vty.toFixed(2)} \\;\\mathrm{m/s} \\] \n
-            <b>Finding Final Velocities on the New Coordinate System: \n \\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{o}e({v_{oix}}'-{v_{wix}}')}{m_{w} + m_{o}}  \\] \n
+            <b>Finding the final x and y velocities on the rotated axis of collision: \n \\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{o}e({v_{oix}}'-{v_{wix}}')}{m_{w} + m_{o}}  \\] \n
             \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${vox.toFixed(2)}) +(${mt.toFixed(2)})e(${vox.toFixed(2)}-${vtx.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} = ${vtfx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
             \\[{v_{fy}}' = {v_{iy}}' = ${-vty.toFixed(2)} \\;\\mathrm{m/s}\\] \n
-            <B>Converting Final Velocities to Normal Coordinate System:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + \\frac{\\pi}{2})} \\] \n 
+            <B>Converting the x and y velocities back to standard axis of collision:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + \\frac{\\pi}{2})} \\] \n 
             \\[ v_{fx} =(${vtfx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${xVel.toFixed(2)}\\;\\mathrm{m/s}\\] \n
             \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + \\frac{\\pi}{2})} \\] \n 
             \\[ v_{fy} =(${vtfx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${-yVel.toFixed(2)}\\;\\mathrm{m/s}\\]`;
@@ -250,15 +259,15 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
   let other;
   let otherBallEquation = document.getElementById("other-extra-calculation");
   other =  `<b><u>Other Ball:</u></b> <br> 
-            <b>Initial Values:</b> \n \\[m_{w} = ${mo.toFixed(2)}\\;\\mathrm{kg} \\qquad v_{ix} = ${voxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${voyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
+            <b>Starting with initial x and y velocities and finding intial velocity and angle:</b> \n \\[m_{w} = ${mo.toFixed(2)}\\;\\mathrm{kg} \\qquad v_{ix} = ${voxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${voyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
             \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${voyi.toFixed(2)}}{${voxi.toFixed(2)}})^{\\circ} = ${((ao*180)/PI).toFixed(2)}^{\\circ}\\] \n
             \\[v_{i} =\\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;\\mathrm{m/s}=\\sqrt{{${voxi.toFixed(2)}}^2 + {${voyi.toFixed(2)}}^2} \\;\\mathrm{m/s} = 0.00\\;\\mathrm{m/s}  \\] \n
-            <b>Converting Initial Velocities to New Coordinate System:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vo.toFixed(2)})\\cos{( ${(360-((ao*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vox.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
+            <b>Rotating the axis of collision around the center of the white ball so only the x velocity is involved in the collision:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vo.toFixed(2)})\\cos{( ${(360-((ao*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vox.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
             \\[{v_{iy}}' = v_{i}\\sin{(\\theta_i-\\phi)} = (${vo.toFixed(2)})\\sin{( ${(360-((ao*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${voy.toFixed(2)} \\;\\mathrm{m/s} \\] \n
-            <b>Finding Final Velocities on the New Coordinate System:</b> \n\\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{w}e({v_{wix}}'-{v_{oix}}')}{m_{w} + m_{o}}  \\] \n
+            <b>Finding the final x and y velocities on the rotated axis of collision:</b> \n\\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{w}e({v_{wix}}'-{v_{oix}}')}{m_{w} + m_{o}}  \\] \n
             \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${voxi.toFixed(2)}) +(${mo.toFixed(2)})e(${vtx.toFixed(2)} - ${voxi.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} = ${vofx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
             \\[{v_{fy}}' = {v_{iy}}' = ${vofy.toFixed(2)} \\;\\mathrm{m/s}\\] \n
-            <b>Converting Final Velocities to Normal Coordinate System:</b>\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + \\frac{\\pi}{2})} \\] \n 
+            <b>Converting the x and y velocities back to standard axis of collision:</b>\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + \\frac{\\pi}{2})} \\] \n 
             \\[ v_{fx} =(${vofx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${xVel2.toFixed(2)}\\;\\mathrm{m/s}\\] \n
             \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + \\frac{\\pi}{2})} \\] \n 
             \\[ v_{fy} =(${vofx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${-yVel2.toFixed(2)}\\;\\mathrm{m/s}\\]`;
@@ -325,6 +334,14 @@ function updateControls(){
   elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
   elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
   el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+}
+
+function toggleAxis(){
+  if(coordinateView){
+    coordinateView = false;
+  } else {
+    coordinateView = true;
+  }
 }
 
 function toggleExtraCalc() {
