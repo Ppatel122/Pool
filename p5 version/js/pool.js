@@ -61,23 +61,12 @@ function draw() {
   for (let i=0; i < holes.length; i++) {
     holes[i].show();
   }
-  for (let i=0; i < circles.length; i++) {
-    circles[i].click();
-    for(let j = 0; j < holes.length;j++){
-      circles[i].holeCollision(holes[j]);
-    }
-    for(let j = 0; j < bumpers.length;j++){
-      circles[i].bumperCollision(bumpers[j],wallCoefRest);
-    }
-    
-    for (let j=i+1; j < circles.length; j++) {
-        if (circles[i].circleCollisionCheck(circles[j])) {
-            circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-        }
-    }
-    circles[i].accelerate(circleAcceleration);
+  for (let i=1; i < circles.length; i++) {
+    collisionCheck(i);
   }
   for (let i=0; i < circles.length; i++) {
+    circles[i].click();
+    circles[i].accelerate(circleAcceleration);
     circles[i].move();
     circles[i].show();
   }
@@ -252,21 +241,14 @@ function predictShot() {
     circles[i].yCollisions.push(circles[i].y);
   }
   for (let k=0; k<10000; k++) {
-    for (let i=0; i < circles.length; i++) {      
-      for(let j = 0; j < bumpers.length;j++){
-        circles[i].bumperCollision(bumpers[j],wallCoefRest);
-      }
-      for(let j = 0; j < holes.length;j++){
-        circles[i].holeCollision(holes[j]);
-      }
-      for (let j=i+1; j < circles.length; j++) {
-          if (circles[i].circleCollisionCheck(circles[j])) {
-              circles[i].circleCollisionCalc(circles[j], circleCoefRest);
-          }
-      }
-      circles[i].accelerate(circleAcceleration);
+    checkForMotion();
+    if(!motion){console.log(k);break;}
+    for (let i=1; i < circles.length; i++) {  
+      collisionCheck(i);
+      
     }  
     for (let i=0; i < circles.length; i++) {
+      circles[i].accelerate(circleAcceleration);
       circles[i].move();
     }
   }
@@ -282,8 +264,7 @@ function predictShot() {
   }
 }
 
-function collisionCheck(){
-  for (let i=0; i < circles.length; i++) {
+function collisionCheck(i){
     for(let j = 0; j < holes.length;j++){
       circles[i].holeCollision(holes[j]);
     }
@@ -295,7 +276,6 @@ function collisionCheck(){
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
         }
     }
-  }
 }
 
 /**
@@ -420,16 +400,15 @@ class Circle {
    * Moves the ball in the required x and y direction
    */ 
   move(){
-    // if(this.number === 0){
-    //   for(let i = 0; i < 2;i++){
-    //     this.x += this.xVel*0.5;
-    //     this.y += this.yVel*0.5;
-    //     collisionCheck();
-    //   }
-    // } else {
+    if(this.number === 0){
+      for(let i = 0; i < 10;i++){
+        this.x += this.xVel*0.1;
+        this.y += this.yVel*0.1;
+        collisionCheck(0);
+      }
+    }
       this.x += this.xVel;
       this.y += this.yVel;
-    // }
   }
 
   /**
@@ -534,7 +513,7 @@ class Circle {
    * Detects and deals with collisions with the hole
    */ 
   holeCollision(hole){
-    if(dist(this.x,this.y,hole.x,hole.y) < hole.radius){
+    if(dist(this.x,this.y,hole.x,hole.y) < hole.radius + 3){
       this.xCollisions.push(this.x);
       this.yCollisions.push(this.y);
       this.x = hole.x;

@@ -105,7 +105,7 @@ Ball.prototype.show = function(p) {
             p.noStroke();
             p.textStyle(NORMAL);
             p.fill(this.textcolor);
-            if(this.v2.x > 0 && this.v2.y < 0){
+            if(this.v2.x > 0 && -this.v2.y > this.v2.x){
                 p.text('θ  = ' + thetaf + "°",length/2 + 20,width/2+15);
                 p.textSize(11);
                 p.text('f',length/2 + 30,width/2+15);
