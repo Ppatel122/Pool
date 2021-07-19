@@ -34,7 +34,7 @@
     </div>
     <div id="main_part_inner">
       <div id="main_part_inner_in">
-        <h2>Pool Simulation</h2>
+        <h2>Pool Simulation</h2> 
       </div>
     </div>
     <noscript>
@@ -44,7 +44,15 @@
       This page requires javascript to be enabled or a javascript able browser.
     </noscript>
     <div id="content_inner" style = "width:1120px">
-      <div id="sim-title">Pool Simulation</div>
+      <div id="sim-title">Pool Simulation <span class="dropdown" id="video-dropdown"onclick="showMenu('video-content')">
+        <b class ="dropdown-btn" id = "video-text">Intro Video</b><br>
+        <div id="video-content" class="dropdown-content dropdown-menu-center">
+          <video controls>
+            <source src="./Simulation/Pool.mp4" type="video/mp4">
+          </video>
+        </div>
+      </span>
+    </div>
       <div id="simulation">
         <div  id="container"></div>
         <div class="output-container">
@@ -182,7 +190,7 @@
         <div class = "extra-calculation-container" id ="impact-calculation">
           <b>IMPACT CALCULATIONS</b> 
           <div class = "calculation-box-border" id = "extra-calculation">
-            Click <a target="_blank" href="./PDF/pool.pdf">here</a> for a detailed explanation of the calculations
+            Click <a target="_blank" href="./Simulation/pool.pdf">here</a> for a detailed explanation of the calculations
           </div>
             <div class="box-border" id="white-calculation">
               <div id="white-extra-calculation">

@@ -188,7 +188,7 @@ function resetGame(){
   holes.push(new Hole(poolTableX/2, poolTableY - poolTableBorder + middleHoleShift, holeRadius));
   holes.push(new Hole(poolTableX - poolTableBorder - cornerHoleShift, poolTableY - poolTableBorder - cornerHoleShift, holeRadius));
 
-  circles.push(new Circle(100, 250, 0, 0, 12.5, 10, color(255),           0)); // White
+  circles.push(new Circle(200, 250, 0, 0, 12.5, 10, color(255),           0)); // White
   // SOLIDS
   circles.push(new Circle(775, 262.5, 0, 0, 12.5, 10, color(255, 255, 0), 1)); // Yellow
   circles.push(new Circle(725, 237.5, 0, 0, 12.5, 10, color(0, 0, 255),   2)); // Blue

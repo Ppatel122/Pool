@@ -88,6 +88,15 @@
     text-align: left;
   }
 
+  #video-text {
+    font-size: 13pt;
+    text-decoration: underline;
+  }
+
+  #video-dropdown{
+    height:30px;
+  }
+
   #polar-controls {
     display:none;
   }
@@ -300,6 +309,12 @@
     height: 15px;
   }
   
+  .dropdown-menu-center {
+    left: 50%;
+    right: auto ;
+    text-align: center;
+    transform: translate(-50%, 0);
+  }
   .dropdown-btn {
     width: 15px;
     height: 15px;
