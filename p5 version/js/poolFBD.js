@@ -35,6 +35,7 @@ Axis.prototype.show = function(p){
     p.fill(0);
     p.triangle(this.l/2,0,this.l/2+this.l/30,this.w/30,this.l/2-this.l/30,this.w/30);
     p.triangle(this.l,this.w/2,this.l-this.l/30,this.w/2-this.w/30,this.l-this.l/30,this.w/2+this.w/30);
+    p.textStyle(ITALIC);
     p.text('x',this.l-10,this.w/2-10)
     p.text('y',this.l/2+10,10);
 }
@@ -105,7 +106,7 @@ Ball.prototype.show = function(p) {
             p.noStroke();
             p.textStyle(NORMAL);
             p.fill(this.textcolor);
-            if(this.v2.x > 0 && -this.v2.y > this.v2.x){
+            if(this.v2.x > 0 && -this.v2.y < this.v2.x){
                 p.text('θ  = ' + thetaf + "°",length/2 + 20,width/2+15);
                 p.textSize(11);
                 p.text('f',length/2 + 30,width/2+15);
@@ -166,11 +167,11 @@ findTextLocation1 = function(base,vec) {
         }
       } else {
         if (vec.y > 0) {
-            x = base.x;
+            x = base.x + 5;
             y = base.y;
             return{x,y};
         } else {
-            x = base.x;
+            x = base.x + 5;
             y = base.y + 10;
             return{x,y};
         }
@@ -182,21 +183,21 @@ findTextLocation2 = function(base,vec) {
 
       if (vec.x > 0) {
         if (vec.y > 0) {
-            x = base.x + vec.x;
+            x = base.x + vec.x + 7;
             y = base.y + vec.y + 10;
             return{x,y};
         } else {
-            x = base.x + vec.x;
+            x = base.x + vec.x + 7;
             y = base.y + vec.y;
             return{x,y};
         }
       } else {
         if (vec.y > 0) {
-            x = base.x + vec.x - 27;
+            x = base.x + vec.x - 22;
             y = base.y + vec.y + 10;
             return{x,y};
         } else {
-            x = base.x + vec.x - 27;
+            x = base.x + vec.x - 22;
             y = base.y + vec.y;
             return{x,y};
         }

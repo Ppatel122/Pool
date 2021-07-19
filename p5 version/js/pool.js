@@ -21,7 +21,7 @@ let bumperLength = 6; // width of the bumpers around the pool table
 let bumperIndent = 2; // length of the corner cut-outs on the bumpers
 let cornerHoleShift = 5; // the distance that the corner holes are shifted away from the border
 let middleHoleShift = 5; // the distance that the middle holes are shifted away from the border
-let holeRadius = 20; // radius of the holes
+let holeRadius = 23; // radius of the holes
 let wallT = poolTableBorder + bumperLength; // position of the top wall (used for collision)
 let wallB = poolTableY - poolTableBorder - bumperLength; // position of the bottom wall (used for collision)
 let wallL = poolTableBorder + bumperLength; // position of the left wall (used for collision)
@@ -274,6 +274,7 @@ function collisionCheck(i){
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+            if(i === 0){return 0;} else {return 1;}
         }
     }
 }
@@ -404,11 +405,13 @@ class Circle {
       for(let i = 0; i < 10;i++){
         this.x += this.xVel*0.1;
         this.y += this.yVel*0.1;
-        collisionCheck(0);
+        stop = collisionCheck(0);
+        if(stop){return;}
       }
-    }
+    } else {
       this.x += this.xVel;
       this.y += this.yVel;
+    }
   }
 
   /**
@@ -533,6 +536,7 @@ class Circle {
    * Detects collisions with other balls
    */ 
   circleCollisionCheck(otherCircle) {
+    if(this.potted || otherCircle.potted){return;}
     return dist(this.x, this.y, otherCircle.x, otherCircle.y) < this.radius + otherCircle.radius;
   }
 

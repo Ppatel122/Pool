@@ -245,15 +245,15 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
   let white;
   let whiteBallEquation = document.getElementById("white-extra-calculation");
   white =  `<u><b>White Ball:</b></u> <br>
-            <b>Starting with initial x and y velocities and finding intial velocity and angle:</b> \n\\[m_{w} = ${mt.toFixed(2)} \\;\\mathrm{kg} \\qquad v_{ix} = ${vtxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${-vtyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
-            \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${-vtyi.toFixed(2)}}{${vtxi.toFixed(2)}})^{\\circ} = ${(360-((at*180)/PI)).toFixed(2)}^{\\circ}\\] \n
-            \\[ v_{i} = \\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;\\mathrm{m/s}=\\sqrt{{(${vtxi.toFixed(2)})}^2 + {(${-vtyi.toFixed(2)})}^2} \\;\\mathrm{m/s} = ${vt.toFixed(2)} \\;\\mathrm{m/s} \\] \n
-            <b>Rotating the axis of collision around the center of the white ball so only the x velocity is involved in the collision:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vt.toFixed(2)})\\cos{( ${(360-((at*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vtx.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
+            <b>Starting with the velocities in the <i>x</i> and <i>y</i> direction and finding intial velocity and angle:</b> \n\\[m_{w} = ${mt.toFixed(2)} \\;\\mathrm{kg} \\qquad v_{ix} = ${vtxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${-vtyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
+            \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}}) = \\arctan(\\frac{${-vtyi.toFixed(2)}}{${vtxi.toFixed(2)}}) = ${(360-((at*180)/PI)).toFixed(2)}^{\\circ}\\] \n
+            \\[ v_{i} = \\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;=\\sqrt{{(${vtxi.toFixed(2)})}^2 + {(${-vtyi.toFixed(2)})}^2} \\; = ${vt.toFixed(2)} \\;\\mathrm{m/s} \\] \n
+            <b>Rotating the axis of collision around the center of the white ball so only the <i>x</i> component of the velocity is involved in the collision:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vt.toFixed(2)})\\cos{( ${(360-((at*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vtx.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
             \\[{v_{iy}}' = v_{i}\\sin{(\\theta_i-\\phi)} = (${vt.toFixed(2)})\\sin{( ${(360-((at*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${-vty.toFixed(2)} \\;\\mathrm{m/s} \\] \n
-            <b>Finding the final x and y velocities on the rotated axis of collision: \n \\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{o}e({v_{oix}}'-{v_{wix}}')}{m_{w} + m_{o}}  \\] \n
-            \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${vox.toFixed(2)}) +(${mt.toFixed(2)})e(${vox.toFixed(2)}-${vtx.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} = ${vtfx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
+            <b>Finding the final velocities in the <i>x</i> and <i>y</i> direction on the rotated axis of collision: \n \\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{o}e({v_{oix}}'-{v_{wix}}')}{m_{w} + m_{o}}  \\] \n
+            \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${vox.toFixed(2)}) +(${mt.toFixed(2)})(${circleCoefRest})(${vox.toFixed(2)}-${vtx.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} \\] \\[ {v_{fx}}'= ${vtfx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
             \\[{v_{fy}}' = {v_{iy}}' = ${-vty.toFixed(2)} \\;\\mathrm{m/s}\\] \n
-            <B>Converting the x and y velocities back to standard axis of collision:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + 90)} \\] \n 
+            <B>Converting the velocities in the <i>x</i> and <i>y</i> direction back to standard axis of collision:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + 90)} \\] \n 
             \\[ v_{fx} =(${vtfx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${xVel.toFixed(2)}\\;\\mathrm{m/s}\\] \n
             \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + 90)} \\] \n 
             \\[ v_{fy} =(${vtfx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${-yVel.toFixed(2)}\\;\\mathrm{m/s}\\]`;
@@ -262,15 +262,15 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
   let other;
   let otherBallEquation = document.getElementById("other-extra-calculation");
   other =  `<b><u>Other Ball:</u></b> <br> 
-            <b>Starting with initial x and y velocities and finding intial velocity and angle:</b> \n \\[m_{w} = ${mo.toFixed(2)}\\;\\mathrm{kg} \\qquad v_{ix} = ${voxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${voyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
-            \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}})^{\\circ} = \\arctan(\\frac{${voyi.toFixed(2)}}{${voxi.toFixed(2)}})^{\\circ} = ${((ao*180)/PI).toFixed(2)}^{\\circ}\\] \n
-            \\[v_{i} =\\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;\\mathrm{m/s}=\\sqrt{{${voxi.toFixed(2)}}^2 + {${voyi.toFixed(2)}}^2} \\;\\mathrm{m/s} = 0.00\\;\\mathrm{m/s}  \\] \n
-            <b>Rotating the axis of collision around the center of the white ball so only the x velocity is involved in the collision:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vo.toFixed(2)})\\cos{( ${(360-((ao*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vox.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
+            <b>Starting with the velocities in the <i>x</i> and <i>y</i> direction and finding intial velocity and angle:</b> \n \\[m_{w} = ${mo.toFixed(2)}\\;\\mathrm{kg} \\qquad v_{ix} = ${voxi.toFixed(2)} \\;\\mathrm{m/s} \\qquad  v_{iy}= ${voyi.toFixed(2)} \\;\\mathrm{m/s}\\] \n 
+            \\[\\theta_i = \\arctan(\\frac{v_{iy}}{v_{ix}}) = \\arctan(\\frac{${voyi.toFixed(2)}}{${voxi.toFixed(2)}}) = ${((ao*180)/PI).toFixed(2)}^{\\circ}\\] \n
+            \\[v_{i} =\\sqrt{{v_{ix}}^2 + {v_{iy}}^2} \\;=\\sqrt{{${voxi.toFixed(2)}}^2 + {${voyi.toFixed(2)}}^2} \\;= 0.00\\;\\mathrm{m/s}  \\] \n
+            <b>Rotating the axis of collision around the center of the white ball so only the <i>x</i> component of the velocity is involved in the collision:</b> \n\\[{v_{ix}}' = v_{i}\\cos{(\\theta_i-\\phi)} = (${vo.toFixed(2)})\\cos{( ${(360-((ao*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${vox.toFixed(2)} \\;\\mathrm{m/s} \\] \n 
             \\[{v_{iy}}' = v_{i}\\sin{(\\theta_i-\\phi)} = (${vo.toFixed(2)})\\sin{( ${(360-((ao*180)/PI)).toFixed(2)}^{\\circ} -\\ ${(360-((phi*180)/PI)).toFixed(2)}^{\\circ})} = ${voy.toFixed(2)} \\;\\mathrm{m/s} \\] \n
-            <b>Finding the final x and y velocities on the rotated axis of collision:</b> \n\\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{w}e({v_{wix}}'-{v_{oix}}')}{m_{w} + m_{o}}  \\] \n
-            \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${voxi.toFixed(2)}) +(${mo.toFixed(2)})e(${vtx.toFixed(2)} - ${voxi.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} = ${vofx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
+            <b>Finding the final velocities in the <i>x</i> and <i>y</i> direction on the rotated axis of collision:</b> \n\\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{w}e({v_{wix}}'-{v_{oix}}')}{m_{w} + m_{o}}  \\] \n
+            \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${voxi.toFixed(2)}) +(${mo.toFixed(2)})(${circleCoefRest})(${vtx.toFixed(2)} - ${voxi.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} \\]  \\[{v_{fx}}' = ${vofx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
             \\[{v_{fy}}' = {v_{iy}}' = ${vofy.toFixed(2)} \\;\\mathrm{m/s}\\] \n
-            <b>Converting the x and y velocities back to standard axis of collision:</b>\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + 90)} \\] \n 
+            <B>Converting the velocities in the <i>x</i> and <i>y</i> direction back to standard axis of collision:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + 90)} \\] \n 
             \\[ v_{fx} =(${vofx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${xVel2.toFixed(2)}\\;\\mathrm{m/s}\\] \n
             \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + 90)} \\] \n 
             \\[ v_{fy} =(${vofx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${-yVel2.toFixed(2)}\\;\\mathrm{m/s}\\]`;
