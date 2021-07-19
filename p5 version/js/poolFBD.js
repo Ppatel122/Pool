@@ -58,7 +58,7 @@ let Ball =  function(p,x,y,r,xVel1,yVel1,xVel2,yVel2,color,id,show){
 Ball.prototype.show = function(p) {
     if(this.on){
         p.fill(255);
-        p.strokeWeight(3);
+        p.strokeWeight(2);
         p.stroke(this.color);
         p.ellipse(this.x,this.y,this.rad);
         if(this.id > 8 && this.id < 16){
@@ -75,13 +75,14 @@ Ball.prototype.show = function(p) {
             drawArrow(p,this.v1,this.v3,color(0),this.id);
             let ang1 = circles[0].findAngle(this.v3.x,this.v3.y);
             p.textFont('STIX');
-            p.textSize(18);
+            p.textStyle(ITALIC);
+            p.textSize(25);
             p.noStroke();
             p.fill(this.textcolor);
             let vec = findTextLocation1(this.v1,this.v3);
-            p.text("V", vec.x,vec.y);
+            p.text("v", vec.x,vec.y);
             p.textSize(11);
-            p.text("in", vec.x+11,vec.y);
+            p.text("i", vec.x+11,vec.y);
 
         }
         if(this.v0 != this.v2){
@@ -89,20 +90,30 @@ Ball.prototype.show = function(p) {
             drawArrow(p,this.v0,this.v2,color(0),this.id);
             let ang2 = circles[0].findAngle(this.v3.x,this.v3.y);
             p.textFont('STIX');
-            p.textSize(18);
+            p.textStyle(ITALIC);
+            p.textSize(25);
             p.noStroke();
             p.fill(this.textcolor);
             let vec1 = findTextLocation2(this.v0,this.v2);
-            p.text("V", vec1.x,vec1.y);
+            p.text("v", vec1.x,vec1.y);
             p.textSize(11);
-            p.text("out", vec1.x + 11,vec1.y);
+            p.text("f", vec1.x + 11,vec1.y);
         }
         if(this.id === 0){
             angle = circles[0].findAngle(this.v2.x,-this.v2.y);
             p.textSize(18);
             p.noStroke();
+            p.textStyle(NORMAL);
             p.fill(this.textcolor);
-            p.text('θ = ' + thetaf + "°",length/2 + 20,width/2);
+            if(this.v2.x > 0 && this.v2.y < 0){
+                p.text('θ  = ' + thetaf + "°",length/2 + 20,width/2+15);
+                p.textSize(11);
+                p.text('f',length/2 + 30,width/2+15);
+            } else {
+                p.text('θ  = ' + thetaf + "°",length/2 + 20,width/2);
+                p.textSize(11);
+                p.text('f',length/2 + 30,width/2);
+            }
             p.noFill();
             p.stroke(0);
             p.arc(width/2,length/2,30,30,TWO_PI - angle,TWO_PI);

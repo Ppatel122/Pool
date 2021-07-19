@@ -4,9 +4,12 @@ let thetaf;
 window.onload = () => {
   //Prevent right-click on simulation from bringing up the context menu
   document.oncontextmenu = function() {
-  if (mouseX > 0 && mouseY > 0 && mouseX < width && mouseY < height)
+    console.log(mouseX,mouseY,width,length);
+  if (mouseX > 0 && mouseY > 0 && mouseX < 1000 && mouseY < 500){
     return false;
   }
+  }
+  // document.addEventListener('contextmenu', event => event.preventDefault());
   elXVel = document.querySelectorAll("#xVel");
   elYVel = document.querySelectorAll("#yVel");
   elVel = document.querySelectorAll("#Vel");
@@ -95,7 +98,7 @@ window.onload = () => {
 
   elVel[1].onchange = () => {
     circles[0].vel = parseFloat(elVel[1].value).toFixed(3).replace('-0', '0');
-    el6.innerHTML = parseFloat(eVel[1].value).toFixed(3).replace('-0', '0');
+    el6.innerHTML = parseFloat(elVel[1].value).toFixed(3).replace('-0', '0');
     elVel[0].value = elVel[1].value;
     circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
     circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
@@ -250,10 +253,10 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
             <b>Finding the final x and y velocities on the rotated axis of collision: \n \\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{o}e({v_{oix}}'-{v_{wix}}')}{m_{w} + m_{o}}  \\] \n
             \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${vox.toFixed(2)}) +(${mt.toFixed(2)})e(${vox.toFixed(2)}-${vtx.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} = ${vtfx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
             \\[{v_{fy}}' = {v_{iy}}' = ${-vty.toFixed(2)} \\;\\mathrm{m/s}\\] \n
-            <B>Converting the x and y velocities back to standard axis of collision:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + \\frac{\\pi}{2})} \\] \n 
-            \\[ v_{fx} =(${vtfx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${xVel.toFixed(2)}\\;\\mathrm{m/s}\\] \n
-            \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + \\frac{\\pi}{2})} \\] \n 
-            \\[ v_{fy} =(${vtfx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${-yVel.toFixed(2)}\\;\\mathrm{m/s}\\]`;
+            <B>Converting the x and y velocities back to standard axis of collision:\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + 90)} \\] \n 
+            \\[ v_{fx} =(${vtfx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${xVel.toFixed(2)}\\;\\mathrm{m/s}\\] \n
+            \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + 90)} \\] \n 
+            \\[ v_{fy} =(${vtfx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vtfy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${-yVel.toFixed(2)}\\;\\mathrm{m/s}\\]`;
   whiteBallEquation.innerHTML = white;
 
   let other;
@@ -267,10 +270,10 @@ function updateOtherCalculations(mt,mo,dx,dy,vtxi,vtyi,voxi,voyi,vt,vo,at,ao,phi
             <b>Finding the final x and y velocities on the rotated axis of collision:</b> \n\\[{v_{fx}}' = \\frac{m_{w}{v_{wix}}' + m_{o}{v_{oix}}' +m_{w}e({v_{wix}}'-{v_{oix}}')}{m_{w} + m_{o}}  \\] \n
             \\[{v_{fx}}' = \\frac{(${mt.toFixed(2)})(${vtx.toFixed(2)}) + (${mo.toFixed(2)})(${voxi.toFixed(2)}) +(${mo.toFixed(2)})e(${vtx.toFixed(2)} - ${voxi.toFixed(2)})}{${mt.toFixed(2)} + ${mo.toFixed(2)}} = ${vofx.toFixed(2)} \\;\\mathrm{m/s}  \\] \n
             \\[{v_{fy}}' = {v_{iy}}' = ${vofy.toFixed(2)} \\;\\mathrm{m/s}\\] \n
-            <b>Converting the x and y velocities back to standard axis of collision:</b>\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + \\frac{\\pi}{2})} \\] \n 
-            \\[ v_{fx} =(${vofx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${xVel2.toFixed(2)}\\;\\mathrm{m/s}\\] \n
-            \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + \\frac{\\pi}{2})} \\] \n 
-            \\[ v_{fy} =(${vofx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + \\frac{\\pi}{2})} = ${-yVel2.toFixed(2)}\\;\\mathrm{m/s}\\]`;
+            <b>Converting the x and y velocities back to standard axis of collision:</b>\n  \\[v_{fx} = {v_{fx}}'\\cos{(\\phi)} + {v_{fy}}'\\cos{(\\phi + 90)} \\] \n 
+            \\[ v_{fx} =(${vofx.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\cos{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${xVel2.toFixed(2)}\\;\\mathrm{m/s}\\] \n
+            \\[v_{fy} = {v_{fx}}'\\sin{(\\phi)} + {v_{fy}}'\\sin{(\\phi + 90)} \\] \n 
+            \\[ v_{fy} =(${vofx.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)})} + (${-vofy.toFixed(2)})\\sin{(${(360-((phi*180)/PI)).toFixed(2)} + 90)} = ${-yVel2.toFixed(2)}\\;\\mathrm{m/s}\\]`;
   otherBallEquation.innerHTML = other;
   MathJax.typeset();
 }
@@ -334,6 +337,7 @@ function updateControls(){
   elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
   elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
   el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+  cue.update(circles[0],circles[0].x + circles[0].xVelShot*(-10),circles[0].y + circles[0].yVelShot*(10));
 }
 
 function toggleAxis(){

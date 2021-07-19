@@ -63,12 +63,13 @@ function draw() {
   }
   for (let i=0; i < circles.length; i++) {
     circles[i].click();
-    for(let j = 0; j < bumpers.length;j++){
-      circles[i].bumperCollision(bumpers[j],wallCoefRest);
-    }
     for(let j = 0; j < holes.length;j++){
       circles[i].holeCollision(holes[j]);
     }
+    for(let j = 0; j < bumpers.length;j++){
+      circles[i].bumperCollision(bumpers[j],wallCoefRest);
+    }
+    
     for (let j=i+1; j < circles.length; j++) {
         if (circles[i].circleCollisionCheck(circles[j])) {
             circles[i].circleCollisionCalc(circles[j], circleCoefRest);
@@ -116,6 +117,9 @@ function draw() {
   }
   if(!motion && ballHit){
     ballHit = false;
+  }
+  if(!motion && circles[0].potted){
+    circles[0].potted = false;
   }
 }
 
@@ -273,6 +277,24 @@ function predictShot() {
   for (let i=0; i < circles.length; i++) {
     circles[i].x = xInitial[i];
     circles[i].y = yInitial[i];
+    circles[i].xVel = 0;
+    circles[i].yVel = 0;
+  }
+}
+
+function collisionCheck(){
+  for (let i=0; i < circles.length; i++) {
+    for(let j = 0; j < holes.length;j++){
+      circles[i].holeCollision(holes[j]);
+    }
+    for(let j = 0; j < bumpers.length;j++){
+      circles[i].bumperCollision(bumpers[j],wallCoefRest);
+    }
+    for (let j=i+1; j < circles.length; j++) {
+        if (circles[i].circleCollisionCheck(circles[j])) {
+            circles[i].circleCollisionCalc(circles[j], circleCoefRest);
+        }
+    }
   }
 }
 
@@ -300,6 +322,8 @@ function mousePressed() {
       circles[0].locked = false;
     }
   } else if(mouseButton === RIGHT){
+    checkForMotion();
+    if(!motion){
     predictionView = false;
     ballhit = false;
     ballNum = 0;
@@ -308,7 +332,10 @@ function mousePressed() {
     circles[0].shoot();
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
+    circles[0].vel = 0;
+    circles[0].angle = 0;
     updateControls();
+    }
   }
 }
 
@@ -321,12 +348,15 @@ function mouseDragged() {
     circles[0].yVelShot = (mouseY - circles[0].y) * 0.1;
     circles[0].vel = circles[0].findVelocity();
     circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
-    if(circles[0].xVelShot > 30){
-      circles[0].xVelShot = 30;
+    if(circles[0].vel > 45){
+      circles[0].vel = 45;
+      circles[0].xVelShot = 45*cos(circles[0].angle);
+      circles[0].yVelShot = 45*sin(circles[0].angle);
+      updateControls();
+      cue.update(circles[0],circles[0].x + circles[0].xVelShot*(-10),circles[0].y + circles[0].yVelShot*(10));
+      return;
     }
-    if(circles[0].yVelShot > 30){
-      circles[0].yVelShot = 30;
-    }
+
     updateControls();
     cue.update(circles[0]);
   }
@@ -389,9 +419,17 @@ class Circle {
   /**
    * Moves the ball in the required x and y direction
    */ 
-  move() {
-    this.x += this.xVel;
-    this.y += this.yVel;
+  move(){
+    // if(this.number === 0){
+    //   for(let i = 0; i < 2;i++){
+    //     this.x += this.xVel*0.5;
+    //     this.y += this.yVel*0.5;
+    //     collisionCheck();
+    //   }
+    // } else {
+      this.x += this.xVel;
+      this.y += this.yVel;
+    // }
   }
 
   /**
@@ -504,9 +542,8 @@ class Circle {
       this.xVel = 0;
       this.yvel = 0;
       if(!predictionView){
-      if(this.number === 0){
-        this.resetWhite(hole);
-        return;
+        if(this.number === 0){
+          this.resetWhite(hole);
       }
         this.potted = true;
       }
