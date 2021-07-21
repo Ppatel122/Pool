@@ -1,4 +1,4 @@
-var elAxis,elXVel,elYVel,elVel,elAng,elCoeffBumper,elCoeffBalls,elDecel,elProjectionMode,elCoordinateSystem,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5,el6,el7;
+var elAxis,elXVel,elYVel,elVel,elAng,elCoeffBumper,elCoeffBalls,elRoll,elProjectionMode,elCoordinateSystem,elOtherCalc,shootbutton,resetbutton,calculatebutton,el1,el2,el3,el4,el5,el6,el7;
 let thetaf;
 
 window.onload = () => {
@@ -16,7 +16,7 @@ window.onload = () => {
   elAng = document.querySelectorAll("#Ang");
   elCoeffBumper = document.querySelector("#coeffBumper");
   elCoeffBalls = document.querySelector("#coeffBalls");
-  elDecel = document.querySelector("#Decel");
+  elRoll = document.querySelector("#coeffRoll");
   elProjectionMode = document.querySelectorAll(".projection-mode-toggle");
   elCoordinateSystem = document.querySelectorAll(".coordinate-system-toggle");
   elOtherCalc = document.querySelector("#calculation-toggle");
@@ -145,9 +145,9 @@ window.onload = () => {
     el4.innerHTML = parseFloat(elCoeffBalls.value).toFixed(2).replace('-0', '0');
   };
 
-  elDecel.onchange = () => {
-    circleAcceleration = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
-    el5.innerHTML = -parseFloat(elDecel.value).toFixed(3).replace('-0', '0');
+  elRoll.onchange = () => {
+    coeffRoll = parseFloat(elRoll.value).toFixed(3).replace('-0', '0');
+    el5.innerHTML = parseFloat(elRoll.value).toFixed(3).replace('-0', '0');
   };
 
   elAxis.onclick = function() {
@@ -181,7 +181,7 @@ window.onload = () => {
     el2.innerHTML = 0;
     el3.innerHTML = 0.5;
     el4.innerHTML = 0.9;
-    el5.innerHTML = -0.010.toFixed(3);
+    el5.innerHTML = 0.010.toFixed(3);
     circles[0].xVelShot = 0;
     circles[0].yVelShot = 0;
     circles[0].vel = 0;
@@ -189,7 +189,7 @@ window.onload = () => {
     updateControls();
     elCoeffBumper.value = 0.5;
     elCoeffBalls.value = 0.9;
-    elDecel.value = -0.01;
+    elRoll.value = 0.01;
   }
   
   

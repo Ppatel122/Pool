@@ -28,7 +28,7 @@ let wallL = poolTableBorder + bumperLength; // position of the left wall (used f
 let wallR = poolTableX - poolTableBorder - bumperLength; // position of the right wall (used for collision)
 let wallCoefRest = 0.5; // coefficient of restitution for collisions between circles and walls
 let circleCoefRest = 0.9; // coefficient of restitution for collisions between multiple circles
-let circleAcceleration = -0.01; // circleAcceleration is in units/frame^2
+let coefRoll = 0.01; // coeffRoll is in units/frame^2
 let projectionMode = 3; // chosen projection mode
 let coordinateSystem = 1; // chosen coordinate system
 let predictionView = false; // whether or not projections are being shown
@@ -66,7 +66,7 @@ function draw() {
   }
   for (let i=0; i < circles.length; i++) {
     circles[i].click();
-    circles[i].accelerate(circleAcceleration);
+    circles[i].accelerate(coeffRoll);
     circles[i].move();
     circles[i].show();
   }
@@ -130,12 +130,11 @@ function drawProjections(i){
 function resetGame(){
   wallCoefRest = 0.5; 
   circleCoefRest = 0.9; 
-  circleAcceleration = -0.01; 
+  coeffRoll = 0.01; 
   projectionMode = 3;
   coordinateSystem = 1;
   predictionView = false;
   directionView = true;
-  coordinateView = true;
   motion  = false;
   ballHit = false;
   calc = false;
@@ -248,7 +247,7 @@ function predictShot() {
       
     }  
     for (let i=0; i < circles.length; i++) {
-      circles[i].accelerate(circleAcceleration);
+      circles[i].accelerate(coeffRoll);
       circles[i].move();
     }
   }
@@ -663,11 +662,9 @@ class Circle {
   /**
    * Acts as the friction between the ball and the table cloth
    */ 
-  accelerate(acceleration) {
-    if (acceleration == 0) {
-      return;
-    }
+  accelerate(coeff) {
 
+    let acceleration = -coeff;
     let theta = this.findAngle(this.xVel, this.yVel);
 
     if (this.xVel != 0) {
