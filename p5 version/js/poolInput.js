@@ -32,8 +32,8 @@ window.onload = () => {
   resetbutton = document.querySelector("#resetbutton");
 
   elXVel[0].onchange = () => {
-    circles[0].xVelShot = parseFloat(elXVel[0].value).toFixed(3).replace('-0', '0');
-    el1.innerHTML = parseFloat(elXVel[0].value).toFixed(3).replace('-0', '0');
+    circles[0].xVelShot = parseFloat(elXVel[0].value).toFixed(3);
+    el1.innerHTML = parseFloat(elXVel[0].value).toFixed(3);
     elXVel[1].value = elXVel[0].value;
     circles[0].vel = circles[0].findVelocity();
     circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
@@ -45,21 +45,24 @@ window.onload = () => {
   };
 
   elXVel[1].onchange = () => {
-    circles[0].xVelShot = parseFloat(elXVel[1].value).toFixed(3).replace('-0', '0');
-    el1.innerHTML = parseFloat(elXVel[1].value).toFixed(3).replace('-0', '0');
-    elXVel[0].value = elXVel[1].value;
+
+    circles[0].xVelShot = parseFloat(elXVel[1].value).toFixed(3);
+    el1.innerHTML = parseFloat(elXVel[1].value).toFixed(3);
+    elXVel[0].value = elXVel[1].value; 
     circles[0].vel = circles[0].findVelocity();
     circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
     updateControls();
+
     predictionView = false;
     ballhit = false;
     ballNum = 0;
     predictShot();
+
   };
 
   elYVel[0].onchange = () => {
-    circles[0].yVelShot = parseFloat(elYVel[0].value).toFixed(3).replace('-0', '0');
-    el2.innerHTML = parseFloat(elYVel[0].value).toFixed(3).replace('-0', '0');
+    circles[0].yVelShot = parseFloat(elYVel[0].value).toFixed(3);
+    el2.innerHTML = parseFloat(elYVel[0].value).toFixed(3);
     elYVel[1].value = elYVel[0].value;
     circles[0].vel = circles[0].findVelocity();
     circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
@@ -71,8 +74,8 @@ window.onload = () => {
   };
 
   elYVel[1].onchange = () => {
-    circles[0].yVelShot = parseFloat(elYVel[1].value).toFixed(3).replace('-0', '0');
-    el2.innerHTML = parseFloat(elYVel[1].value).toFixed(3).replace('-0', '0');
+    circles[0].yVelShot = parseFloat(elYVel[1].value).toFixed(3);
+    el2.innerHTML = parseFloat(elYVel[1].value).toFixed(3);
     elYVel[0].value = elYVel[1].value;
     circles[0].vel = circles[0].findVelocity();
     circles[0].angle = circles[0].findAngle(circles[0].xVelShot,circles[0].yVelShot);
@@ -84,8 +87,8 @@ window.onload = () => {
   };
 
   elVel[0].onchange = () => {
-    circles[0].vel = parseFloat(elVel[0].value).toFixed(3).replace('-0', '0');
-    el6.innerHTML = parseFloat(elVel[0].value).toFixed(3).replace('-0', '0');
+    circles[0].vel = parseFloat(elVel[0].value).toFixed(3);
+    el6.innerHTML = parseFloat(elVel[0].value).toFixed(3);
     elVel[1].value = elVel[0].value;
     circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
     circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
@@ -97,8 +100,8 @@ window.onload = () => {
   };
 
   elVel[1].onchange = () => {
-    circles[0].vel = parseFloat(elVel[1].value).toFixed(3).replace('-0', '0');
-    el6.innerHTML = parseFloat(elVel[1].value).toFixed(3).replace('-0', '0');
+    circles[0].vel = parseFloat(elVel[1].value).toFixed(3);
+    el6.innerHTML = parseFloat(elVel[1].value).toFixed(3);
     elVel[0].value = elVel[1].value;
     circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
     circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
@@ -111,7 +114,7 @@ window.onload = () => {
 
   elAng[0].onchange = () => {
     circles[0].angle = ((parseFloat(elAng[0].value))*(PI/180));
-    el7.innerHTML = ((parseFloat(elAng[1].value))*(PI/180)).toFixed(2).replace('-0', '0');
+    el7.innerHTML = ((parseFloat(elAng[1].value))*(PI/180)).toFixed(2);
     elAng[1].value = elAng[0].value;
     circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
     circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
@@ -124,7 +127,7 @@ window.onload = () => {
 
   elAng[1].onchange = () => {
     circles[0].angle = ((parseFloat(elAng[1].value))*(PI/180));
-    el7.innerHTML = ((parseFloat(elAng[1].value))*(PI/180)).toFixed(2).replace('-0', '0');
+    el7.innerHTML = ((parseFloat(elAng[1].value))*(PI/180)).toFixed(2);
     elAng[0].value = elAng[1].value;
     circles[0].xVelShot = Math.cos(circles[0].angle)*circles[0].vel;
     circles[0].yVelShot = Math.sin(circles[0].angle)*circles[0].vel;
@@ -136,18 +139,30 @@ window.onload = () => {
   };
 
   elCoeffBumper.onchange = () => {
-    wallCoefRest = parseFloat(elCoeffBumper.value).toFixed(2).replace('-0', '0');
-    el3.innerHTML = parseFloat(elCoeffBumper.value).toFixed(2).replace('-0', '0');
+    wallCoefRest = parseFloat(elCoeffBumper.value).toFixed(2);
+    el3.innerHTML = parseFloat(elCoeffBumper.value).toFixed(2);
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
   };
 
   elCoeffBalls.onchange = () => {
-    circleCoefRest = parseFloat(elCoeffBalls.value).toFixed(2).replace('-0', '0');
-    el4.innerHTML = parseFloat(elCoeffBalls.value).toFixed(2).replace('-0', '0');
+    circleCoefRest = parseFloat(elCoeffBalls.value).toFixed(2);
+    el4.innerHTML = parseFloat(elCoeffBalls.value).toFixed(2);
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
   };
 
   elRoll.onchange = () => {
-    coeffRoll = parseFloat(elRoll.value).toFixed(3).replace('-0', '0');
-    el5.innerHTML = parseFloat(elRoll.value).toFixed(3).replace('-0', '0');
+    coeffRoll = parseFloat(elRoll.value).toFixed(3);
+    el5.innerHTML = parseFloat(elRoll.value).toFixed(3);
+    predictionView = false;
+    ballhit = false;
+    ballNum = 0;
+    predictShot();
   };
 
   elAxis.onclick = function() {
@@ -325,18 +340,18 @@ function toggleCoordinates(coordinateSystem){
  * Update the values in the input box
 */ 
 function updateControls(){
-  elXVel[0].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-  elXVel[1].value = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-  el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3).replace('-0', '0');
-  elYVel[0].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-  elYVel[1].value = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-  el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3).replace('-0', '0');
-  elVel[0].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
-  elVel[1].value = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
-  el6.innerHTML = parseFloat(circles[0].vel).toFixed(3).replace('-0', '0');
-  elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
-  elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
-  el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2).replace('-0', '0');
+  elXVel[0].value = parseFloat(circles[0].xVelShot).toFixed(3);
+  elXVel[1].value = parseFloat(circles[0].xVelShot).toFixed(3);
+  el1.innerHTML = parseFloat(circles[0].xVelShot).toFixed(3);
+  elYVel[0].value = parseFloat(circles[0].yVelShot).toFixed(3);
+  elYVel[1].value = parseFloat(circles[0].yVelShot).toFixed(3);
+  el2.innerHTML = parseFloat(circles[0].yVelShot).toFixed(3);
+  elVel[0].value = parseFloat(circles[0].vel).toFixed(3);
+  elVel[1].value = parseFloat(circles[0].vel).toFixed(3);
+  el6.innerHTML = parseFloat(circles[0].vel).toFixed(3);
+  elAng[0].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2);
+  elAng[1].value = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2);
+  el7.innerHTML = (parseFloat(circles[0].angle)*(180/PI)).toFixed(2);
   cue.update(circles[0],circles[0].x + circles[0].xVelShot*(-10),circles[0].y + circles[0].yVelShot*(10));
 }
 
@@ -359,4 +374,10 @@ function toggleExtraCalc() {
 
 function showMenu(id) {
   document.getElementById(id).classList.toggle("show");
+}
+
+function showVideo(id) {
+  var video = document.getElementById(id)
+  video.classList.toggle("show");
+  
 }

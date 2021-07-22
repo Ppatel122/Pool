@@ -241,7 +241,7 @@ function predictShot() {
   }
   for (let k=0; k<10000; k++) {
     checkForMotion();
-    if(!motion){console.log(k);break;}
+    if(!motion){break;}
     for (let i=1; i < circles.length; i++) {  
       collisionCheck(i);
       
