@@ -1,4 +1,4 @@
-let width = 250, length = 250;
+let width = 310, length = 310;
 
 let sim = function(p) {
     p.setup = function() {
@@ -8,7 +8,7 @@ let sim = function(p) {
     };
   
     p.draw = function() {
-        p.background(10, 108, 3);
+        p.background(255);
 
 
         otherball.show(p);
@@ -35,6 +35,7 @@ Axis.prototype.show = function(p){
     p.fill(0);
     p.triangle(this.l/2,0,this.l/2+this.l/30,this.w/30,this.l/2-this.l/30,this.w/30);
     p.triangle(this.l,this.w/2,this.l-this.l/30,this.w/2-this.w/30,this.l-this.l/30,this.w/2+this.w/30);
+    p.textStyle(ITALIC);
     p.text('x',this.l-10,this.w/2-10)
     p.text('y',this.l/2+10,10);
 }
@@ -50,16 +51,16 @@ let Ball =  function(p,x,y,r,xVel1,yVel1,xVel2,yVel2,color,id,show){
     this.v2 = createVector( + xVel2*10, + yVel2*10);
     this.v3 = createVector(xVel1*10,yVel1*10);
     this.color = color;
-    this.textcolor = 'red';
+    this.textcolor = 'black';
     this.id = id;
     this.on = show;
 }
 
 Ball.prototype.show = function(p) {
     if(this.on){
-
-        p.fill(this.color);
-        p.noStroke();
+        p.fill(255);
+        p.strokeWeight(2);
+        p.stroke(this.color);
         p.ellipse(this.x,this.y,this.rad);
         if(this.id > 8 && this.id < 16){
             p.fill(255);
@@ -74,22 +75,46 @@ Ball.prototype.show = function(p) {
             this.scaleArrows(p,1,this);
             drawArrow(p,this.v1,this.v3,color(0),this.id);
             let ang1 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.textFont('STIX');
+            p.textStyle(ITALIC);
+            p.textSize(25);
+            p.noStroke();
             p.fill(this.textcolor);
-            p.text("Vin", this.v1.x-5*Math.cos(ang1),this.v1.y-5*Math.sin(ang1));
+            let vec = findTextLocation1(this.v1,this.v3);
+            p.text("v", vec.x,vec.y);
+            p.textSize(11);
+            p.text("i", vec.x+11,vec.y);
 
         }
         if(this.v0 != this.v2){
             this.scaleArrows(p,2,this);
             drawArrow(p,this.v0,this.v2,color(0),this.id);
             let ang2 = circles[0].findAngle(this.v3.x,this.v3.y);
+            p.textFont('STIX');
+            p.textStyle(ITALIC);
+            p.textSize(25);
+            p.noStroke();
             p.fill(this.textcolor);
-            p.text("Vout", this.v0.x + this.v2.x + 5*Math.cos(ang2),this.v0.y + this.v2.y +5*Math.sin(ang2));
-
+            let vec1 = findTextLocation2(this.v0,this.v2);
+            p.text("v", vec1.x,vec1.y);
+            p.textSize(11);
+            p.text("f", vec1.x + 11,vec1.y);
         }
         if(this.id === 0){
             angle = circles[0].findAngle(this.v2.x,-this.v2.y);
+            p.textSize(18);
+            p.noStroke();
+            p.textStyle(NORMAL);
             p.fill(this.textcolor);
-            p.text('θ = ' + thetaf + "°",length/2 + 20,width/2);
+            if(this.v2.x > 0 && -this.v2.y < this.v2.x){
+                p.text('θ  = ' + thetaf + "°",length/2 + 20,width/2+15);
+                p.textSize(11);
+                p.text('f',length/2 + 30,width/2+15);
+            } else {
+                p.text('θ  = ' + thetaf + "°",length/2 + 20,width/2);
+                p.textSize(11);
+                p.text('f',length/2 + 30,width/2);
+            }
             p.noFill();
             p.stroke(0);
             p.arc(width/2,length/2,30,30,TWO_PI - angle,TWO_PI);
@@ -128,18 +153,65 @@ Ball.prototype.updateVectors = function(xVel1,yVel1,xVel2,yVel2){
 
 }
 
+findTextLocation1 = function(base,vec) {  
+    let x,y;
+      if (vec.x > 0) {
+        if (vec.y > 0) {
+            x = base.x - 22;
+            y = base.y;
+            return{x,y};
+        } else {
+            x = base.x - 22;
+            y = base.y + 10;
+            return{x,y};
+        }
+      } else {
+        if (vec.y > 0) {
+            x = base.x + 5;
+            y = base.y;
+            return{x,y};
+        } else {
+            x = base.x + 5;
+            y = base.y + 10;
+            return{x,y};
+        }
+      }
+}
+
+findTextLocation2 = function(base,vec) {  
+    let x,y;
+
+      if (vec.x > 0) {
+        if (vec.y > 0) {
+            x = base.x + vec.x + 7;
+            y = base.y + vec.y + 10;
+            return{x,y};
+        } else {
+            x = base.x + vec.x + 7;
+            y = base.y + vec.y;
+            return{x,y};
+        }
+      } else {
+        if (vec.y > 0) {
+            x = base.x + vec.x - 22;
+            y = base.y + vec.y + 10;
+            return{x,y};
+        } else {
+            x = base.x + vec.x - 22;
+            y = base.y + vec.y;
+            return{x,y};
+        }
+      }
+}
+
 reset = function(p){
     axes = new Axis(p,length,width);
-    whiteball = new Ball(p,length/2,width/2,75,0,0,0,0,color(255),0,true);
-    otherball = new Ball(p,length/2,width/2,75,0,0,0,0,color(255,255,0),0,false);
+    whiteball = new Ball(p,length/2,width/2,length*0.3,0,0,0,0,color(0),0,true);
+    otherball = new Ball(p,length/2,width/2,length*0.3,0,0,0,0,color(0),0,false);
 }
 
 drawArrow = function(p,base,vec,color,id){
-    if(id === 8){
-        color = 'white';
-    } else{
-        color = 'black';
-    }
+    color = 'black';
     p.push();
     p.stroke(color);
     p.strokeWeight(3);

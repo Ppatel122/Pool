@@ -5,6 +5,10 @@
     --grey: #d4d4d4;
   }
   
+  ::selection {
+    color : none;
+    background: none;
+  }
   .box-border {
     border: 3px solid var(--black);
   }
@@ -23,7 +27,7 @@
   }
 
   #content_inner {
-    width: 1300px;
+    text-align: center;
     padding-left: 10px;
     padding-right: 10px;
   }
@@ -32,15 +36,14 @@
     margin: 10px 0px 0px 0px;
     font-size: 30pt;
     font-weight: bold;
+    text-align: center;
   }
   
-  /* --CONTAINERS-- */
   #simulation {
-
+    width:1000px;
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: center;
-    width: 100%;
   }
   
   #simulation > div {
@@ -49,43 +52,60 @@
   
   #input {
     padding: 29px 20px 29.5px 20px;
-
+    text-align: left;
   }
 
-  #white-calc {
+  #output {
+    padding: 10px;
+    height: 517px;
+    font-size: 10pt;
     text-align: center;
+  }
 
+  #white-calculation {
+    text-align: left;
+    padding:15px;
     float: left;
-
-
-
-    width:49.3%;
+    width:46.3%;
   }
 
-  #impact-calc {
-    display: block;
-    text-align: center;
-  }
-
-  #other-calc {
-    text-align: center;
-
+  #other-calculation {
+    text-align: left;
+    padding:15px;
     float: right;
 
-    width:49.3%;
+    width:46.3%;
   }
 
-  #extra-calc{
+  #impact-calculation {
+    display: inline-block;
+    text-align: center;
+    width: 1200px;
+  }
+
+  #extra-calculation{
     padding:5px;
     text-align: center;
   }
-  #output {
-    padding: 10px;
-    height: 415px;
-    font-size: 9.5pt;
-    text-align: center;
-    
+
+  #control-content {
+    text-align: left;
   }
+
+  #video-text {
+    font-size: 23pt;
+    text-decoration: underline;
+  }
+
+  #video-dropdown{
+    height:30px;
+  }
+
+  #polar-controls {
+    display:none;
+  }
+
+
   .buttons {
     display: flex;
     vertical-align: middle;
@@ -100,7 +120,7 @@
     display: block;
     padding: 1px;
     font-size: 10pt;
-    height:460px;
+    height:560px;
     width:42%;
     user-select: none;
   }
@@ -109,17 +129,17 @@
     display:block;
     padding:1px;
     font-size:10pt;
-    height:460px;
-    width:57%;
+    height:515px;
+    width:53%;
   }
-  .extra-calc-container {
+  .extra-calculation-container {
     font-size:9.2pt;
     padding:10px;
     width: 100%;
     height:100%;
   }
 
-  .calc-box-border {
+  .calculation-box-border {
     padding:0px;
     margin:none;
     border:none;
@@ -137,15 +157,20 @@
   }
 
   .projection-mode-container {
-    display: flex;
+    text-align: center;
+    padding: 0px, 30px 0px 30px;
+    
+  }
+
+  .coordinate-system-container {
+    text-align: center;
+    padding: 0px, 30px 0px 30px;
   }
   
   .mc-container {
     width: 95%;
   }
   
-  
-  /* --TOGGLE BUTTONS-- */
   .projection-mode-toggle {
     display: inline-block;
     margin: auto;
@@ -168,6 +193,28 @@
     transition: color .5s
   }
   
+  .coordinate-system-toggle {
+    display: inline-block;
+    margin: auto;
+    background-color: var(--black);
+    color: var(--white);
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px 20px;
+    border-radius: 5px;
+    transition: color .5s
+  }
+  
+  .coordinate-system-toggle:hover {
+    background-color: var(--grey);
+  }
+  
+  .coordinate-system-toggle-active {
+    background-color: var(--grey);
+    color: var(--black);
+    transition: color .5s
+  }
+  
   input[type="radio"] {
     position: absolute;
     opacity: 0;
@@ -176,44 +223,38 @@
     width: 0;
   }
   
-  /* --SLIDER-- */
-  /* https://www.w3schools.com/howto/howto_js_rangeslider.asp */
   .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
+    -webkit-appearance: none;  
     appearance: none;
-    width: 100%; /* Full-width */
-    height: 10px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    width: 100%; 
+    height: 10px; 
+    background: #d3d3d3; 
+    outline: none; 
+    opacity: 0.7; 
+    -webkit-transition: .2s; 
     transition: opacity .2s;
   }
   
-  /* Mouse-over effects */
   .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
+    opacity: 1; 
   }
   
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
   .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
+    -webkit-appearance: none; 
     appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 10px; /* Slider handle height */
-    background: var(--orange); /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 25px; 
+    height: 10px; 
+    background: var(--orange); 
+    cursor: pointer; 
   }
   
   .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 8px; /* Slider handle height */
-    background: var(--orange); /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 25px; 
+    height: 8px; 
+    background: var(--orange); 
+    cursor: pointer; 
   }
-  
-  /* --CHECKBOX-- */
-  /* https://www.w3schools.com/howto/howto_css_switch.asp */
+
   .switch {
     position: relative;
     display: inline-block;
@@ -266,13 +307,18 @@
     border-radius: 5px;
   }
   
-  /* --DROPDOWN-- */
   .dropdown {
     position: relative;
     width: 15px;
     height: 15px;
   }
   
+  .dropdown-menu-center {
+    left: 50%;
+    right: auto ;
+    text-align: center;
+    transform: translate(-50%, 0);
+  }
   .dropdown-btn {
     width: 15px;
     height: 15px;
